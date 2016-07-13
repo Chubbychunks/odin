@@ -1,6 +1,11 @@
+require(ggplot2)
+require(reshape2)
+
 gen <- odin::odin("ODEs_odin.R")
 
-#
+time <- seq(0, 100, length.out = 1000)
+ 
+y <- mod$run(time)
 
 mod <- gen(S0_init = 10000,
            S1a_init = 0,
@@ -106,18 +111,27 @@ mod <- gen(S0_init = 10000,
            R = 1
 )
 
+titles = c("time","S0","S1a","S1b","S1c","I01","I11","I02","I03","I04","I05","I22","I23","I24","I25","I32","I33","I34","I35","I42","I43","I44","I45")
 
 
+HIV_epi <- data.frame(y)
+
+colnames(HIV_epi) = titles
+
+HIV_epi_melted = melt(HIV_epi, id.vars = c("time"))
 
 
+ggplot(HIV_epi_melted, aes(x = time, y = value, colour = variable)) + geom_point() + geom_line()
 
-mod <- gen()
 
-mod$initial()
-
-time <- seq(0, 10, length.out = 1000)
-
-y <- mod$run(time)
-
-pairs(y[,-1], panel = lines)
+#####
+# mod <- gen()
+# 
+# mod$initial()
+# 
+# time <- seq(0, 10, length.out = 1000)
+# 
+# y <- mod$run(time)
+# 
+# pairs(y[,-1], panel = lines)
 
