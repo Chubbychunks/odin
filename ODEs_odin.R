@@ -53,6 +53,8 @@ N = S0 + S1a + S1b + S1c + I01 + I11 + I02 + I03 + I04 + I05 +
   I22 + I23 + I24 + I25 +  I32 + I33 + I34 + I35  +
   I42 + I43 + I44 + I45
 
+output(N) = N
+
 alphaItot = 
   alpha01 * I01 + alpha11 * I11 + alpha02 * I02 + alpha03 * I03 + alpha04 * I04 +
   alpha05 * I05 + alpha22 * I22 + alpha23 * I23 + alpha24 * I24 + alpha25 * I25 +
