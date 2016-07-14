@@ -45,9 +45,11 @@ deriv(I44[]) = gamma43[i] * I43[i] + phi4[i] * I34[i] - I44[i] * (gamma44[i] + r
 deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alpha45[i] + mu[i])
 
 
+# births due to population growth
+new_people = epsilon * sum(N)
 
 # births and prep movement
-E0[] = mu[i] * N[i] + epsilon[i] * N[i] + alphaItot[i] - S0[i] * (zetaa[i] + zetab[i] + zetac[i])
+E0[] = mu[i] * N[i] + alphaItot[i] - S0[i] * (zetaa[i] + zetab[i] + zetac[i]) + new_people * omega[i]
 E1a[] = zetaa[i] * S0[i] - psia[i] * S1a[i]
 E1b[] = zetab[i] * S0[i] + psia[i] * S1a[i] - psib[i] * S1b[i] 
 E1c[] = zetac[i] * S0[i] + psib[i] * S1b[i]
@@ -247,12 +249,15 @@ beta[] = user()
 c[] = user()
 ec[] = user()
 eP[] = user()
-epsilon[] = user()
 fc[] = user()
 fP[] = user()
 n[] = user()
 R[] = user()
 
+# growth
+#epsilon[] = user()
+epsilon = user()
+omega[] = user()
 
 #dimming
 Ncat = 2
@@ -318,7 +323,7 @@ dim(beta) = Ncat
 dim(c) = Ncat
 dim(ec) = Ncat
 dim(eP) = Ncat
-dim(epsilon) = Ncat
+#dim(epsilon) = Ncat
 dim(fc) = Ncat
 dim(fP) = Ncat
 dim(n) = Ncat
@@ -393,3 +398,5 @@ dim(lambda) = c(Ncat, Ncat)
 dim(lambda_sum) = Ncat
 
 dim(alphaItot) = Ncat
+
+dim(omega) = Ncat

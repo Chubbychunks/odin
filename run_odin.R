@@ -108,7 +108,7 @@ parameters <- list(S0_init = c(10000,10000),
                    ec = c(1,1),
                    
                    eP = c(0.6,0.5),
-                   epsilon = c(0.001,0.4),
+                   epsilon = 0.001,
                    #fc = 0.8,
                    fc = c(1,1),
                    
@@ -116,15 +116,80 @@ parameters <- list(S0_init = c(10000,10000),
                    n = c(10,3),
                    #n = 0,
                    
-                   R = c(1,1)
+                   R = c(1,1),
+                   omega = c(0.5, 0.5)
 )
+
+vary_S0 <- function(S0, base, gen, time) {
+  base$S0_init <- S0 * base$omega
+  gen(user=base)$run(time)
+}
+
+S0 <- c(10, 100, 1000, 10000)
+lapply(S0, vary_S0, parameters, gen, time)
+
+vary_a_bunch <- function(x, base, gen, time) {
+  base[names(x)] <- x
+  gen(user=base)$run(time)
+}
+
+v <- c("omega", "mu", "epsilon")
+pp <- unlist(parameters[v])
+pp <- as.data.frame(rbind(pp/2, pp, pp * 2))
+rownames(pp) <- NULL
+
+vary2 <- function(x, base, v, gen, time) {
+  n <- lengths(base[v])
+  base[v] <- setNames(split(unlist(x, use.names=FALSE), rep(seq_along(v), n)), v)
+  mod <- gen(user=base)
+  res <- mod$transform_variables(mod$run(time))
+  # do fitting here
+  
+  
+  # output the likelihood thing here, don't output all the variables and parameres!
+  sum(res$S0) - 4362182
+}
+
+output <- lapply(seq_len(nrow(pp)), function(i) vary2(pp[i,], parameters, v, gen, time))
+
+#s0 for third set of parameters
+head(output[[3]]$S0)
+
+
+
+
+
+lapply(output, head)
+
+lengths(parameters[v])
+
+
+lapply(seq_len(nrow(d)), function(i) f(d[i,]))
+
+expand.grid(a=1:5, b=letters[1:3])
 
 mod <- gen(user = parameters)
 
 
 y <- mod$run(time)
 
-HIV_epi = cbind(time = time, as.data.frame(mod$transform_variables(y)))
+something = mod$transform_variables(y)
+
+names(something)
+
+something$S0
+
+# HIV_epi = cbind(time = time, as.data.frame(mod$transform_variables(y)))
+
+v <- names(mod$order)
+head(as.data.frame(lapply(something[v], function(x) x[,1])))
+head(as.data.frame(lapply(something[v], function(x) x[,2])))
+
+by_category <- lapply(seq_len(mod$contents()$Ncat), function(i) as.data.frame(lapply(something[v], function(x) x[, i])))
+
+lapply(by_category, head)
+
+lapply(something, rowSums)
 
 head(HIV_epi)
 
