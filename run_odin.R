@@ -1,6 +1,11 @@
 require(ggplot2)
 require(reshape2)
 
+
+
+
+
+
 # gen <- odin::odin("ODEs_odin.R")
 gen <- odin::odin("ODEs_odin_with_2_groups.R")
 
@@ -163,6 +168,29 @@ pp <- as.data.frame(rbind(pp, pp * 0))
 #pp <- as.data.frame(rbind(pp/2, pp, pp * 2))
 rownames(pp) <- NULL
 
+
+
+
+naming_function <- function(xx){
+  if(length(xx) == length(cats)){
+    for(y in 1:(length(cats)-1))
+    {
+      colnames(xx[[y]]) = paste(groups, cats[y], sep=" ")
+    }
+    colnames(xx[[y+1]]) = "Ntot"
+    return(xx)
+  }
+  else
+  {
+    return("ERROR! STATS DOESNT MATCH CATS!")
+  }
+}
+
+
+
+
+
+
 vary2 <- function(x, base, v, gen, time) {
   n <- lengths(base[v])
   base[v] <- setNames(split(unlist(x, use.names=FALSE), rep(seq_along(v), n)), v) # base is the original set of pars
@@ -175,15 +203,19 @@ vary2 <- function(x, base, v, gen, time) {
   ##OUTPUT
   ##############################
   #stats <- cbind(res$S0,res$I01)
-
+  
   stats <- res[names(res) %in% cats]
   
-  colnames(stats[[1]]) = paste(groups, " S0", sep="")
-  colnames(stats[[2]]) = paste(groups, " I01", sep="")
-  colnames(stats[[3]]) = "Ntot"
+  # colnames(stats[[1]]) = paste(groups, " S0", sep="")
+  # colnames(stats[[2]]) = paste(groups, " I01", sep="")
+  # colnames(stats[[3]]) = "Ntot"
+  
+  stats = naming_function(stats)
+  
+  
   
   stats
-
+  
   # groups <- c("FSW", "Clients")
   # stats <- cbind(res$cats)
   # stats
