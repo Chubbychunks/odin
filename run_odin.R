@@ -159,7 +159,7 @@ y <- mod$run(time)
 # v is a vector containing the variables that we are varying
 v <- c("epsilon")
 # cats are the categories we are outputting AND other parameters/things!
-cats <- c("S0", "I01", "Ntot")
+cats <- c("S0", "S1a", "I01", "Ntot")
 
 
 pp <- unlist(parameters[v])
@@ -238,11 +238,18 @@ head(output[[2]]$Ntot)
 # PLOTTING
 ###############################################################################################
 
-df_out <- data.frame(time, output[[2]][[1]],  output[[2]][[2]],  output[[2]][[3]])
+
+df_out = c()
+for(x in 1:length(cats))
+{
+  df_out = cbind(df_out, output[[2]][[x]])
+}
+df_out <- data.frame(time, df_out)
+
 df_out_melted <- melt(df_out, id.vars = c("time"))
 df_out_melted <- cbind(df_out_melted, c(rep(c(rep("FSW", length(time)), rep("Client", length(time))), length(cats)-1), rep("Total", length(time))))
 colnames(df_out_melted) <- c("time","variable","value","group")
-ggplot(data = df_out_melted, aes(x = time, y = value, colour = variable, linetype = variable)) + geom_line() + theme_bw() + facet_wrap(~group) + theme(legend.position = "top")
+ggplot(data = df_out_melted, aes(x = time, y = value, colour = variable)) + geom_line() + theme_bw() + facet_wrap(~group) + theme(legend.position = "top")
 
 #lapply(output, head)
 
