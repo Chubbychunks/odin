@@ -1,10 +1,7 @@
-# note that in eq 1 Sk -> Sak
-# eff prep should have superscript
-# R is missing subscripts
-# lambdas should be separate
+# lambdas should be different for each compartment??!?!?!?!
 # I05 no gamma5s anywhere!
-#dE/dt -> E
 # calculate E for all, then fraction for each pop
+# if sum(omega) != 1, then problem! - how do I hard code this error?
 
 # each variable must have a derivative part and an initial part
 
@@ -14,9 +11,9 @@ config(include) = "FOI.c"
 
 # still need to work on lambda
 deriv(S0[]) = E0[i] - S0[i] * lambda_sum[i] - S0[i] * mu[i]
-deriv(S1a[]) = E1a[i] - S0[i] * lambda_sum[i] - S1a[i] * mu[i]
-deriv(S1b[]) = E1b[i] - S0[i] * lambda_sum[i] - S1b[i] * mu[i]
-deriv(S1c[]) = E1c[i] - S0[i] * lambda_sum[i] - S1c[i] * mu[i]
+deriv(S1a[]) = E1a[i] - S1a[i] * lambda_sum[i] - S1a[i] * mu[i]
+deriv(S1b[]) = E1b[i] - S1b[i] * lambda_sum[i] - S1b[i] * mu[i]
+deriv(S1c[]) = E1c[i] - S1c[i] * lambda_sum[i] - S1c[i] * mu[i]
 
 #primary infection
 deriv(I01[]) = S0[i] * lambda_sum[i] - I01[i] * (gamma01[i] + tau01[i] + alpha01[i] + mu[i])
@@ -30,7 +27,7 @@ deriv(I04[]) = gamma03[i] * I03[i] - I04[i] * (gamma04[i] + tau4[i] + alpha04[i]
 deriv(I05[]) = gamma04[i] * I04[i] - I05[i] * (tau5[i] + alpha05[i] + mu[i])
 
 deriv(I22[]) = tau01[i] * I01[i] + tau11[i] * I11[i] + tau2[i] * I02[i] - I22[i] * (gamma22[i] + rho2[i] + alpha22[i] + mu[i])
-deriv(I23[]) = gamma22[i] * I22[i] + tau3[i] * I03[i] - I22[i] * (gamma23[i] + rho3[i] + alpha23[i] + mu[i])
+deriv(I23[]) = gamma22[i] * I22[i] + tau3[i] * I03[i] - I23[i] * (gamma23[i] + rho3[i] + alpha23[i] + mu[i])
 deriv(I24[]) = gamma23[i] * I23[i] + tau4[i] * I04[i] - I24[i] * (gamma24[i] + rho4[i] + alpha24[i] + mu[i])
 deriv(I25[]) = gamma24[i] * I24[i] + tau5[i] * I05[i] - I25[i] * (rho5[i] + alpha25[i] + mu[i])
 
@@ -49,7 +46,7 @@ deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alph
 new_people = epsilon * sum(N)
 
 # births and prep movement
-E0[] = mu[i] * N[i] + alphaItot[i] - S0[i] * (zetaa[i] + zetab[i] + zetac[i]) + new_people * omega[i]
+E0[] = mu[i] * N[i] + alphaItot[i] + new_people * omega[i] - S0[i] * (zetaa[i] + zetab[i] + zetac[i]) 
 E1a[] = zetaa[i] * S0[i] - psia[i] * S1a[i]
 E1b[] = zetab[i] * S0[i] + psia[i] * S1a[i] - psib[i] * S1b[i] 
 E1c[] = zetac[i] * S0[i] + psib[i] * S1b[i]
@@ -59,11 +56,7 @@ N[] = S0[i] + S1a[i] + S1b[i] + S1c[i] + I01[i] + I11[i] + I02[i] + I03[i] + I04
   I22[i] + I23[i] + I24[i] + I25[i] + I32[i] + I33[i] + I34[i] + I35[i] +
   I42[i] + I43[i] + I44[i] + I45[i]
 
-Ntot = sum(N)
-output(Ntot) = Ntot
-# if you want to output a certain statistic
-#output(N[]) = N[i]
-#sum of all infected of group k?
+
 
 alphaItot[] = 
   alpha01[i] * I01[i] + alpha11[i] * I11[i] + alpha02[i] * I02[i] + alpha03[i] * I03[i] + alpha04[i] * I04[i] +
@@ -86,6 +79,21 @@ lambda[1,1] = 0
 lambda[2,2] = 0
 
 lambda_sum[] = sum(lambda[i,])
+
+
+
+# OUTPUTS
+##############################################################################
+Ntot = sum(N)
+output(Ntot) = Ntot
+
+output(new_people) = new_people
+# if you want to output a certain statistic
+#output(N[]) = N[i]
+#sum of all infected of group k?
+
+
+
 
 # in future nb eP eC constants
 # lambda[,] = compute_lambda(S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],

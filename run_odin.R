@@ -5,23 +5,24 @@ require(reshape2)
 gen <- odin::odin("ODEs_odin_with_2_groups.R")
 
 
-time <- seq(0, 100, length.out = 1000)
+time <- seq(0, 100, length.out = 100)
 
+groups <- c("FSW", "Clients")
 
 parameters <- list(S0_init = c(10000,10000),
                    S1a_init = c(0,0),
                    S1b_init = c(0,0),
                    S1c_init = c(0,0),
-                   I01_init = c(100,100),
+                   I01_init = c(1000,0),
                    I11_init = c(0,0),
-                   I02_init = c(100,100),
-                   I03_init = c(100,100),
-                   I04_init = c(100,100),
-                   I05_init = c(10,10),
-                   I22_init = c(100,100),
-                   I23_init = c(100,100),
-                   I24_init = c(100,100),
-                   I25_init = c(10,10),
+                   I02_init = c(0,0),
+                   I03_init = c(0,0),
+                   I04_init = c(0,0),
+                   I05_init = c(0,0),
+                   I22_init = c(0,0),
+                   I23_init = c(0,0),
+                   I24_init = c(0,0),
+                   I25_init = c(0,0),
                    I32_init = c(0,0),
                    I33_init = c(0,0),
                    I34_init = c(0,0),
@@ -104,13 +105,13 @@ parameters <- list(S0_init = c(10000,10000),
                    beta = c(0.0193,0.0182),
                    #beta = 0,
                    c = c(4,6),
-                   #ec = 0.85,
-                   ec = c(1,1),
+                   ec = c(0.85,0.84),
+                   # ec = c(1,1),
                    
                    eP = c(0.6,0.5),
                    epsilon = 0.001,
-                   #fc = 0.8,
-                   fc = c(1,1),
+                   # fc = c(1,1),
+                   fc = c(0.9,0.9),
                    
                    fP = c(0.5,0.3),
                    n = c(10,3),
@@ -120,86 +121,153 @@ parameters <- list(S0_init = c(10000,10000),
                    omega = c(0.5, 0.5)
 )
 
-vary_S0 <- function(S0, base, gen, time) {
-  base$S0_init <- S0 * base$omega
-  gen(user=base)$run(time)
-}
+mod <- gen(user = parameters)
+y <- mod$run(time)
 
-S0 <- c(10, 100, 1000, 10000)
-lapply(S0, vary_S0, parameters, gen, time)
+# HIV_epi = cbind(time = time, as.data.frame(mod$transform_variables(y)))
+# HIV_epi_melted = melt(HIV_epi, id.vars = c("time"))
+# ggplot(HIV_epi_melted, aes(x = time, y = value, colour = variable)) + geom_point() + geom_line()
 
-vary_a_bunch <- function(x, base, gen, time) {
-  base[names(x)] <- x
-  gen(user=base)$run(time)
-}
+###### this is just varying one parameter
+# vary_S0 <- function(S0, base, gen, time) {
+#   base$S0_init <- S0 * base$omega
+#   gen(user=base)$run(time)
+# }
+# 
+# S0 <- c(10, 100, 1000, 10000)
+# lapply(S0, vary_S0, parameters, gen, time)
 
-v <- c("omega", "mu", "epsilon")
+
+#### vary several parameters
+# vary_a_bunch <- function(x, base, gen, time) {
+#   base[names(x)] <- x
+#   gen(user=base)$run(time)
+# }
+
+
+
+# MODEL CHECKS
+############
+
+
+
+# v is a vector containing the variables that we are varying
+v <- c("epsilon")
+# cats are the categories we are outputting AND other parameters/things!
+cats <- c("S0", "I01", "Ntot")
+
+
 pp <- unlist(parameters[v])
-pp <- as.data.frame(rbind(pp/2, pp, pp * 2))
+pp <- as.data.frame(rbind(pp, pp * 0))
+#pp <- as.data.frame(rbind(pp, c(pp[1] * 0, 2 * pp[2]))) # pp is how they vary
+#pp <- as.data.frame(rbind(pp/2, pp, pp * 2))
 rownames(pp) <- NULL
 
 vary2 <- function(x, base, v, gen, time) {
   n <- lengths(base[v])
-  base[v] <- setNames(split(unlist(x, use.names=FALSE), rep(seq_along(v), n)), v)
+  base[v] <- setNames(split(unlist(x, use.names=FALSE), rep(seq_along(v), n)), v) # base is the original set of pars
   mod <- gen(user=base)
   res <- mod$transform_variables(mod$run(time))
   # do fitting here
   
+  ###
+  
+  ##OUTPUT
+  ##############################
+  #stats <- cbind(res$S0,res$I01)
+
+  stats <- res[names(res) %in% cats]
+  
+  colnames(stats[[1]]) = paste(groups, " S0", sep="")
+  colnames(stats[[2]]) = paste(groups, " I01", sep="")
+  colnames(stats[[3]]) = "Ntot"
+  
+  stats
+
+  # groups <- c("FSW", "Clients")
+  # stats <- cbind(res$cats)
+  # stats
   
   # output the likelihood thing here, don't output all the variables and parameres!
-  sum(res$S0) - 4362182
+  #sum(res$S0) - 4362182
 }
 
 output <- lapply(seq_len(nrow(pp)), function(i) vary2(pp[i,], parameters, v, gen, time))
 
+head(output[[1]]$S0)
+head(output[[1]]$I01)
+head(output[[1]]$Ntot)
+
+head(output[[2]]$S0)
+head(output[[2]]$I01)
+head(output[[2]]$Ntot)
+
+
+# PLOTTING
+###############################################################################################
+
+df_out <- data.frame(time, output[[2]][[1]],  output[[2]][[2]],  output[[2]][[3]])
+df_out_melted <- melt(df_out, id.vars = c("time"))
+df_out_melted <- cbind(df_out_melted, c(rep(c(rep("FSW", length(time)), rep("Client", length(time))), length(cats)-1), rep("Total", length(time))))
+colnames(df_out_melted) <- c("time","variable","value","group")
+ggplot(data = df_out_melted, aes(x = time, y = value, colour = variable, linetype = variable)) + geom_line() + theme_bw() + facet_wrap(~group) + theme(legend.position = "top")
+
+#lapply(output, head)
+
+
+############
+
+
+
+#head(output[[1]])
+
+
+#lapply(output, head)
+
+
+
+
+
 #s0 for third set of parameters
-head(output[[3]]$S0)
+#head(output[[3]]$S0)
 
 
 
 
-
-lapply(output, head)
-
-lengths(parameters[v])
-
-
-lapply(seq_len(nrow(d)), function(i) f(d[i,]))
-
-expand.grid(a=1:5, b=letters[1:3])
-
-mod <- gen(user = parameters)
-
-
-y <- mod$run(time)
-
-something = mod$transform_variables(y)
-
-names(something)
-
-something$S0
-
-# HIV_epi = cbind(time = time, as.data.frame(mod$transform_variables(y)))
-
-v <- names(mod$order)
-head(as.data.frame(lapply(something[v], function(x) x[,1])))
-head(as.data.frame(lapply(something[v], function(x) x[,2])))
-
-by_category <- lapply(seq_len(mod$contents()$Ncat), function(i) as.data.frame(lapply(something[v], function(x) x[, i])))
-
-lapply(by_category, head)
-
-lapply(something, rowSums)
-
-head(HIV_epi)
-
-
-
-
-HIV_epi_melted = melt(HIV_epi, id.vars = c("time"))
-
-
-ggplot(HIV_epi_melted, aes(x = time, y = value, colour = variable)) + geom_point() + geom_line()
+# 
+# lapply(output, head)
+# 
+# lengths(parameters[v])
+# 
+# 
+# lapply(seq_len(nrow(d)), function(i) f(d[i,]))
+# 
+# expand.grid(a=1:5, b=letters[1:3])
+# 
+# mod <- gen(user = parameters)
+# 
+# 
+# y <- mod$run(time)
+# 
+# something = mod$transform_variables(y)
+# 
+# names(something)
+# 
+# something$S0
+# 
+# 
+# v <- names(mod$order)
+# head(as.data.frame(lapply(something[v], function(x) x[,1])))
+# head(as.data.frame(lapply(something[v], function(x) x[,2])))
+# 
+# by_category <- lapply(seq_len(mod$contents()$Ncat), function(i) as.data.frame(lapply(something[v], function(x) x[, i])))
+# 
+# lapply(by_category, head)
+# 
+# lapply(something, rowSums)
+# 
+# head(HIV_epi)
+# 
 
 
 
@@ -216,4 +284,6 @@ ggplot(HIV_epi_melted, aes(x = time, y = value, colour = variable)) + geom_point
 # y <- mod$run(time)
 # 
 # pairs(y[,-1], panel = lines)
-
+# 
+# head(output[[1]])
+# head(output[[2]])
