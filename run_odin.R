@@ -123,11 +123,12 @@ parameters <- list(S0_init = c(2000,2000),
                    #n = 0,
                    
                    R = c(1,1),
-                   omega = c(0.5, 0.5)
+                   omega = c(0.5, 0.5),
+                   theta = 0.5 
 )
 
 mod <- gen(user = parameters)
-y <- mod$run(time)
+#y <- mod$run(time)
 
 # HIV_epi = cbind(time = time, as.data.frame(mod$transform_variables(y)))
 # HIV_epi_melted = melt(HIV_epi, id.vars = c("time"))

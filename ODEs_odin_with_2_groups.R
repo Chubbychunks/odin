@@ -1,3 +1,6 @@
+# NOTES
+##############################################################################
+
 # lambdas should be different for each compartment??!?!?!?!
 # I05 no gamma5s anywhere!
 # calculate E for all, then fraction for each pop
@@ -8,6 +11,10 @@
 # a and k do not exist here yet
 
 config(include) = "FOI.c"
+
+# ORDINARY DIFFERENTIAL EQUATIONS
+##############################################################################
+
 
 # still need to work on lambda
 deriv(S0[]) = E0[i] - S0[i] * lambda_sum[i] - S0[i] * mu[i]
@@ -52,26 +59,38 @@ E1b[] = zetab[i] * S0[i] + psia[i] * S1a[i] - psib[i] * S1b[i]
 E1c[] = zetac[i] * S0[i] + psib[i] * S1b[i]
 
 
+# sum of all compartments
 N[] = S0[i] + S1a[i] + S1b[i] + S1c[i] + I01[i] + I11[i] + I02[i] + I03[i] + I04[i] + I05[i] +
   I22[i] + I23[i] + I24[i] + I25[i] + I32[i] + I33[i] + I34[i] + I35[i] +
   I42[i] + I43[i] + I44[i] + I45[i]
 
 
-
+# mortality due to HIV infection
 alphaItot[] = 
   alpha01[i] * I01[i] + alpha11[i] * I11[i] + alpha02[i] * I02[i] + alpha03[i] * I03[i] + alpha04[i] * I04[i] +
   alpha05[i] * I05[i] + alpha22[i] * I22[i] + alpha23[i] * I23[i] + alpha24[i] * I24[i] + alpha25[i] * I25[i] +
   alpha32[i] * I32[i] + alpha33[i] * I33[i] + alpha34[i] * I34[i] + alpha35[i] * I35[i] +
   alpha42[i] * I42[i] + alpha43[i] * I43[i] + alpha44[i] * I44[i] + alpha45[i] * I45[i]
 
+# BALANCING OF SEX ACTS
+##############################################################################
+
+B = (c[2] * N[2])/(c[1] * N[1])
+
+c1_new = c[1] * B^theta
+c2_new = c[2] * B^(-(1-theta))
+
+# FORCE OF INFECTION
+##############################################################################
+
 # as there are only 2 groups so far, we can leave all of the parameters here as vectors, but they will be matrices!
-# force of infection of 1 on 2
-lambda[2,1] = compute_lambda(c[1], S0[1], S1a[1], S1b[1], S1c[1], I01[1], I11[1], I02[1], I03[1], I04[1], I05[1],
+# lambda[2,1] is the force of infection of 1 on 2
+lambda[2,1] = compute_lambda(c1_new, S0[1], S1a[1], S1b[1], S1c[1], I01[1], I11[1], I02[1], I03[1], I04[1], I05[1],
                           I22[1], I23[1], I24[1], I25[1], I32[1], I33[1], I34[1], I35[1],
                           I42[1], I43[1], I44[1], I45[1],
                         N[1], beta[1], R[1], fc[1], fP[1], n[1], eP[1], ec[1])
 
-lambda[1,2] = compute_lambda(c[2], S0[2], S1a[2], S1b[2], S1c[2], I01[2], I11[2], I02[2], I03[2], I04[2], I05[2],
+lambda[1,2] = compute_lambda(c2_new, S0[2], S1a[2], S1b[2], S1c[2], I01[2], I11[2], I02[2], I03[2], I04[2], I05[2],
                              I22[2], I23[2], I24[2], I25[2], I32[2], I33[2], I34[2], I35[2],
                              I42[2], I43[2], I44[2], I45[2],
                              N[2], beta[2], R[2], fc[2], fP[2], n[2], eP[2], ec[2])
@@ -85,6 +104,7 @@ lambda_sum[] = sum(lambda[i,])
 
 # OUTPUTS
 ##############################################################################
+
 Ntot = sum(N)
 output(Ntot) = Ntot
 
@@ -268,6 +288,9 @@ R[] = user()
 epsilon = user()
 omega[] = user()
 
+# balancing
+theta = user()
+
 #dimming
 Ncat = 2
 
@@ -409,3 +432,4 @@ dim(lambda_sum) = Ncat
 dim(alphaItot) = Ncat
 
 dim(omega) = Ncat
+#dim(c_new) = Ncat
