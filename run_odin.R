@@ -14,11 +14,11 @@ time <- seq(0, 100, length.out = 100)
 
 groups <- c("FSW", "Clients")
 
-parameters <- list(S0_init = c(10000,10000),
+parameters <- list(S0_init = c(2000,2000),
                    S1a_init = c(0,0),
                    S1b_init = c(0,0),
                    S1c_init = c(0,0),
-                   I01_init = c(1000,0),
+                   I01_init = c(0,1000),
                    I11_init = c(0,0),
                    I02_init = c(0,0),
                    I03_init = c(0,0),
@@ -107,7 +107,7 @@ parameters <- list(S0_init = c(10000,10000),
                    alpha45 = c(1,1),
                    
                    
-                   beta = c(0.0193,0.0182),
+                   beta = c(0.193,0.182),
                    #beta = 0,
                    c = c(4,6),
                    ec = c(0.85,0.84),
@@ -157,14 +157,16 @@ y <- mod$run(time)
 
 
 # v is a vector containing the variables that we are varying
-v <- c("epsilon")
+v <- c("n")#,"gamma44")
 # cats are the categories we are outputting AND other parameters/things!
-cats <- c("S0", "S1a", "I01", "Ntot")
+cats <- c("I01",  "Ntot")
 
 
 pp <- unlist(parameters[v])
-pp <- as.data.frame(rbind(pp, pp * 0))
-#pp <- as.data.frame(rbind(pp, c(pp[1] * 0, 2 * pp[2]))) # pp is how they vary
+# pp <- as.data.frame(rbind(pp * 0, pp, pp * 2))
+# pp <- as.data.frame(rbind(pp, c(pp[1] * 0, pp[2]))) # pp 0 only for group 1
+pp <- as.data.frame(rbind(pp, c(2 * pp[2], pp[1] * 0))) # pp 0 only for group 2
+
 #pp <- as.data.frame(rbind(pp/2, pp, pp * 2))
 rownames(pp) <- NULL
 
@@ -238,26 +240,39 @@ head(output[[2]]$Ntot)
 # PLOTTING
 ###############################################################################################
 
-
-df_out = c()
-for(x in 1:length(cats))
+for(p in 1:length(pp[,1]))
 {
-  df_out = cbind(df_out, output[[2]][[x]])
+  # taking the second simulation, where the parameter is altered!
+  df_out = c()
+  for(x in 1:length(cats))
+  {
+    df_out = cbind(df_out, output[[p]][[x]])
+  }
+  df_out <- data.frame(time, df_out)
+  
+  df_out_melted <- melt(df_out, id.vars = c("time"))
+  df_out_melted <- cbind(df_out_melted, c(rep(c(rep("FSW", length(time)), rep("Client", length(time))), length(cats)-1), rep("Total", length(time))))
+  
+  cats_vec = c();
+  for(x in 1:(length(cats)-1))
+  {
+    cats_vec = c(cats_vec, rep(cats[x], length(groups)*length(time)))
+  }
+  cats_vec = c(cats_vec, rep(cats[x+1], length(time)))
+  df_out_melted$cat <- cats_vec
+  
+  
+  colnames(df_out_melted) <- c("time","variable","value","group","cat")
+  plot <- ggplot(data = df_out_melted, aes(x = time, y = value, colour = cat)) + geom_line() + theme_bw() + facet_wrap(~group, scales = "free") + theme(legend.position = "right", legend.title = element_text(face = "bold"))
+  print(plot)
 }
-df_out <- data.frame(time, df_out)
-
-df_out_melted <- melt(df_out, id.vars = c("time"))
-df_out_melted <- cbind(df_out_melted, c(rep(c(rep("FSW", length(time)), rep("Client", length(time))), length(cats)-1), rep("Total", length(time))))
-colnames(df_out_melted) <- c("time","variable","value","group")
-ggplot(data = df_out_melted, aes(x = time, y = value, colour = variable)) + geom_line() + theme_bw() + facet_wrap(~group) + theme(legend.position = "top")
-
 #lapply(output, head)
 
 
 ############
 
 
-
+#plot + coord_cartesian(ylim = c(0, 3000))
 #head(output[[1]])
 
 

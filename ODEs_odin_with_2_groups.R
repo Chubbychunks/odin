@@ -65,6 +65,7 @@ alphaItot[] =
   alpha42[i] * I42[i] + alpha43[i] * I43[i] + alpha44[i] * I44[i] + alpha45[i] * I45[i]
 
 # as there are only 2 groups so far, we can leave all of the parameters here as vectors, but they will be matrices!
+# force of infection of 1 on 2
 lambda[2,1] = compute_lambda(c[1], S0[1], S1a[1], S1b[1], S1c[1], I01[1], I11[1], I02[1], I03[1], I04[1], I05[1],
                           I22[1], I23[1], I24[1], I25[1], I32[1], I33[1], I34[1], I35[1],
                           I42[1], I43[1], I44[1], I45[1],
