@@ -80,6 +80,8 @@ B = (c[2] * N[2])/(c[1] * N[1])
 c1_new = c[1] * B^theta
 c2_new = c[2] * B^(-(1-theta))
 
+B_check = (c2_new * N[2])/(c1_new * N[1])
+
 # FORCE OF INFECTION
 ##############################################################################
 
@@ -109,6 +111,7 @@ Ntot = sum(N)
 output(Ntot) = Ntot
 
 output(new_people) = new_people
+output(B_check) = B_check
 # if you want to output a certain statistic
 #output(N[]) = N[i]
 #sum of all infected of group k?

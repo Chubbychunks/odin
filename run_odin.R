@@ -128,11 +128,29 @@ parameters <- list(S0_init = c(2000,2000),
 )
 
 mod <- gen(user = parameters)
-#y <- mod$run(time)
 
+
+# SINGLE RUN WITH PARAMETERS TO CHECK EVERY OUTPUT
+##############################################################################
+
+# y <- mod$run(time)
+# HIV_epi = mod$transform_variables(y)
+# names(HIV_epi)
+# HIV_epi$B_check
+
+
+# plot
 # HIV_epi = cbind(time = time, as.data.frame(mod$transform_variables(y)))
 # HIV_epi_melted = melt(HIV_epi, id.vars = c("time"))
 # ggplot(HIV_epi_melted, aes(x = time, y = value, colour = variable)) + geom_point() + geom_line()
+
+
+
+
+
+# OTHER FUNCTIONS 
+##############################################################################
+
 
 ###### this is just varying one parameter
 # vary_S0 <- function(S0, base, gen, time) {
@@ -153,20 +171,18 @@ mod <- gen(user = parameters)
 
 
 # MODEL CHECKS
-############
-
-
+##############################################################################
 
 # v is a vector containing the variables that we are varying
-v <- c("n")#,"gamma44")
+v <- c("theta")#,"gamma44")
 # cats are the categories we are outputting AND other parameters/things!
 cats <- c("I01",  "Ntot")
 
 
 pp <- unlist(parameters[v])
-# pp <- as.data.frame(rbind(pp * 0, pp, pp * 2))
+pp <- as.data.frame(rbind(pp * 0, pp, pp * 2))
 # pp <- as.data.frame(rbind(pp, c(pp[1] * 0, pp[2]))) # pp 0 only for group 1
-pp <- as.data.frame(rbind(pp, c(2 * pp[2], pp[1] * 0))) # pp 0 only for group 2
+# pp <- as.data.frame(rbind(pp, c(2 * pp[2], pp[1] * 0))) # pp 0 only for group 2
 
 #pp <- as.data.frame(rbind(pp/2, pp, pp * 2))
 rownames(pp) <- NULL
@@ -201,27 +217,13 @@ vary2 <- function(x, base, v, gen, time) {
   res <- mod$transform_variables(mod$run(time))
   # do fitting here
   
-  ###
-  
   ##OUTPUT
   ##############################
-  #stats <- cbind(res$S0,res$I01)
   
   stats <- res[names(res) %in% cats]
-  
-  # colnames(stats[[1]]) = paste(groups, " S0", sep="")
-  # colnames(stats[[2]]) = paste(groups, " I01", sep="")
-  # colnames(stats[[3]]) = "Ntot"
-  
   stats = naming_function(stats)
-  
-  
-  
   stats
   
-  # groups <- c("FSW", "Clients")
-  # stats <- cbind(res$cats)
-  # stats
   
   # output the likelihood thing here, don't output all the variables and parameres!
   #sum(res$S0) - 4362182
@@ -270,7 +272,8 @@ for(p in 1:length(pp[,1]))
 #lapply(output, head)
 
 
-############
+# DISCARDED NONSENSE
+##############################################################################
 
 
 #plot + coord_cartesian(ylim = c(0, 3000))
@@ -302,13 +305,7 @@ for(p in 1:length(pp[,1]))
 # mod <- gen(user = parameters)
 # 
 # 
-# y <- mod$run(time)
-# 
-# something = mod$transform_variables(y)
-# 
-# names(something)
-# 
-# something$S0
+
 # 
 # 
 # v <- names(mod$order)
