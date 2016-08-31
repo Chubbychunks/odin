@@ -129,6 +129,8 @@ prev_client = 100 * (I01[2] + I11[2] + I02[2] + I03[2] + I04[2] + I05[2] +
 output(prev_FSW) = prev_FSW
 output(prev_client) = prev_client
 
+# output(fc[]) = TRUE
+
 
 # prev[] = 100 * (I01[i] + I11[i] + I02[i] + I03[i] + I04[i] + I05[i] +
 #                   I22[i] + I23[i] + I24[i] + I25[i] + I32[i] + I33[i] + I34[i] + I35[i] +
@@ -306,7 +308,6 @@ beta[] = user()
 c[] = user()
 ec[] = user()
 eP[] = user()
-fc[] = user()
 fP[] = user()
 n[] = user()
 R[] = user()
@@ -318,6 +319,12 @@ omega[] = user()
 
 # balancing
 theta = user()
+
+fc[] = interpolate(fc_t, fc_y, "linear")
+fc_t[] = user()
+fc_y[] = user()
+dim(fc_t) = user()
+dim(fc_y) = user()
 
 #dimming
 Ncat = 2

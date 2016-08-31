@@ -1,9 +1,14 @@
+
+# the parameters below will be sampled from an LHS and will replace their respective defaults
+# unless I put something in the args of the function, eg sample = mu
 lhs_parameters <- function(n, sample = NULL) {
   ranges <- rbind(
     mu = c(1/50, 1/42),
     mu = c(1/47, 1/40),
+    
     gamma01 = c(2, 6.25),
     gamma01 = c(2, 6.25), # from Mathieu's parameters
+    
     gamma02 = c(0.85, 2.22),
     gamma02 = c(0.85, 2.22),
     epsilon = c(0.026, 0.028))
@@ -123,7 +128,8 @@ generate_parameters <- function(..., parameters = list(...)) {
                    eP = c(0.6,0.5),
                    epsilon = 0.001,
                    # fc = c(1,1),
-                   fc = c(0.9,0.9),
+                   fc_t = c(1985, 1990, 2016),
+                   fc_y = cbind(c(0, 0, 0.9), c(0, 0, 0.5)),
                    
                    fP = c(0.5,0.3),
                    n = c(10,3),
