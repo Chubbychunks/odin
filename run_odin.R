@@ -10,7 +10,7 @@ require(reshape2)
 gen <- odin::odin("ODEs_odin_with_2_groups.R", ".")
 
 
-time <- seq(0, 100, length.out = 100)
+time <- seq(1980, 2016, length.out = 100)
 
 groups <- c("FSW", "Clients")
 
@@ -19,7 +19,7 @@ generate_parameters <- function(...) {
                    S1a_init = c(0,0),
                    S1b_init = c(0,0),
                    S1c_init = c(0,0),
-                   I01_init = c(0,1000),
+                   I01_init = c(1000,1000),
                    I11_init = c(0,0),
                    I02_init = c(0,0),
                    I03_init = c(0,0),
@@ -147,119 +147,6 @@ generate_parameters <- function(...) {
 parameters <- generate_parameters()
 
 
-# parameters <- list(S0_init = c(2000,2000),
-#                    S1a_init = c(0,0),
-#                    S1b_init = c(0,0),
-#                    S1c_init = c(0,0),
-#                    I01_init = c(0,1000),
-#                    I11_init = c(0,0),
-#                    I02_init = c(0,0),
-#                    I03_init = c(0,0),
-#                    I04_init = c(0,0),
-#                    I05_init = c(0,0),
-#                    I22_init = c(0,0),
-#                    I23_init = c(0,0),
-#                    I24_init = c(0,0),
-#                    I25_init = c(0,0),
-#                    I32_init = c(0,0),
-#                    I33_init = c(0,0),
-#                    I34_init = c(0,0),
-#                    I35_init = c(0,0),
-#                    I42_init = c(0,0),
-#                    I43_init = c(0,0),
-#                    I44_init = c(0,0),
-#                    I45_init = c(0,0),
-#                    
-#                    
-#                    mu = c(0.02,0.02),
-#                    gamma01 = c(0.2,0.2),
-#                    gamma02 = c(0.2,0.2),
-#                    gamma03 = c(0.2,0.2),
-#                    gamma04 = c(0.2,0.2),
-#                    
-#                    gamma11 = c(0.2,0.2),
-#                    
-#                    gamma22 = c(0.2,0.2),
-#                    gamma23 = c(0.2,0.2),
-#                    gamma24 = c(0.2,0.2),
-#                    
-#                    gamma32 = c(0.2,0.2),
-#                    gamma33 = c(0.2,0.2),
-#                    gamma34 = c(0.2,0.2),
-#                    
-#                    gamma42 = c(0.2,0.2),
-#                    gamma43 = c(0.2,0.2),
-#                    gamma44 = c(0.2,0.2),
-#                    
-#                    rho2 = c(0.1,0.1),
-#                    rho3 = c(0.1,0.1),
-#                    rho4 = c(0.1,0.1),
-#                    rho5 = c(0.1,0.1),
-#                    
-#                    phi2 = c(0.04,0.01),
-#                    phi3 = c(0.04,0.01),
-#                    phi4 = c(0.04,0.01),
-#                    phi5 = c(0.04,0.01),
-#                    
-#                    psia = c(1,1),
-#                    psib = c(1,1),
-#                    
-#                    tau01 = c(0.5,0.5),
-#                    tau11 = c(0.5,0.5),
-#                    tau2 = c(0.5,0.5),
-#                    tau3 = c(0.5,0.5),
-#                    tau4 = c(0.5,0.5),
-#                    tau5 = c(0.5,0.5),
-#                    
-#                    zetaa = c(0.1,0.1),
-#                    zetab = c(0.1,0.1),
-#                    zetac = c(0.1,0.1),
-#                    
-#                    alpha01 = c(0.01,0.01),
-#                    alpha02 = c(0.01,0.01),
-#                    alpha03 = c(0.01,0.01),
-#                    alpha04 = c(0.01,0.01),
-#                    alpha05 = c(1,1),
-#                    
-#                    alpha11 = c(0.01,0.01),
-#                    
-#                    alpha21 = c(0.01,0.01),
-#                    alpha22 = c(0.01,0.01),
-#                    alpha23 = c(0.01,0.01),
-#                    alpha24 = c(0.01,0.01),
-#                    alpha25 = c(1,1),
-#                    
-#                    alpha32 = c(0.01,0.01),
-#                    alpha33 = c(0.01,0.01),
-#                    alpha34 = c(0.01,0.01),
-#                    alpha35 = c(1,1),
-#                    
-#                    alpha42 = c(0.01,0.01),
-#                    alpha43 = c(0.01,0.01),
-#                    alpha44 = c(0.01,0.01),
-#                    alpha45 = c(1,1),
-#                    
-#                    
-#                    beta = c(0.193,0.182),
-#                    #beta = 0,
-#                    c = c(4,6),
-#                    ec = c(0.85,0.84),
-#                    # ec = c(1,1),
-#                    
-#                    eP = c(0.6,0.5),
-#                    epsilon = 0.001,
-#                    # fc = c(1,1),
-#                    fc = c(0.9,0.9),
-#                    
-#                    fP = c(0.5,0.3),
-#                    n = c(10,3),
-#                    #n = 0,
-#                    
-#                    R = c(1,1),
-#                    omega = c(0.5, 0.5),
-#                    theta = 0.5 
-# )
-
 mod <- gen(user = parameters)
 
 
@@ -307,7 +194,7 @@ mod <- gen(user = parameters)
 ##############################################################################
 
 # v is a vector containing the variables that we are varying
-v <- c("theta")#,"gamma44")
+v <- c("beta")#,"gamma44")
 # cats are the categories we are outputting AND other parameters/things!
 cats <- c("I01",  "Ntot")
 
@@ -348,6 +235,9 @@ vary2 <- function(x, base, v, gen, time) {
   res <- mod$transform_variables(mod$run(time))
   # do fitting here
   
+  #parameterise first, then fit
+  
+  
   ##OUTPUT
   ##############################
   
@@ -362,8 +252,6 @@ vary2 <- function(x, base, v, gen, time) {
 
 output <- lapply(seq_len(nrow(pp)), function(i) vary2(pp[i,], parameters, v, gen, time))
 
-
-
 head(output[[1]]$S0)
 head(output[[1]]$I01)
 head(output[[1]]$Ntot)
@@ -371,6 +259,14 @@ head(output[[1]]$Ntot)
 head(output[[2]]$S0)
 head(output[[2]]$I01)
 head(output[[2]]$Ntot)
+
+head(output[[2]]$prev_FSW)
+
+
+
+
+
+
 
 
 # PLOTTING
