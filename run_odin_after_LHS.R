@@ -8,7 +8,10 @@ require(reshape2)
 odin::odin_package(".") # looks for any models inside inst/odin
 devtools::load_all()
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #
 
 number_simulations = 1
