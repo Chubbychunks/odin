@@ -1,18 +1,13 @@
 require(ggplot2)
 require(reshape2)
 
+#
 
 # some parameters to be dependent on others which have been sampled
 # ART to be defined by nubmers, not rates
 
 odin::odin_package(".") # looks for any models inside inst/odin
 devtools::load_all()
-
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/remotes/origin/master
-#
 
 number_simulations = 1
 
