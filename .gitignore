@@ -6,3 +6,4 @@
 *.dll
 *.o
 *.c
+.DS_Store

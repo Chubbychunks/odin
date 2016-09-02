@@ -1,0 +1,9 @@
+Package: taspprepodin
+Title: Impact of PrEP TasP Intervention
+Version: 0.1.0
+Author: Eugene Geidelberg
+Maintainer: Eugene Geidelberg <eugenegeidelberg@gmail.com>
+Description: More about what it does (maybe more than one line)
+License: GPL-2
+RoxygenNote: 5.0.1
+Imports: odin, tgp
