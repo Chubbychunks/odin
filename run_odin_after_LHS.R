@@ -12,7 +12,7 @@ gen <- odin::odin("ODEs_odin_with_2_groups.R")
 
 
 
-number_simulations = 100
+number_simulations = 1
 
 parms = lhs_parameters(number_simulations)
 
@@ -20,7 +20,7 @@ parms = lhs_parameters(number_simulations)
 # gen <- odin::odin("ODEs_odin.R")
 
 
-time <- seq(1985, 2016, length.out = 100)
+time <- seq(1985, 2016, length.out = 32)
 
 groups <- c("FSW", "Clients")
 
@@ -29,13 +29,22 @@ groups <- c("FSW", "Clients")
 f <- function(p, gen, time) {
   mod <- gen(user = p)
   all_results <- mod$transform_variables(mod$run(time))
-  all_results[c("prev_client", "prev_FSW")]
+  all_results[c("prev_client", "prev_FSW","fc","prev_1")]
 }
 res = lapply(parms, f, gen, time)
 mu_input <- t(sapply(parms, "[[", "mu"))
+fc_y_input <- t(sapply(parms, "[[", "fc_y"))
 prev_client_output <- t(sapply(res, "[[", "prev_client"))
 
+
 #plotting
+# fc over time
+df = melt(data.frame(time, res[[1]]$fc), id.vars = "time")
+ggplot(data = df, aes(x = time, y = value, colour = variable)) + geom_line() + theme_bw()
+
+# prevalence over time
+
+# mu vs prev
 matplot(time, prev_client_output, type = "l", lty = 1, col = "#00000055")
 plot(mu_input[, 1], prev_client_output[length(time), ])
 
@@ -77,119 +86,119 @@ plot(mu_input[, 1], prev_client_output[length(time), ])
 #   gen(user=base)$run(time)
 # }
 
-
-
-# MODEL CHECKS
-##############################################################################
-
-# v is a vector containing the variables that we are varying
-v <- c("theta")#,"gamma44")
-# cats are the categories we are outputting AND other parameters/things!
-cats <- c("I01",  "Ntot")
-
-
-pp <- unlist(parameters[v])
-pp <- as.data.frame(rbind(pp * 0, pp, pp * 2))
-# pp <- as.data.frame(rbind(pp, c(pp[1] * 0, pp[2]))) # pp 0 only for group 1
-# pp <- as.data.frame(rbind(pp, c(2 * pp[2], pp[1] * 0))) # pp 0 only for group 2
-
-#pp <- as.data.frame(rbind(pp/2, pp, pp * 2))
-rownames(pp) <- NULL
-
-
-
-
-naming_function <- function(xx){
-  if(length(xx) == length(cats)){
-    for(y in 1:(length(cats)-1))
-    {
-      colnames(xx[[y]]) = paste(groups, cats[y], sep=" ")
-    }
-    colnames(xx[[y+1]]) = "Ntot"
-    return(xx)
-  }
-  else
-  {
-    return("ERROR! STATS DOESNT MATCH CATS!")
-  }
-}
-
-
-
-
-vary2 <- function(x, base, v, gen, time) {
-  n <- lengths(base[v])
-  base[v] <- setNames(split(unlist(x, use.names=FALSE), rep(seq_along(v), n)), v) # base is the original set of pars
-  mod <- gen(user=base)
-  res <- mod$transform_variables(mod$run(time))
-  # do fitting here
-  
-  #parameterise first, then fit
-  
-  
-  ##OUTPUT
-  ##############################
-  
-  stats <- res[names(res) %in% cats]
-  stats = naming_function(stats)
-  stats
-  
-  
-  # output the likelihood thing here, don't output all the variables and parameres!
-  #sum(res$S0) - 4362182
-}
-
-output <- lapply(seq_len(nrow(pp)), function(i) vary2(pp[i,], parameters, v, gen, time))
-
-
-
-head(output[[1]]$S0)
-head(output[[1]]$I01)
-head(output[[1]]$Ntot)
-
-head(output[[2]]$S0)
-head(output[[2]]$I01)
-head(output[[2]]$Ntot)
-
-
-
-
-
-
-
-
-
-# PLOTTING
-###############################################################################################
-
-for(p in 2:2)
-{
-  # taking the second simulation, where the parameter is altered!
-  df_out = c()
-  for(x in 1:length(cats))
-  {
-    df_out = cbind(df_out, output[[p]][[x]])
-  }
-  df_out <- data.frame(time, df_out)
-  
-  df_out_melted <- melt(df_out, id.vars = c("time"))
-  df_out_melted <- cbind(df_out_melted, c(rep(c(rep("FSW", length(time)), rep("Client", length(time))), length(cats)-1), rep("Total", length(time))))
-  
-  cats_vec = c();
-  for(x in 1:(length(cats)-1))
-  {
-    cats_vec = c(cats_vec, rep(cats[x], length(groups)*length(time)))
-  }
-  cats_vec = c(cats_vec, rep(cats[x+1], length(time)))
-  df_out_melted$cat <- cats_vec
-  
-  
-  colnames(df_out_melted) <- c("time","variable","value","group","cat")
-  plot <- ggplot(data = df_out_melted, aes(x = time, y = value, colour = cat)) + geom_line() + theme_bw() + facet_wrap(~group, scales = "free") + theme(legend.position = "right", legend.title = element_text(face = "bold"))
-  print(plot)
-}
-#lapply(output, head)
-
+# 
+# 
+# # MODEL CHECKS
+# ##############################################################################
+# 
+# # v is a vector containing the variables that we are varying
+# v <- c("theta")#,"gamma44")
+# # cats are the categories we are outputting AND other parameters/things!
+# cats <- c("I01",  "Ntot")
+# 
+# 
+# pp <- unlist(parameters[v])
+# pp <- as.data.frame(rbind(pp * 0, pp, pp * 2))
+# # pp <- as.data.frame(rbind(pp, c(pp[1] * 0, pp[2]))) # pp 0 only for group 1
+# # pp <- as.data.frame(rbind(pp, c(2 * pp[2], pp[1] * 0))) # pp 0 only for group 2
+# 
+# #pp <- as.data.frame(rbind(pp/2, pp, pp * 2))
+# rownames(pp) <- NULL
+# 
+# 
+# 
+# 
+# naming_function <- function(xx){
+#   if(length(xx) == length(cats)){
+#     for(y in 1:(length(cats)-1))
+#     {
+#       colnames(xx[[y]]) = paste(groups, cats[y], sep=" ")
+#     }
+#     colnames(xx[[y+1]]) = "Ntot"
+#     return(xx)
+#   }
+#   else
+#   {
+#     return("ERROR! STATS DOESNT MATCH CATS!")
+#   }
+# }
+# 
+# 
+# 
+# 
+# vary2 <- function(x, base, v, gen, time) {
+#   n <- lengths(base[v])
+#   base[v] <- setNames(split(unlist(x, use.names=FALSE), rep(seq_along(v), n)), v) # base is the original set of pars
+#   mod <- gen(user=base)
+#   res <- mod$transform_variables(mod$run(time))
+#   # do fitting here
+#   
+#   #parameterise first, then fit
+#   
+#   
+#   ##OUTPUT
+#   ##############################
+#   
+#   stats <- res[names(res) %in% cats]
+#   stats = naming_function(stats)
+#   stats
+#   
+#   
+#   # output the likelihood thing here, don't output all the variables and parameres!
+#   #sum(res$S0) - 4362182
+# }
+# 
+# output <- lapply(seq_len(nrow(pp)), function(i) vary2(pp[i,], parameters, v, gen, time))
+# 
+# 
+# 
+# head(output[[1]]$S0)
+# head(output[[1]]$I01)
+# head(output[[1]]$Ntot)
+# 
+# head(output[[2]]$S0)
+# head(output[[2]]$I01)
+# head(output[[2]]$Ntot)
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# # PLOTTING
+# ###############################################################################################
+# 
+# for(p in 2:2)
+# {
+#   # taking the second simulation, where the parameter is altered!
+#   df_out = c()
+#   for(x in 1:length(cats))
+#   {
+#     df_out = cbind(df_out, output[[p]][[x]])
+#   }
+#   df_out <- data.frame(time, df_out)
+#   
+#   df_out_melted <- melt(df_out, id.vars = c("time"))
+#   df_out_melted <- cbind(df_out_melted, c(rep(c(rep("FSW", length(time)), rep("Client", length(time))), length(cats)-1), rep("Total", length(time))))
+#   
+#   cats_vec = c();
+#   for(x in 1:(length(cats)-1))
+#   {
+#     cats_vec = c(cats_vec, rep(cats[x], length(groups)*length(time)))
+#   }
+#   cats_vec = c(cats_vec, rep(cats[x+1], length(time)))
+#   df_out_melted$cat <- cats_vec
+#   
+#   
+#   colnames(df_out_melted) <- c("time","variable","value","group","cat")
+#   plot <- ggplot(data = df_out_melted, aes(x = time, y = value, colour = cat)) + geom_line() + theme_bw() + facet_wrap(~group, scales = "free") + theme(legend.position = "right", legend.title = element_text(face = "bold"))
+#   print(plot)
+# }
+# #lapply(output, head)
+# 
 
 
 

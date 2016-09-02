@@ -11,7 +11,8 @@ lhs_parameters <- function(n, sample = NULL) {
     
     gamma02 = c(0.85, 2.22),
     gamma02 = c(0.85, 2.22),
-    epsilon = c(0.026, 0.028))
+    epsilon = c(0.026, 0.028),
+    omega = c(0.4, 0.6))
   if (!is.null(sample)) {
     ranges <- ranges[rownames(ranges) %in% sample, , drop=FALSE]
   }
@@ -128,8 +129,8 @@ generate_parameters <- function(..., parameters = list(...)) {
                    eP = c(0.6,0.5),
                    epsilon = 0.001,
                    # fc = c(1,1),
-                   fc_t = c(1985, 1990, 2016),
-                   fc_y = cbind(c(0, 0, 0.9), c(0, 0, 0.5)),
+                   fc_t = c(1985, 1990, 1998, 2016),
+                   fc_y = cbind(c(0, 0, 0.7, 0.9), c(0, 0, 0.3, 0.5)),
                    
                    fP = c(0.5,0.3),
                    n = c(10,3),
@@ -154,5 +155,7 @@ generate_parameters <- function(..., parameters = list(...)) {
   
   # list of parameters that depend on others
   # ret$epsilon2 <- ret$epsilon^2
+  
+  ret$omega <- c(ret$omega, 1-(ret$omega))
   ret
 }

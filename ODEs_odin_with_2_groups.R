@@ -82,6 +82,15 @@ c2_new = c[2] * B^(-(1-theta))
 
 B_check = (c2_new * N[2])/(c1_new * N[1])
 
+# INTERPOLATING FUNCTIONS
+##############################################################################
+
+#organise order of commands later
+# fc_interpolated[] = interpolate(fc_t, fc_y)
+# dim(fc_interpolated) = 3 # because we have 3 timepoints?
+
+
+
 # FORCE OF INFECTION
 ##############################################################################
 
@@ -112,6 +121,10 @@ output(Ntot) = Ntot
 
 output(new_people) = new_people
 output(B_check) = B_check
+output(fc[]) = fc
+
+# output(alphaItot[]) = alphaItot
+
 # if you want to output a certain statistic
 #output(N[]) = N[i]
 #sum of all infected of group k?
@@ -129,12 +142,12 @@ prev_client = 100 * (I01[2] + I11[2] + I02[2] + I03[2] + I04[2] + I05[2] +
 output(prev_FSW) = prev_FSW
 output(prev_client) = prev_client
 
-# output(fc[]) = TRUE
 
 
-# prev[] = 100 * (I01[i] + I11[i] + I02[i] + I03[i] + I04[i] + I05[i] +
-#                   I22[i] + I23[i] + I24[i] + I25[i] + I32[i] + I33[i] + I34[i] + I35[i] +
-#                   I42[i] + I43[i] + I44[i] + I45[i]) / N[i]
+
+prev[] = 100 * (I01[i] + I11[i] + I02[i] + I03[i] + I04[i] + I05[i] +
+                  I22[i] + I23[i] + I24[i] + I25[i] + I32[i] + I33[i] + I34[i] + I35[i] +
+                  I42[i] + I43[i] + I44[i] + I45[i]) / N[i]
 
 # prev[1] = 100 * (I01[1] + I11[1] + I02[1] + I03[1] + I04[1] + I05[1] +
 #                    I22[1] + I23[1] + I24[1] + I25[1] + I32[1] + I33[1] + I34[1] + I35[1] +
@@ -144,7 +157,10 @@ output(prev_client) = prev_client
 #                    I22[2] + I23[2] + I24[2] + I25[2] + I32[2] + I33[2] + I34[2] + I35[2] +
 #                    I42[2] + I43[2] + I44[2] + I45[2]) / N[2]
 # 
-# output(prev) = prev
+prev_1 = prev[1]
+output(prev_1) = prev_1
+
+# output(prev[]) = prev
 
 # in future nb eP eC constants
 # lambda[,] = compute_lambda(S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
@@ -322,7 +338,7 @@ theta = user()
 
 fc[] = interpolate(fc_t, fc_y, "linear")
 fc_t[] = user()
-fc_y[] = user()
+fc_y[,] = user()
 dim(fc_t) = user()
 dim(fc_y) = user()
 
