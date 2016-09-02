@@ -53,9 +53,9 @@ deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alph
 new_people = epsilon * sum(N)
 
 # births and prep movement
-E0[] = mu[i] * N[i] + alphaItot[i] + new_people * omega[i] - S0[i] * (zetaa[i] + zetab[i] + zetac[i]) 
+E0[] = mu[i] * N[i] + alphaItot[i] + new_people * omega[i] - S0[i] * (zetaa[i] + zetab[i] + zetac[i])
 E1a[] = zetaa[i] * S0[i] - psia[i] * S1a[i]
-E1b[] = zetab[i] * S0[i] + psia[i] * S1a[i] - psib[i] * S1b[i] 
+E1b[] = zetab[i] * S0[i] + psia[i] * S1a[i] - psib[i] * S1b[i]
 E1c[] = zetac[i] * S0[i] + psib[i] * S1b[i]
 
 
@@ -66,7 +66,7 @@ N[] = S0[i] + S1a[i] + S1b[i] + S1c[i] + I01[i] + I11[i] + I02[i] + I03[i] + I04
 
 
 # mortality due to HIV infection
-alphaItot[] = 
+alphaItot[] =
   alpha01[i] * I01[i] + alpha11[i] * I11[i] + alpha02[i] * I02[i] + alpha03[i] * I03[i] + alpha04[i] * I04[i] +
   alpha05[i] * I05[i] + alpha22[i] * I22[i] + alpha23[i] * I23[i] + alpha24[i] * I24[i] + alpha25[i] * I25[i] +
   alpha32[i] * I32[i] + alpha33[i] * I33[i] + alpha34[i] * I34[i] + alpha35[i] * I35[i] +
@@ -152,15 +152,15 @@ prev[] = 100 * (I01[i] + I11[i] + I02[i] + I03[i] + I04[i] + I05[i] +
 # prev[1] = 100 * (I01[1] + I11[1] + I02[1] + I03[1] + I04[1] + I05[1] +
 #                    I22[1] + I23[1] + I24[1] + I25[1] + I32[1] + I33[1] + I34[1] + I35[1] +
 #                    I42[1] + I43[1] + I44[1] + I45[1]) / N[1]
-# 
+#
 # prev[2] = 100 * (I01[2] + I11[2] + I02[2] + I03[2] + I04[2] + I05[2] +
 #                    I22[2] + I23[2] + I24[2] + I25[2] + I32[2] + I33[2] + I34[2] + I35[2] +
 #                    I42[2] + I43[2] + I44[2] + I45[2]) / N[2]
-# 
+#
 prev_1 = prev[1]
 output(prev_1) = prev_1
 
-# output(prev[]) = prev
+output(prev[]) = prev
 
 # in future nb eP eC constants
 # lambda[,] = compute_lambda(S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
@@ -220,35 +220,35 @@ I44_init[] = user()
 initial(I45[]) = I45_init[i]
 I45_init[] = user()
 
-                
+
 # initial(S0) = user()
 # initial(S1a) = user()
 # initial(S1b) = user()
 # initial(S1c) = user()
-# 
+#
 # initial(I01) = user()
 # initial(I11) = user()
-# 
+#
 # initial(I02) = user()
 # initial(I03) = user()
 # initial(I04) = user()
 # initial(I05) = user()
-# 
+#
 # initial(I22) = user()
 # initial(I23) = user()
 # initial(I24) = user()
 # initial(I25) = user()
-# 
+#
 # initial(I32) = user()
 # initial(I33) = user()
 # initial(I34) = user()
 # initial(I35) = user()
-# 
+#
 # initial(I42) = user()
 # initial(I43) = user()
 # initial(I44) = user()
 # initial(I45) = user()
-              
+
 mu[] = user()
 gamma01[] = user()
 gamma02[] = user()

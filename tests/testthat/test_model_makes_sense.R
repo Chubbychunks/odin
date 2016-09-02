@@ -25,6 +25,7 @@ test_that("growth rate", {
   scenarios <- lapply(seq_len(nrow(pp)), function(i) f(pp[i,], parameters, v, main_model, time))
 
   # remove this shit
+  # run it with epsilon = 0, then run if with epsilon is positive
 
   # running the model with the variations of the parameter
   result <- list()
