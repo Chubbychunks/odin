@@ -137,7 +137,7 @@ generate_parameters <- function(..., parameters = list(...)) {
                    #n = 0,
 
                    R = c(1,1),
-                   omega = c(0.5, 0.5),
+                   omega = 0.5,
                    theta = 0.5
   )
 
@@ -151,11 +151,11 @@ generate_parameters <- function(..., parameters = list(...)) {
   if (length(extra) > 0L) {
     stop("Unknown arguments: ", extra)
   }
-  ret <- modifyList(defaults, parameters)
 
+  ret <- modifyList(defaults, parameters)
+  ret$omega <- c(ret$omega, 1-(ret$omega))
   # list of parameters that depend on others
   # ret$epsilon2 <- ret$epsilon^2
 
-  ret$omega <- c(ret$omega, 1-(ret$omega))
   ret
 }
