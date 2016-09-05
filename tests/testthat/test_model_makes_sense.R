@@ -1,6 +1,6 @@
 context("model makes sense?")
 
-
+# not sure if want lhs_parameters or generate_parameters
 
 test_that("example", {
   expect_equal(1 + 1, 2, tolerance = 1e-6)
@@ -9,36 +9,133 @@ test_that("example", {
    # expect_identical(3, sqrt(3)^2)
 })
 
+#result = run_model(parameters, main_model, time, output_vars = c("Ntot", "prev_client"))
 
-test_that("growth rate", {
 
-  ## relationship between growth rate (epsilon) and N
-  ## if growth rate (epsilon) is 0, then N should not change. If growth rate is positive, then N should increase.
 
-  # defining the parameter to vary
-  time <- seq(1985, 2015, length.out = 101)
+# GROWTH RATE AND DEMOGRAPHY
+###################################################################################################################################
+###################################################################################################################################
 
-  v <- c("epsilon")
-  parameters <- generate_parameters(epsilon=0.002)
-  pp <- unlist(parameters[v])
-  pp <- as.data.frame(rbind(pp * 0, pp))
-  scenarios <- lapply(seq_len(nrow(pp)), function(i) f(pp[i,], parameters, v, main_model, time))
+test_that("omega adds to 1", {
+  parameters <- lhs_parameters(1)
+  expect_true(sum(parameters[[1]]$omega) == 1)
+})
 
-  # remove this shit
-  # run it with epsilon = 0, then run if with epsilon is positive
 
-  # running the model with the variations of the parameter
-  result <- list()
-  for(j in 1:nrow(pp))
-  {
-    x <- scenarios[[j]]
-    xx <- x[grep("^[SI]", names(scenarios[[j]]))]
-    result[[j]] <- rowSums(do.call(cbind, xx))
-  }
+test_that("growth rate zero", {
+  parameters <- generate_parameters(epsilon = 0)
+  result = run_model(parameters, main_model, time)
+  xx <- result[grep("^[SI]", names(result))] # grepping all the Ss and Is
+  N <- rowSums(do.call(cbind, xx))
 
-  # test 1: are all increments in N equal to 0?
-  expect_true(all(abs(diff(result[[1]])) < 10^-10))
+  # are all increments in N equal to 0?
+  expect_true(all(abs(diff(N)) < 10^-10))
+})
+
+test_that("growth rate increases", {
+  parameters <- generate_parameters(epsilon = 0.1)
+  result = run_model(parameters, main_model, time)
+  xx <- result[grep("^[SI]", names(result))] # grepping all the Ss and Is
+  N <- rowSums(do.call(cbind, xx))
 
   # test 2: are all increments in N positive AND are the increments getting bigger?
-  expect_true(all(diff(result[[2]]) > 0) && all(diff(diff(result[[2]])) > 0))
+  expect_true(all(diff(N) > 0) && all(diff(diff(N)) > 0))
 })
+
+test_that("growth rate decreases", {
+  parameters <- generate_parameters(epsilon = -0.1)
+  result = run_model(parameters, main_model, time)
+  xx <- result[grep("^[SI]", names(result))] # grepping all the Ss and Is
+  N <- rowSums(do.call(cbind, xx))
+
+  # test 2: are all increments in N positive AND are the increments getting bigger?
+  expect_true(all(diff(N) < 0) && all(diff(diff(N)) > 0))
+})
+
+
+# test_that("growth rate", {
+#   parameters <- generate_parameters(epsilon = 0.01, omega = 0.15)
+#   result = run_model(parameters, main_model, time)
+#   xx <- result[grep("^[SI]", names(result))] # grepping all the Ss and Is
+#   N <- rowSums(do.call(cbind, xx))
+#
+#   # test 2: are all increments in N positive AND are the increments getting bigger?
+#   expect_true(all(diff(N) < 0) && all(diff(diff(N)) > 0))
+# })
+# ^ why doesn't N * epsilon equal the differences in N at each timestep?
+# Because the timesteps are infintessimally small?!?!?!?
+
+# PREP
+###################################################################################################################################
+###################################################################################################################################
+
+
+test_that("no prep", {
+  parameters <- generate_parameters(zetaa = c(0,0), zetab = c(0,0), zetac = c(0,0), I11_init = c(0,0))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I11", names(result)), grep("S1", names(result)))]
+  N <- rowSums(do.call(cbind, xx))
+  expect_true(all(diff(N) == 0))
+})
+
+test_that("prep increases", {
+  parameters <- generate_parameters(zetaa = c(0.1,0.1), zetab = c(0.1,0.1), zetac = c(0.1,0.1), I11_init = c(0,0))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I11", names(result)), grep("S1", names(result)))]
+  N <- rowSums(do.call(cbind, xx))
+  expect_true(!all(diff(N) == 0))
+})
+
+
+
+# FORCE OF INFECTION SET TO ZERO
+###################################################################################################################################
+###################################################################################################################################
+
+#
+# # only group 1 infected, does group 2 get infected?
+# parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0))
+# pp <- unlist(parameters[v])
+# pp <- as.data.frame(rbind(c(0, pp[2]), pp))
+# scenarios <- lapply(seq_len(nrow(pp)), function(i) f(pp[i,], parameters, v, gen, time))
+#
+# # running the model with the variations of the parameter
+# result <- list()
+# for(j in 1:nrow(pp))
+# {
+#   x <- scenarios[[j]]
+#   xx <- x[c(grep("I01", names(scenarios[[j]])), grep("I11", names(scenarios[[j]])))]
+#   result[[j]] <- sum(c(xx$I01[,2], xx$I11[,2]))
+# }
+#
+# # test 1: is there anyone on PrEP?
+# if(!all(result[[1]]==0))
+# {
+#   print("There are still people being infected!")
+# }
+#
+# # beta and 2->1 infection
+#
+#
+# # only group 2 infected, does group 1 get infected?
+# parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000))
+# pp <- unlist(parameters[v])
+# pp <- as.data.frame(rbind(c(pp[1], 0), pp))
+# scenarios <- lapply(seq_len(nrow(pp)), function(i) f(pp[i,], parameters, v, gen, time))
+#
+# # running the model with the variations of the parameter
+# result <- list()
+# for(j in 1:nrow(pp))
+# {
+#   x <- scenarios[[j]]
+#   xx <- x[c(grep("I01", names(scenarios[[j]])), grep("I11", names(scenarios[[j]])))]
+#   result[[j]] <- sum(c(xx$I01[,1], xx$I11[,1]))
+# }
+#
+# # test 1: is there anyone on PrEP?
+# if(!all(result[[1]]==0))
+# {
+#   print("There are still people being infected!")
+# }
+
