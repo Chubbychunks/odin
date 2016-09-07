@@ -88,6 +88,15 @@ test_that("growth rate decreases", {
 # Because the timesteps are infintessimally small?!?!?!?
 
 
+# ALL COMPARTMENTS ARE POSITIVE
+
+test_that("all compartments positive", {
+  parameters <- generate_parameters(theta = 0.5)
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("S[0-9]|I[0-9]", names(result)))]
+  expect_true(all(unlist(xx) >= 0))
+})
+
 
 
 # FORCE OF INFECTION SET TO ZERO
@@ -267,6 +276,10 @@ test_that("fP ec 2c", {
 })
 
 
+# ALL FORCES OF INFECTION POSITIVE?!
+
+
+
 # DISEASE PROGRESSION
 ###################################################################################################################################
 ###################################################################################################################################
@@ -340,17 +353,40 @@ test_that("prep increases", {
   expect_true(!all(diff(N) == 0))
 })
 
-# TESTING
+# NO TESTING
 
 test_that("no testing", {
   relevant_parameters = parameter_names[c(grep("tau", parameter_names))]
   parameters <- generate_parameters(theta = 0.5, set_null = relevant_parameters)
   result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("I11", names(result)), grep("S1", names(result)))]
+  xx <- result[c(grep("I2[0-9]|I3[0-9]|I4[0-9]", names(result)))]
   N <- rowSums(do.call(cbind, xx))
   expect_true(all(diff(N) == 0))
 })
 
+
+# NO ART
+
+test_that("no ART", {
+  relevant_parameters = parameter_names[c(grep("rho", parameter_names))]
+  parameters <- generate_parameters(theta = 0.5, set_null = relevant_parameters)
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I3[0-9]|I4[0-9]", names(result)))]
+  N <- rowSums(do.call(cbind, xx))
+  expect_true(all(diff(N) == 0))
+})
+
+
+# NO DROP OUT
+
+test_that("no drop out", {
+  relevant_parameters = parameter_names[c(grep("phi", parameter_names))]
+  parameters <- generate_parameters(theta = 0.5, set_null = relevant_parameters)
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I4[0-9]", names(result)))]
+  N <- rowSums(do.call(cbind, xx))
+  expect_true(all(diff(N) == 0))
+})
 
 # BALANCING
 ###################################################################################################################################
@@ -391,7 +427,7 @@ test_that("prevalence", {
 
 })
 
-# the sum of the prevalences must equal 1?
+#  OVERALL PREVALENCE IS EQUAL TO WEIGHTED AVERAGE OF ALL PREVALENCES
 
 # CALCULATING INCIDENCE
 ###################################################################################################################################
@@ -402,3 +438,202 @@ test_that("prevalence", {
 ###################################################################################################################################
 ###################################################################################################################################
 
+
+
+# LOGICAL CHECKS FOR MODEL
+###################################################################################################################################
+###################################################################################################################################
+
+# increase beta, increase overall prevalence
+
+test_that("beta vs prevalence", {
+  parameters <- generate_parameters(beta = c(0.001, 0.001))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+
+  parameters <- generate_parameters(beta = c(0.1, 0.1))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+
+  expect_true(sum(N2) > sum(N1))
+})
+
+# increase R, increase overall prevalence
+
+test_that("R vs prevalence", {
+  parameters <- generate_parameters(R = c(0.001, 0.001))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+
+  parameters <- generate_parameters(R = c(0.1, 0.1))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+
+  expect_true(sum(N2) > sum(N1))
+})
+
+# increase n, increase overall prevalence
+
+test_that("n vs prevalence", {
+  parameters <- generate_parameters(n = c(1, 1))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+
+  parameters <- generate_parameters(n = c(15, 15))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+
+  expect_true(sum(N2) > sum(N1))
+})
+
+# increase c, increase overall prevalence
+
+test_that("c vs prevalence", {
+  parameters <- generate_parameters(c = c(1, 1))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+
+  parameters <- generate_parameters(c = c(15, 15))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+
+  expect_true(sum(N2) > sum(N1))
+})
+
+# increase fc, decrease overall prevalence
+
+test_that("fc vs prevalence", {
+  parameters <- generate_parameters(theta = 0.5)
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+
+  parameters <- generate_parameters(theta = 0.5, set_null = "fc_y")
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+
+  expect_true(sum(N2) > sum(N1))
+})
+
+
+# increase ec, decrease overall prevalence
+
+test_that("ec vs prevalence", {
+  parameters <- generate_parameters(ec = c(0.9, 0.9))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+
+  parameters <- generate_parameters(ec = c(0.1, 0.1))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+
+  expect_true(sum(N2) > sum(N1))
+})
+
+
+
+# increase fP, decrease overall prevalence
+
+test_that("fP vs prevalence", {
+  parameters <- generate_parameters(theta = 0.5)
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+
+  parameters <- generate_parameters(theta = 0.5, set_null = "fP_y")
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+
+  expect_true(sum(N2) > sum(N1))
+})
+
+
+# increase eP, decrease overall prevalence
+
+test_that("eP vs prevalence", {
+  parameters <- generate_parameters(eP = c(0.9, 0.9))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+
+  parameters <- generate_parameters(eP = c(0.1, 0.1))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+
+  expect_true(sum(N2) > sum(N1))
+})
+
+
+# # increase prep uptake, decrease overall prevalence
+#
+# test_that("zeta vs prevalence", {
+#
+#   parameters <- generate_parameters(theta = 0.5)
+#   result = run_model(parameters, main_model, time)
+#   xx <- result[c(grep("S[0-9]", names(result)))]
+#   N1 <- rowSums(do.call(cbind, xx))
+#
+#   relevant_parameters = parameter_names[c(grep("zeta", parameter_names))]
+#   parameters <- generate_parameters(theta = 0.5, set_null = relevant_parameters)
+#   result = run_model(parameters, main_model, time)
+#   xx <- result[c(grep("S[0-9]", names(result)))]
+#   N2 <- rowSums(do.call(cbind, xx))
+#
+#
+#
+#
+#
+#   parameters <- generate_parameters(theta = 0.5)
+#   result = run_model(parameters, main_model, time)
+#   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+#   N1 <- rowSums(do.call(cbind, xx))
+#
+#   relevant_parameters = parameter_names[c(grep("zeta", parameter_names))]
+#   parameters <- generate_parameters(theta = 0.5, set_null = relevant_parameters)
+#   result = run_model(parameters, main_model, time)
+#   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+#   N2 <- rowSums(do.call(cbind, xx))
+#
+#   expect_true(sum(N2) > sum(N1))
+# })
+
+
+
+
+
+# increase ART uptake, decrease overall prevalence
+
+test_that("ART vs prevalence", {
+  parameters <- generate_parameters(theta = 0.5)
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+
+  relevant_parameters = parameter_names[c(grep("rho", parameter_names))]
+  parameters <- generate_parameters(theta = 0.5, set_null = relevant_parameters)
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+
+  expect_true(sum(N2) > sum(N1))
+})
+
+
+# testing
+
+# prep adherence
+
+# dropout
