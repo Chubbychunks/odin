@@ -6,12 +6,33 @@ test_that("example", {
   expect_equal(1 + 1, 2, tolerance = 1e-6)
   expect_true(1 + 1 == 2)
   expect_error(sqrt(lm), "non-numeric")
-   # expect_identical(3, sqrt(3)^2)
+  # expect_identical(3, sqrt(3)^2)
 })
 
 #result = run_model(parameters, main_model, time, output_vars = c("Ntot", "prev_client"))
 
 
+
+# NO SEEDING OF EPIDEMIC
+###################################################################################################################################
+###################################################################################################################################
+
+# no infected, no incidence?
+test_that("no incidence", {
+  parameters <- generate_parameters(I11_init = c(0,0), I01_init = c(0,0), S1a_init = c(100,100), S1b_init = c(100,100), S1c_init = c(100,100))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9]", names(result)))]
+  expect_true(all(unlist(xx) == 0))
+})
+
+# no infected, then population sizes remain equal between groups?
+test_that("risk group sizes equal", {
+  parameters <- generate_parameters(omega = 0.5, I11_init = c(0,0), I01_init = c(0,0), S1a_init = c(100,100), S1b_init = c(100,100), S1c_init = c(100,100))
+  result = run_model(parameters, main_model, time)
+  N_client <- result[c(grep("N_client", names(result)))]
+  N_FSW <- result[c(grep("N_FSW", names(result)))]
+  expect_equal(N_client[[1]], N_FSW[[1]], tolerance = 1e-6)
+})
 
 # GROWTH RATE AND DEMOGRAPHY
 ###################################################################################################################################
@@ -66,13 +87,245 @@ test_that("growth rate decreases", {
 # ^ why doesn't N * epsilon equal the differences in N at each timestep?
 # Because the timesteps are infintessimally small?!?!?!?
 
-# PREP
+
+
+
+# FORCE OF INFECTION SET TO ZERO
 ###################################################################################################################################
 ###################################################################################################################################
 
+# BETA
+# only group 1 infected, does group 2 get infected?
+test_that("beta 1", {
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), beta = c(0, 0.01))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  expect_true(sum(c(xx$I01[,2], xx$I11[,2]))==0)
+})
+
+# only group 2 infected, does group 1 get infected?
+test_that("beta 2", {
+  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), beta = c(0.01, 0))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  expect_true(sum(c(xx$I01[,1], xx$I11[,1]))==0)
+})
+
+
+# R
+# only group 1 infected, does group 2 get infected?
+test_that("R 1", {
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), R = c(0, 0.01))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  expect_true(sum(c(xx$I01[,2], xx$I11[,2]))==0)
+})
+
+# only group 2 infected, does group 1 get infected?
+test_that("R 2", {
+  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), R = c(0.01, 0))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  expect_true(sum(c(xx$I01[,1], xx$I11[,1]))==0)
+})
+
+
+# n
+# only group 1 infected, does group 2 get infected?
+test_that("n 1", {
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), n = c(0, 0.01))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  expect_true(sum(c(xx$I01[,2], xx$I11[,2]))==0)
+})
+
+# only group 2 infected, does group 1 get infected?
+test_that("n 2", {
+  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), n = c(0.01, 0))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  expect_true(sum(c(xx$I01[,1], xx$I11[,1]))==0)
+})
+
+# c is a bit more complicated, with the balancing sex acts
+
+# # c
+# # only group 1 infected, does group 2 get infected?
+# test_that("c 1", {
+#   parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), c = c(0, 1))
+#   result = run_model(parameters, main_model, time)
+#   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+#   expect_true(sum(c(xx$I01[,2], xx$I11[,2]))==0)
+# })
+#
+# # only group 2 infected, does group 1 get infected?
+# test_that("c 2", {
+#   parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), c = c(1, 0))
+#   result = run_model(parameters, main_model, time)
+#   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+#   expect_true(sum(c(xx$I01[,1], xx$I11[,1]))==0)
+# })
+
+# fc and ec
+# only group 1 infected, does group 2 get infected?
+# condom efficacy is 1 and frequency of condom use is 1 - no infections
+test_that("fc ec 1", {
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), ec = c(1, 0), fc_y = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  expect_true(sum(c(xx$I01[,2], xx$I11[,2]))==0)
+})
+
+# condom efficacy is NOT 1 and frequency of condom use is 1 - some infections
+test_that("fc ec 1b", {
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), ec = c(0.9, 0), fc_y = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  expect_false(sum(c(xx$I01[,2], xx$I11[,2]))==0)
+})
+
+# condom efficacy is 1 and frequency of condom use is NOT 1 - some infections
+test_that("fc ec 1c", {
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), ec = c(1, 0), fc_y = cbind(c(1, 1, 1, 0.99), c(0, 0, 0, 0)))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  expect_false(sum(c(xx$I01[,2], xx$I11[,2]))==0)
+})
+
+
+# only group 2 infected, does group 1 get infected?
+test_that("fc ec 2", {
+  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), ec = c(0, 1), fc_y = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  expect_true(sum(c(xx$I01[,1], xx$I11[,1]))==0)
+})
+
+test_that("fc ec 2b", {
+  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), ec = c(0, 0.9), fc_y = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  expect_false(sum(c(xx$I01[,1], xx$I11[,1]))==0)
+})
+
+test_that("fc ec 2c", {
+  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), ec = c(0, 1), fc_y = cbind(c(0, 0, 0, 0), c(1, 1, 1, 0.99)))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  expect_false(sum(c(xx$I01[,1], xx$I11[,1]))==0)
+})
+
+
+
+# fP and ec
+# only group 1 infected, does group 2 get infected?
+# condom efficacy is 1 and frequency of condom use is 1 - no infections
+test_that("fP ec 1", {
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), ec = c(1, 0), fc_y = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  expect_true(sum(c(xx$I01[,2], xx$I11[,2]))==0)
+})
+
+# condom efficacy is NOT 1 and frequency of condom use is 1 - some infections
+test_that("fP ec 1b", {
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), ec = c(0.9, 0), fc_y = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  expect_false(sum(c(xx$I01[,2], xx$I11[,2]))==0)
+})
+
+# condom efficacy is 1 and frequency of condom use is NOT 1 - some infections
+test_that("fP ec 1c", {
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), ec = c(1, 0), fc_y = cbind(c(1, 1, 1, 0.99), c(0, 0, 0, 0)))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  expect_false(sum(c(xx$I01[,2], xx$I11[,2]))==0)
+})
+
+
+# only group 2 infected, does group 1 get infected?
+test_that("fP ec 2", {
+  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), ec = c(0, 1), fc_y = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  expect_true(sum(c(xx$I01[,1], xx$I11[,1]))==0)
+})
+
+test_that("fP ec 2b", {
+  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), ec = c(0, 0.9), fc_y = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  expect_false(sum(c(xx$I01[,1], xx$I11[,1]))==0)
+})
+
+test_that("fP ec 2c", {
+  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), ec = c(0, 1), fc_y = cbind(c(0, 0, 0, 0), c(1, 1, 1, 0.99)))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  expect_false(sum(c(xx$I01[,1], xx$I11[,1]))==0)
+})
+
+
+# DISEASE PROGRESSION
+###################################################################################################################################
+###################################################################################################################################
+
+# Setting progression rate from acute to CD4>500 to zero
+# done by setting tau[0-9]1 and gamma[0-9]1 to 0
+
+test_that("acute to CD4>500 zero", {
+  relevant_parameters = parameter_names[c(grep("gamma[0-9]1", parameter_names), grep("tau[0-9]1", parameter_names))]
+  parameters <- generate_parameters(I11_init = c(100,100), set_null = relevant_parameters)
+  result = run_model(parameters, main_model, time)
+  all_infected = result[c(grep("I[0-9]2|I[0-9]3|I[0-9]4|I[0-9]5", names(result)))]
+  expect_true(all(unlist(all_infected) == 0))
+})
+
+# Setting progression rate from CD4>500 to CD4 350-500 to zero
+# done by setting gamma[0-9]2 to 0
+
+test_that("CD4>500 to CD4 350-500 zero", {
+  relevant_parameters = parameter_names[c(grep("gamma[0-9]2", parameter_names))]
+  parameters <- generate_parameters(I11_init = c(100,100), set_null = relevant_parameters)
+  result = run_model(parameters, main_model, time)
+  all_infected = result[c(grep("I[0-9]3|I[0-9]4|I[0-9]5", names(result)))]
+  expect_true(all(unlist(all_infected) == 0))
+})
+
+# Setting progression rate from CD4 350-500 to CD4 200-349 to zero
+# done by setting gamma[0-9]3 to 0
+
+test_that("CD4 350-500 to CD4 200-349 zero", {
+  relevant_parameters = parameter_names[c(grep("gamma[0-9]3", parameter_names))]
+  parameters <- generate_parameters(I11_init = c(100,100), set_null = relevant_parameters)
+  result = run_model(parameters, main_model, time)
+  all_infected = result[c(grep("I[0-9]4|I[0-9]5", names(result)))]
+  expect_true(all(unlist(all_infected) == 0))
+})
+
+
+# Setting progression rate from CD4 200-349 to CD4 <200 to zero
+# done by setting gamma[0-9]4 to 0
+
+test_that("CD4 200-349 to CD4 <200 to zero", {
+  relevant_parameters = parameter_names[c(grep("gamma[0-9]4", parameter_names))]
+  parameters <- generate_parameters(I11_init = c(100,100), set_null = relevant_parameters)
+  result = run_model(parameters, main_model, time)
+  all_infected = result[c(grep("I[0-9]5", names(result)))]
+  expect_true(all(unlist(all_infected) == 0))
+})
+
+# CARE CASCADE PROGRESSION
+###################################################################################################################################
+###################################################################################################################################
+
+
+# PREP
 
 test_that("no prep", {
-  parameters <- generate_parameters(zetaa = c(0,0), zetab = c(0,0), zetac = c(0,0), I11_init = c(0,0))
+  relevant_parameters = parameter_names[c(grep("zeta", parameter_names))]
+  parameters <- generate_parameters(set_null = relevant_parameters, I11_init = c(0,0))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I11", names(result)), grep("S1", names(result)))]
   N <- rowSums(do.call(cbind, xx))
@@ -87,55 +340,65 @@ test_that("prep increases", {
   expect_true(!all(diff(N) == 0))
 })
 
+# TESTING
+
+test_that("no testing", {
+  relevant_parameters = parameter_names[c(grep("tau", parameter_names))]
+  parameters <- generate_parameters(theta = 0.5, set_null = relevant_parameters)
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I11", names(result)), grep("S1", names(result)))]
+  N <- rowSums(do.call(cbind, xx))
+  expect_true(all(diff(N) == 0))
+})
 
 
-# FORCE OF INFECTION SET TO ZERO
+# BALANCING
 ###################################################################################################################################
 ###################################################################################################################################
 
-#
-# # only group 1 infected, does group 2 get infected?
-# parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0))
-# pp <- unlist(parameters[v])
-# pp <- as.data.frame(rbind(c(0, pp[2]), pp))
-# scenarios <- lapply(seq_len(nrow(pp)), function(i) f(pp[i,], parameters, v, gen, time))
-#
-# # running the model with the variations of the parameter
-# result <- list()
-# for(j in 1:nrow(pp))
-# {
-#   x <- scenarios[[j]]
-#   xx <- x[c(grep("I01", names(scenarios[[j]])), grep("I11", names(scenarios[[j]])))]
-#   result[[j]] <- sum(c(xx$I01[,2], xx$I11[,2]))
-# }
-#
-# # test 1: is there anyone on PrEP?
-# if(!all(result[[1]]==0))
-# {
-#   print("There are still people being infected!")
-# }
-#
-# # beta and 2->1 infection
-#
-#
-# # only group 2 infected, does group 1 get infected?
-# parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000))
-# pp <- unlist(parameters[v])
-# pp <- as.data.frame(rbind(c(pp[1], 0), pp))
-# scenarios <- lapply(seq_len(nrow(pp)), function(i) f(pp[i,], parameters, v, gen, time))
-#
-# # running the model with the variations of the parameter
-# result <- list()
-# for(j in 1:nrow(pp))
-# {
-#   x <- scenarios[[j]]
-#   xx <- x[c(grep("I01", names(scenarios[[j]])), grep("I11", names(scenarios[[j]])))]
-#   result[[j]] <- sum(c(xx$I01[,1], xx$I11[,1]))
-# }
-#
-# # test 1: is there anyone on PrEP?
-# if(!all(result[[1]]==0))
-# {
-#   print("There are still people being infected!")
-# }
+# DUNNO!
+test_that("B check 0", {
+  parameters <- generate_parameters(theta = 0)
+  result = run_model(parameters, main_model, time)
+  expect_true(all(as.numeric(result[["B_check"]]) == 1))
+})
+test_that("B check 0.5", {
+  parameters <- generate_parameters(theta = 0.5)
+  result = run_model(parameters, main_model, time)
+  expect_true(all(as.numeric(result[["B_check"]]) == 1))
+})
+test_that("B check 1", {
+  parameters <- generate_parameters(theta = 1)
+  result = run_model(parameters, main_model, time)
+  expect_true(all(as.numeric(result[["B_check"]]) == 1))
+})
+
+
+# CALCULATING PREVALENCE
+###################################################################################################################################
+###################################################################################################################################
+test_that("prevalence", {
+  parameters = generate_parameters(theta = 0.5)
+  result = run_model(parameters, main_model, time)
+  all_infected = result[c(grep("I[0-9]", names(result)))]
+  all = result[c(grep("I[0-9]", names(result)), grep("S[0-9]", names(result)))]
+
+  expect_equal(result$prev_FSW, 100 * rowSums(do.call(cbind, lapply(all_infected, function(x) x <- x[,1]))) / rowSums(do.call(cbind, lapply(all, function(x) x <- x[,1]))), tolerance = 1e-6)
+  expect_equal(result$prev_client, 100 * rowSums(do.call(cbind, lapply(all_infected, function(x) x <- x[,2]))) / rowSums(do.call(cbind, lapply(all, function(x) x <- x[,2]))), tolerance = 1e-6)
+
+  # this will need to be tested against overall prevalence
+  #over_prevalence = rowSums(do.call(cbind, all_infected)) / rowSums(do.call(cbind, all))
+
+})
+
+# the sum of the prevalences must equal 1?
+
+# CALCULATING INCIDENCE
+###################################################################################################################################
+###################################################################################################################################
+
+
+# CALCULATING FORCE OF INFECTION
+###################################################################################################################################
+###################################################################################################################################
 

@@ -16,3 +16,5 @@ run_model <- function(p, gen, time, output_vars) {
   all_results <- mod$transform_variables(mod$run(time))
   all_results[output_vars]
 }
+
+parameter_names = names(generate_parameters())

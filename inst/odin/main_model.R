@@ -85,10 +85,9 @@ B_check = (c2_new * N[2])/(c1_new * N[1])
 # INTERPOLATING FUNCTIONS
 ##############################################################################
 
-#organise order of commands later
-# fc_interpolated[] = interpolate(fc_t, fc_y)
-# dim(fc_interpolated) = 3 # because we have 3 timepoints?
 
+fc[] = interpolate(fc_t, fc_y, "linear")
+fP[] = interpolate(fP_t, fP_y, "linear")
 
 
 # FORCE OF INFECTION
@@ -122,15 +121,22 @@ output(Ntot) = Ntot
 output(new_people) = new_people
 output(B_check) = B_check
 output(fc[]) = fc
+# output(fP[]) = fP
 
 # output(alphaItot[]) = alphaItot
 
 # if you want to output a certain statistic
-#output(N[]) = N[i]
+# output(N[]) = N[i]
 #sum of all infected of group k?
 
+N_FSW = N[1]
+N_client = N[2]
 
-# prevalence
+output(N_FSW) = N_FSW
+output(N_client) = N_client
+
+
+# PREVALENCE
 prev_FSW = 100 * (I01[1] + I11[1] + I02[1] + I03[1] + I04[1] + I05[1] +
   I22[1] + I23[1] + I24[1] + I25[1] + I32[1] + I33[1] + I34[1] + I35[1] +
   I42[1] + I43[1] + I44[1] + I45[1]) / N[1]
@@ -160,7 +166,16 @@ prev[] = 100 * (I01[i] + I11[i] + I02[i] + I03[i] + I04[i] + I05[i] +
 prev_1 = prev[1]
 output(prev_1) = prev_1
 
-output(prev[]) = prev
+# output(prev[]) = prev
+
+
+# INCIDENCE RATE
+
+# = no. disease onsets / sum of "person-time" at risk
+
+
+
+
 
 # in future nb eP eC constants
 # lambda[,] = compute_lambda(S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
@@ -324,7 +339,6 @@ beta[] = user()
 c[] = user()
 ec[] = user()
 eP[] = user()
-fP[] = user()
 n[] = user()
 R[] = user()
 
@@ -336,11 +350,15 @@ omega[] = user()
 # balancing
 theta = user()
 
-fc[] = interpolate(fc_t, fc_y, "linear")
 fc_t[] = user()
 fc_y[,] = user()
 dim(fc_t) = user()
 dim(fc_y) = user()
+
+fP_t[] = user()
+fP_y[,] = user()
+dim(fP_t) = user()
+dim(fP_y) = user()
 
 #dimming
 Ncat = 2
