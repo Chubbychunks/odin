@@ -135,7 +135,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    fc_y = cbind(c(0, 0, 0.7, 0.9), c(0, 0, 0.3, 0.5)),
 
                    fP_t = c(1985, 2014, 2015, 2016),
-                   fP_y = cbind(c(0, 0, 0.99, 0), c(0, 0, 0, 0.99)),
+                   fP_y = cbind(c(0, 0, 0.99, 0), c(0, 0, 0, 0)),
                    n = c(10,3),
                    #n = 0,
 

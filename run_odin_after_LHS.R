@@ -23,7 +23,7 @@ devtools::test()
 
 
 
-
+# RUNNING MULTIPLE SIMULATIONS
 
 number_simulations = 100
 
@@ -49,8 +49,7 @@ mu_input <- t(sapply(parms, "[[", "mu"))
 fc_y_input <- t(sapply(parms, "[[", "fc_y"))
 prev_client_output <- t(sapply(res, "[[", "prev_client"))
 
-
-#plotting
+# PLOTTING MULTIPLE SIMULATIONS
 # fc over time
 df = melt(data.frame(time, res[[1]]$fc), id.vars = "time")
 ggplot(data = df, aes(x = time, y = value, colour = variable)) + geom_line() + theme_bw()
@@ -68,9 +67,53 @@ plot(mu_input[, 1], prev_client_output[length(time), ])
 # SINGLE RUN WITH PARAMETERS TO CHECK EVERY OUTPUT
 ##############################################################################
 
-# cumulative infections
-
+# plot fc
 parameters <- generate_parameters(theta = 0.5)
 result = run_model(parameters, main_model, time)
-xx <- result[grep("cumu", names(result))] # grepping all the Ss and Is
+yy <- result[grep("fc", names(result))]
+df = melt(data.frame(time, yy$fc), id.vars = "time")
+ggplot(data = df, aes(x = time, y = value, colour = variable)) + geom_line() + theme_bw()
+
+
+# plot fP
+parameters <- generate_parameters(theta = 0.5)
+result = run_model(parameters, main_model, time)
+yy <- result[grep("fP", names(result))]
+df = melt(data.frame(time, yy$fP), id.vars = "time")
+ggplot(data = df, aes(x = time, y = value, colour = variable)) + geom_line() + theme_bw()
+
+
+# number of people on PrEP
+parameters <- generate_parameters(theta = 0.5)
+result = run_model(parameters, main_model, time)
+yy <- result[grep("S1[a-z]", names(result))]
+yy_plot <- melt(
+  data.frame(time,
+             FSW = rowSums(do.call(cbind, lapply(yy, function(x) x <- x[,1]))),
+             clients = rowSums(do.call(cbind, lapply(yy, function(x) x <- x[,2])))
+  ),id.vars = "time")
+
+ggplot(data = yy_plot, aes(x = time, y = value, colour = variable)) + geom_line() + theme_bw()
+
+
+# plot N
+parameters <- generate_parameters(theta = 0.5)
+result = run_model(parameters, main_model, time)
+yy <- result[grep("N_client|N_FSW", names(result))]
+df = melt(data.frame(time, FSW = yy$N_FSW, client = yy$N_client), id.vars = "time")
+ggplot(data = df, aes(x = time, y = value, colour = variable)) + geom_line(alpha = 0.5) + theme_bw()
+
+
+# plot prevalence
+parameters <- generate_parameters(theta = 0.5)
+result = run_model(parameters, main_model, time)
+yy <- result[grep("prev", names(result))]
+df = melt(data.frame(time, FSW = yy$prev_FSW, client = yy$prev_client), id.vars = "time")
+ggplot(data = df, aes(x = time, y = value, colour = variable)) + geom_line() + theme_bw()
+
+
+# cumulative infections
+parameters <- generate_parameters(theta = 0.5)
+result = run_model(parameters, main_model, time)
+xx <- result[grep("cumu", names(result))]
 N <- rowSums(do.call(cbind, xx))
