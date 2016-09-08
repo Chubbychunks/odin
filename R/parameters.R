@@ -50,6 +50,8 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    I44_init = c(0,0),
                    I45_init = c(0,0),
 
+                   cumuInf_init = c(0,0),
+
 
                    mu = c(0.02,0.02),
                    gamma01 = c(0.2,0.2),
@@ -139,7 +141,17 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
 
                    R = c(1,1),
                    omega = 0.5,
-                   theta = 0.5
+                   theta = 0.5,
+
+                   M = cbind(c(0.2, 0.2, 0.2, 0.2, 0.2),
+                             c(0.2, 0.2, 0.2, 0.2, 0.2),
+                             c(0.2, 0.2, 0.2, 0.2, 0.2),
+                             c(0.2, 0.2, 0.2, 0.2, 0.2),
+                             c(0.2, 0.2, 0.2, 0.2, 0.2)),
+
+                   A = cbind(c(0.33, 0.33, 0.33),
+                             c(0.33, 0.33, 0.33),
+                             c(0.33, 0.33, 0.33))
   )
 
   if (length(set_null) > 0L) {

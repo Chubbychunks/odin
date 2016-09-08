@@ -48,6 +48,7 @@ deriv(I43[]) = gamma42[i] * I42[i] + phi3[i] * I33[i] - I43[i] * (gamma43[i] + r
 deriv(I44[]) = gamma43[i] * I43[i] + phi4[i] * I34[i] - I44[i] * (gamma44[i] + rho4[i] + alpha44[i] + mu[i])
 deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alpha45[i] + mu[i])
 
+deriv(cumuInf[]) = S0[i] * lambda_sum[i] + S1a[i] * lambda_sum[i] + S1b[i] * lambda_sum[i] + S1c[i] * lambda_sum[i]
 
 # births due to population growth
 new_people = epsilon * sum(N)
@@ -115,58 +116,38 @@ lambda_sum[] = sum(lambda[i,])
 # OUTPUTS
 ##############################################################################
 
+# Calculations
 Ntot = sum(N)
-output(Ntot) = Ntot
-
-output(new_people) = new_people
-output(B_check) = B_check
-output(fc[]) = fc
-# output(fP[]) = fP
-
-# output(alphaItot[]) = alphaItot
-
-# if you want to output a certain statistic
-# output(N[]) = N[i]
-#sum of all infected of group k?
 
 N_FSW = N[1]
 N_client = N[2]
 
-output(N_FSW) = N_FSW
-output(N_client) = N_client
-
-
 # PREVALENCE
+# n.b. prevalence for all ages in each risk group will be useful, so maybe one prev array is too much info in one output
 prev_FSW = 100 * (I01[1] + I11[1] + I02[1] + I03[1] + I04[1] + I05[1] +
-  I22[1] + I23[1] + I24[1] + I25[1] + I32[1] + I33[1] + I34[1] + I35[1] +
-  I42[1] + I43[1] + I44[1] + I45[1]) / N[1]
+                    I22[1] + I23[1] + I24[1] + I25[1] + I32[1] + I33[1] + I34[1] + I35[1] +
+                    I42[1] + I43[1] + I44[1] + I45[1]) / N[1]
 
 prev_client = 100 * (I01[2] + I11[2] + I02[2] + I03[2] + I04[2] + I05[2] +
-                    I22[2] + I23[2] + I24[2] + I25[2] + I32[2] + I33[2] + I34[2] + I35[2] +
-                    I42[2] + I43[2] + I44[2] + I45[2]) / N[2]
-
-output(prev_FSW) = prev_FSW
-output(prev_client) = prev_client
-
-
-
+                       I22[2] + I23[2] + I24[2] + I25[2] + I32[2] + I33[2] + I34[2] + I35[2] +
+                       I42[2] + I43[2] + I44[2] + I45[2]) / N[2]
 
 prev[] = 100 * (I01[i] + I11[i] + I02[i] + I03[i] + I04[i] + I05[i] +
                   I22[i] + I23[i] + I24[i] + I25[i] + I32[i] + I33[i] + I34[i] + I35[i] +
                   I42[i] + I43[i] + I44[i] + I45[i]) / N[i]
 
-# prev[1] = 100 * (I01[1] + I11[1] + I02[1] + I03[1] + I04[1] + I05[1] +
-#                    I22[1] + I23[1] + I24[1] + I25[1] + I32[1] + I33[1] + I34[1] + I35[1] +
-#                    I42[1] + I43[1] + I44[1] + I45[1]) / N[1]
-#
-# prev[2] = 100 * (I01[2] + I11[2] + I02[2] + I03[2] + I04[2] + I05[2] +
-#                    I22[2] + I23[2] + I24[2] + I25[2] + I32[2] + I33[2] + I34[2] + I35[2] +
-#                    I42[2] + I43[2] + I44[2] + I45[2]) / N[2]
-#
-prev_1 = prev[1]
-output(prev_1) = prev_1
 
-# output(prev[]) = prev
+output(Ntot) = Ntot
+output(new_people) = new_people
+output(B_check) = B_check
+output(fc[]) = fc
+output(fP[]) = fP
+output(N[]) = N
+output(prev_FSW) = prev_FSW
+output(prev_client) = prev_client
+output(prev[]) = prev
+output(N_FSW) = N_FSW
+output(N_client) = N_client
 
 
 # INCIDENCE RATE
@@ -235,6 +216,8 @@ I44_init[] = user()
 initial(I45[]) = I45_init[i]
 I45_init[] = user()
 
+initial(cumuInf[]) = cumuInf_init[i]
+cumuInf_init[] = user()
 
 # initial(S0) = user()
 # initial(S1a) = user()
@@ -458,6 +441,8 @@ dim(I43) = Ncat
 dim(I44) = Ncat
 dim(I45) = Ncat
 
+dim(cumuInf) = Ncat
+
 dim(S0_init) = Ncat
 dim(S1a_init) = Ncat
 dim(S1b_init) = Ncat
@@ -486,7 +471,7 @@ dim(I43_init) = Ncat
 dim(I44_init) = Ncat
 dim(I45_init) = Ncat
 
-
+dim(cumuInf_init) = Ncat
 
 dim(N) = Ncat
 dim(E0) = Ncat

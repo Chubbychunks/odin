@@ -34,6 +34,15 @@ test_that("risk group sizes equal", {
   expect_equal(N_client[[1]], N_FSW[[1]], tolerance = 1e-6)
 })
 
+# no infected, then 0 cumulative infections
+test_that("cumulative infections", {
+  parameters <- generate_parameters(omega = 0.5, I11_init = c(0,0), I01_init = c(0,0), S1a_init = c(100,100), S1b_init = c(100,100), S1c_init = c(100,100))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("cumuInf", names(result)))]
+  expect_true(all(unlist(xx) == 0))
+})
+
+
 # GROWTH RATE AND DEMOGRAPHY
 ###################################################################################################################################
 ###################################################################################################################################
@@ -97,7 +106,14 @@ test_that("all compartments positive", {
   expect_true(all(unlist(xx) >= 0))
 })
 
-
+# CUMULATIVE INFECTIONS ALWAYS POSITIVE
+test_that("cumulative infections", {
+  parameters <- generate_parameters(omega = 0.5, S1b_init = c(100,100), S1c_init = c(100,100))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("cumuInf", names(result)))]
+  expect_true(all(diff(xx[[1]][,1]) >= 0))
+  expect_true(all(diff(xx[[1]][,2]) >= 0))
+})
 
 # FORCE OF INFECTION SET TO ZERO
 ###################################################################################################################################
@@ -425,6 +441,7 @@ test_that("prevalence", {
   # this will need to be tested against overall prevalence
   #over_prevalence = rowSums(do.call(cbind, all_infected)) / rowSums(do.call(cbind, all))
 
+  # result$prev
 })
 
 #  OVERALL PREVALENCE IS EQUAL TO WEIGHTED AVERAGE OF ALL PREVALENCES
@@ -433,6 +450,17 @@ test_that("prevalence", {
 ###################################################################################################################################
 ###################################################################################################################################
 
+# set all mortality to zero, set births to zero
+# incidence can be calculated by:
+# lambda * S
+
+test_that("comparing incidence", {
+  relevant_parameters = parameter_names[c(grep("gamma[0-9]4", parameter_names))]
+  parameters <- generate_parameters(I11_init = c(100,100), set_null = relevant_parameters)
+  result = run_model(parameters, main_model, time)
+  all_infected = result[c(grep("I[0-9]5", names(result)))]
+  expect_true(all(unlist(all_infected) == 0))
+})
 
 # CALCULATING FORCE OF INFECTION
 ###################################################################################################################################

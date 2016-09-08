@@ -12,6 +12,24 @@ devtools::load_all()
 
 devtools::test()
 
+
+
+# one run test
+
+parameters <- generate_parameters(theta = 0.5)
+result = run_model(parameters, main_model, time)
+xx <- result[grep("cumu", names(result))] # grepping all the Ss and Is
+N <- rowSums(do.call(cbind, xx))
+
+
+
+
+
+
+
+
+
+
 number_simulations = 100
 
 parms = lhs_parameters(number_simulations)
