@@ -26,7 +26,7 @@ lhs_parameters <- function(n, sample = NULL) {
   lapply(samples_list, function(x) generate_parameters(parameters = x))
 }
 
-generate_parameters <- function(..., parameters = list(...)) {
+generate_parameters <- function(..., parameters = list(...), set_null = list(...)) {
   defaults <- list(S0_init = c(2000,2000),
                    S1a_init = c(0,0),
                    S1b_init = c(0,0),
@@ -49,6 +49,8 @@ generate_parameters <- function(..., parameters = list(...)) {
                    I43_init = c(0,0),
                    I44_init = c(0,0),
                    I45_init = c(0,0),
+
+                   cumuInf_init = c(0,0),
 
 
                    mu = c(0.02,0.02),
@@ -132,18 +134,34 @@ generate_parameters <- function(..., parameters = list(...)) {
                    fc_t = c(1985, 1990, 1998, 2016),
                    fc_y = cbind(c(0, 0, 0.7, 0.9), c(0, 0, 0.3, 0.5)),
 
-                   fP = c(0.5,0.3),
+                   fP_t = c(1985, 2014, 2015, 2016),
+                   fP_y = cbind(c(0, 0, 0.99, 0), c(0, 0, 0, 0)),
                    n = c(10,3),
                    #n = 0,
 
                    R = c(1,1),
                    omega = 0.5,
-                   theta = 0.5
+                   theta = 0.5,
+
+                   M = cbind(c(0.2, 0.2, 0.2, 0.2, 0.2),
+                             c(0.2, 0.2, 0.2, 0.2, 0.2),
+                             c(0.2, 0.2, 0.2, 0.2, 0.2),
+                             c(0.2, 0.2, 0.2, 0.2, 0.2),
+                             c(0.2, 0.2, 0.2, 0.2, 0.2)),
+
+                   A = cbind(c(0.33, 0.33, 0.33),
+                             c(0.33, 0.33, 0.33),
+                             c(0.33, 0.33, 0.33))
   )
+
+  if (length(set_null) > 0L) {
+    defaults = modifyList(defaults, lapply(defaults[match(set_null, names(defaults))], function(x) x*0))
+  }
 
   if (length(parameters) == 0L) {
     return(defaults)
   }
+
   if (is.null(names(parameters)) || !all(nzchar(names(parameters)))) {
     stop("All arguments must be named")
   }
@@ -152,10 +170,10 @@ generate_parameters <- function(..., parameters = list(...)) {
     stop("Unknown arguments: ", extra)
   }
 
+
+  # list of parameters that depend on others
   ret <- modifyList(defaults, parameters)
   ret$omega <- c(ret$omega, 1-(ret$omega))
-  # list of parameters that depend on others
-  # ret$epsilon2 <- ret$epsilon^2
 
   ret
 }

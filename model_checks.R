@@ -1,3 +1,9 @@
+
+
+# script now superfluous
+
+
+
 # this script will be converted to a package
 
 mod <- gen(user = parameters)
@@ -66,7 +72,7 @@ if(!all(diff(result[[2]]) > 0) || !all(diff(diff(result[[2]])) > 0))
 # test 3: declining population size?!
 
 # test 4: epsilon * N ?? doesn't seem to follow exactly...
-  
+
 # 0.002 * result[[2]]
 # diff(result[[2]])
 # these two should be the same
@@ -203,7 +209,7 @@ if(!all(result[[1]]==0))
 
 
 
-# 
+#
 
 
 print("done")
