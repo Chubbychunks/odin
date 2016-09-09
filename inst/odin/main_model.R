@@ -160,7 +160,7 @@ prev[] = 100 * (I01[i] + I11[i] + I02[i] + I03[i] + I04[i] + I05[i] +
 prev_1 = prev[1]
 output(prev_1) = prev_1
 
-output(prev[]) = prev
+# output(prev[]) = prev
 
 # in future nb eP eC constants
 # lambda[,] = compute_lambda(S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
