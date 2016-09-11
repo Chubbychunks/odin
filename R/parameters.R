@@ -3,14 +3,18 @@
 # unless I put something in the args of the function, eg sample = mu
 lhs_parameters <- function(n, sample = NULL) {
   ranges <- rbind(
-    mu = c(1/50, 1/42),
+    mu = c(1/50, 1/42), # sampling LHS as a rate.....!!!!
     mu = c(1/47, 1/40),
 
-    gamma01 = c(2, 6.25),
-    gamma01 = c(2, 6.25), # from Mathieu's parameters
+    gamma01 = c(0.16, 0.5), # from Mathieu's parameters  IN YEARS
+#     gamma01 = c(2, 6.25), # from Mathieu's parameters
 
-    gamma02 = c(0.85, 2.22),
-    gamma02 = c(0.85, 2.22),
+    SC_to_200_349 = c(2.2, 4.6), # seroconversion to CD4 stage 4 IN YEARS
+#     SC_to_200_349 = c(1/4.6, 1/2.2), # seroconversion to CD4 stage 4
+
+    gamma04 = c(3.9, 5), # from Mathieu's parameters  IN YEARS
+#     gamma04 = c(3.9, 5), # from Mathieu's parameters
+
     epsilon = c(0.026, 0.028),
     omega = c(0.4, 0.6))
   if (!is.null(sample)) {
@@ -23,6 +27,21 @@ lhs_parameters <- function(n, sample = NULL) {
     lapply(i, function(j) x[j])
   }
   samples_list <- apply(samples, 1, f)
+
+  # parameters dependent on others
+  prog_rate = 2/(samples_list[[1]]$SC_to_200_349 - samples_list[[1]]$gamma01)
+  samples_list[[1]]$gamma02 = c(prog_rate, prog_rate)
+  samples_list[[1]]$gamma03 = c(prog_rate, prog_rate)
+
+  # converting durations into rates
+  samples_list[[1]]$gamma01 = 1/samples_list[[1]]$gamma01
+  samples_list[[1]]$SC_to_200_349 = 1/samples_list[[1]]$SC_to_200_349
+  samples_list[[1]]$gamma04 = 1/samples_list[[1]]$gamma04
+
+  # filling in other parameters
+  samples_list[[1]]$omega <- c(samples_list[[1]]$omega, 1-(samples_list[[1]]$omega))
+
+
   lapply(samples_list, function(x) generate_parameters(parameters = x))
 }
 
@@ -96,6 +115,8 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    zetaa = c(0.1,0.1),
                    zetab = c(0.1,0.1),
                    zetac = c(0.1,0.1),
+
+                   SC_to_200_349 = c(0.3, 0.3),
 
                    alpha01 = c(0.01,0.01),
                    alpha02 = c(0.01,0.01),
@@ -173,7 +194,11 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
 
   # list of parameters that depend on others
   ret <- modifyList(defaults, parameters)
-  ret$omega <- c(ret$omega, 1-(ret$omega))
+
+  if(length((ret$omega) == 1))
+  {
+    ret$omega <- c(ret$omega, 1-(ret$omega))
+  }
 
   ret
 }
