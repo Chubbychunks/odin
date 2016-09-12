@@ -39,7 +39,14 @@ lhs_parameters <- function(n, sample = NULL) {
   samples_list[[1]]$gamma04 = 1/samples_list[[1]]$gamma04
 
   # filling in other parameters
+  samples_list[[1]]$gamma01 <- c(samples_list[[1]]$gamma01, samples_list[[1]]$gamma01)
+  samples_list[[1]]$gamma04 <- c(samples_list[[1]]$gamma04, samples_list[[1]]$gamma04)
   samples_list[[1]]$omega <- c(samples_list[[1]]$omega, 1-(samples_list[[1]]$omega))
+
+  samples_list[[1]]$gamma22 <- samples_list[[1]]$gamma02
+  samples_list[[1]]$gamma23 <- samples_list[[1]]$gamma03
+  samples_list[[1]]$gamma24 <- samples_list[[1]]$gamma04
+
 
 
   lapply(samples_list, function(x) generate_parameters(parameters = x))
@@ -161,7 +168,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    #n = 0,
 
                    R = c(1,1),
-                   omega = 0.5,
+                   omega = c(0.5, 0.5),
                    theta = 0.5,
 
                    M = cbind(c(0.2, 0.2, 0.2, 0.2, 0.2),
@@ -195,10 +202,6 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
   # list of parameters that depend on others
   ret <- modifyList(defaults, parameters)
 
-  if(length((ret$omega) == 1))
-  {
-    ret$omega <- c(ret$omega, 1-(ret$omega))
-  }
 
   ret
 }
