@@ -96,15 +96,21 @@ fP[] = interpolate(fP_t, fP_y, "linear")
 
 # as there are only 2 groups so far, we can leave all of the parameters here as vectors, but they will be matrices!
 # lambda[2,1] is the force of infection of 1 on 2
-lambda[2,1] = compute_lambda(c1_new, S0[1], S1a[1], S1b[1], S1c[1], I01[1], I11[1], I02[1], I03[1], I04[1], I05[1],
-                          I22[1], I23[1], I24[1], I25[1], I32[1], I33[1], I34[1], I35[1],
-                          I42[1], I43[1], I44[1], I45[1],
-                        N[1], beta[1], R[1], fc[1], fP[1], n[1], eP[1], ec[1])
+# lambda[2,1] = compute_lambda(c1_new, S0[1], S1a[1], S1b[1], S1c[1], I01[1], I11[1], I02[1], I03[1], I04[1], I05[1],
+#                           I22[1], I23[1], I24[1], I25[1], I32[1], I33[1], I34[1], I35[1],
+#                           I42[1], I43[1], I44[1], I45[1],
+#                         N[1], beta[1], R[1], fc[1], fP[1], n[1], eP[1], ec[1])
+#
+# lambda[1,2] = compute_lambda(c2_new, S0[2], S1a[2], S1b[2], S1c[2], I01[2], I11[2], I02[2], I03[2], I04[2], I05[2],
+#                              I22[2], I23[2], I24[2], I25[2], I32[2], I33[2], I34[2], I35[2],
+#                              I42[2], I43[2], I44[2], I45[2],
+#                              N[2], beta[2], R[2], fc[2], fP[2], n[2], eP[2], ec[2])
+#
 
-lambda[1,2] = compute_lambda(c2_new, S0[2], S1a[2], S1b[2], S1c[2], I01[2], I11[2], I02[2], I03[2], I04[2], I05[2],
-                             I22[2], I23[2], I24[2], I25[2], I32[2], I33[2], I34[2], I35[2],
-                             I42[2], I43[2], I44[2], I45[2],
-                             N[2], beta[2], R[2], fc[2], fP[2], n[2], eP[2], ec[2])
+lambda[,] = compute_lambda(c2_new, S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+                             I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
+                             I42[j], I43[j], I44[j], I45[j],
+                             N[j], beta[j], R[j], fc[j], fP[j], n[j], eP[j], ec[j])
 
 lambda[1,1] = 0
 lambda[2,2] = 0
@@ -345,7 +351,7 @@ dim(fP_t) = user()
 dim(fP_y) = user()
 
 #dimming
-Ncat = 2
+Ncat = 5
 
 #parameters
 dim(mu) = Ncat
