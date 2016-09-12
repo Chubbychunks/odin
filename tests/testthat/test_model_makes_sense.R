@@ -11,6 +11,15 @@ test_that("example", {
 
 #result = run_model(parameters, main_model, time, output_vars = c("Ntot", "prev_client"))
 
+#Ncat works?
+test_that("Ncat", {
+  for (Ncat in c(2, 7))
+  {
+    parameters <- generate_parameters(Ncat = Ncat)
+    result = run_model(parameters, main_model, time)
+    expect_equal(ncol(result$S0), Ncat)
+  }
+})
 
 
 # NO SEEDING OF EPIDEMIC
