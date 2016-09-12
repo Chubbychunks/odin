@@ -84,7 +84,9 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2) {
 }
 
 generate_parameters <- function(..., parameters = list(...), set_null = list(...), Ncat = 2) {
-  defaults <- list(S0_init = rep_len(2000, Ncat),
+  defaults <- list(Ncat = Ncat,
+
+                   S0_init = rep_len(2000, Ncat),
                    S1a_init = rep_len(0, Ncat),
                    S1b_init = rep_len(0, Ncat),
                    S1c_init = rep_len(0, Ncat),

@@ -351,7 +351,7 @@ dim(fP_t) = user()
 dim(fP_y) = user()
 
 #dimming
-Ncat = 5
+Ncat = user()
 
 #parameters
 dim(mu) = Ncat
