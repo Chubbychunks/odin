@@ -27,7 +27,7 @@ test_that("no incidence", {
 
 # no infected, then population sizes remain equal between groups?
 test_that("risk group sizes equal", {
-  parameters <- generate_parameters(omega = 0.5, I11_init = c(0,0), I01_init = c(0,0), S1a_init = c(100,100), S1b_init = c(100,100), S1c_init = c(100,100))
+  parameters <- generate_parameters(I11_init = c(0,0), I01_init = c(0,0), S1a_init = c(100,100), S1b_init = c(100,100), S1c_init = c(100,100))
   result = run_model(parameters, main_model, time)
   N_client <- result[c(grep("N_client", names(result)))]
   N_FSW <- result[c(grep("N_FSW", names(result)))]
@@ -36,7 +36,7 @@ test_that("risk group sizes equal", {
 
 # no infected, then 0 cumulative infections
 test_that("cumulative infections", {
-  parameters <- generate_parameters(omega = 0.5, I11_init = c(0,0), I01_init = c(0,0), S1a_init = c(100,100), S1b_init = c(100,100), S1c_init = c(100,100))
+  parameters <- generate_parameters(I11_init = c(0,0), I01_init = c(0,0), S1a_init = c(100,100), S1b_init = c(100,100), S1c_init = c(100,100))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("cumuInf", names(result)))]
   expect_true(all(unlist(xx) == 0))
@@ -108,7 +108,7 @@ test_that("all compartments positive", {
 
 # CUMULATIVE INFECTIONS ALWAYS POSITIVE
 test_that("cumulative infections", {
-  parameters <- generate_parameters(omega = 0.5, S1b_init = c(100,100), S1c_init = c(100,100))
+  parameters <- generate_parameters(S1b_init = c(100,100), S1c_init = c(100,100))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("cumuInf", names(result)))]
   expect_true(all(diff(xx[[1]][,1]) >= 0))

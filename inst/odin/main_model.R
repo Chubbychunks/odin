@@ -157,10 +157,7 @@ output(N_client) = N_client
 
 
 
-<<<<<<< HEAD
 # output(prev[]) = prev
-=======
->>>>>>> 748abc78109a64c219d1e73f7f4d1311fb3ac938
 
 # in future nb eP eC constants
 # lambda[,] = compute_lambda(S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],

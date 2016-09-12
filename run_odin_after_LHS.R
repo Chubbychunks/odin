@@ -25,7 +25,7 @@ devtools::test()
 
 # RUNNING MULTIPLE SIMULATIONS
 
-number_simulations = 100
+number_simulations = 3
 
 parms = lhs_parameters(number_simulations)
 
