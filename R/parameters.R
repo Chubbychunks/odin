@@ -40,14 +40,11 @@ fix_parameters <- function(x, Ncat) {
 # the parameters below will be sampled from an LHS and will replace their respective defaults
 # unless I put something in the args of the function, eg sample = mu
 lhs_parameters <- function(n, sample = NULL, Ncat = 2) {
+  mu <- matrix(rep(c(1/50, 1/42), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("mu", Ncat), NULL))
+  omega <- matrix(rep(c(0.4, 0.6), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("omega", Ncat), NULL))
+
   ranges <- rbind(
-    mu = c(1/50, 1/42), # sampling LHS as a rate.....!!!!
-    mu = c(1/47, 1/40),
-
-    mu = c(1/47, 1/40),
-    mu = c(1/47, 1/40),
-    mu = c(1/47, 1/40),
-
+    mu,
 
     gamma01 = c(0.16, 0.5), # from Mathieu's parameters  IN YEARS
     #     gamma01 = c(2, 6.25), # from Mathieu's parameters
@@ -61,11 +58,7 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2) {
     ART_RR = c(2, 3), # from Mathieu's parameters  IN YEARS
 
     epsilon = c(0.026, 0.028),
-    omega = c(0.4, 0.6),
-    omega = c(0.4, 0.6),
-    omega = c(0.4, 0.6),
-    omega = c(0.4, 0.6),
-    omega = c(0.4, 0.6)
+    omega
     )
   if (!is.null(sample)) {
     ranges <- ranges[rownames(ranges) %in% sample, , drop=FALSE]

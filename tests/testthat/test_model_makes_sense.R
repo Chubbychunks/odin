@@ -19,7 +19,7 @@ test_that("example", {
 
 # no infected, no incidence?
 test_that("no incidence", {
-  for (Ncat in c(2, 5))
+  for (Ncat in c(2, 7))
   {
     parameters <- generate_parameters(Ncat = Ncat, I11_init = rep(0, Ncat), I01_init = rep(0,Ncat), S1a_init = rep(100,Ncat), S1b_init = rep(100,Ncat), S1c_init = rep(100,Ncat))
     result = run_model(parameters, main_model, time)
@@ -50,6 +50,9 @@ test_that("cumulative infections", {
 # GROWTH RATE AND DEMOGRAPHY
 ###################################################################################################################################
 ###################################################################################################################################
+
+
+# add test that there are the correct amounts of omega, mu etc
 
 test_that("omega adds to 1", {
   parameters <- lhs_parameters(1)
