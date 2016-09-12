@@ -231,7 +231,6 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
     stop("Unknown arguments: ", extra)
   }
 
-
   # list of parameters that depend on others
   ret <- modifyList(defaults, parameters)
 

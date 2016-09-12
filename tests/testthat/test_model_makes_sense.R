@@ -19,10 +19,14 @@ test_that("example", {
 
 # no infected, no incidence?
 test_that("no incidence", {
-  parameters <- generate_parameters(I11_init = c(0,0), I01_init = c(0,0), S1a_init = c(100,100), S1b_init = c(100,100), S1c_init = c(100,100))
-  result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("I[0-9]", names(result)))]
-  expect_true(all(unlist(xx) == 0))
+  for (Ncat in c(2, 5))
+  {
+    parameters <- generate_parameters(Ncat = Ncat, I11_init = rep(0, Ncat), I01_init = rep(0,Ncat), S1a_init = rep(100,Ncat), S1b_init = rep(100,Ncat), S1c_init = rep(100,Ncat))
+    result = run_model(parameters, main_model, time)
+    xx <- result[c(grep("I[0-9]", names(result)))]
+    expect_true(all(unlist(xx) == 0))
+    expect_equal(ncol(result$S0), Ncat)
+  }
 })
 
 # no infected, then population sizes remain equal between groups?
