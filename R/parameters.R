@@ -203,8 +203,11 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
 
                    M = matrix(1/Ncat, Ncat, Ncat),
 
-                   # A = matrix(1/NAge, NAge, NAge),
-
+                   # A_F = matrix(1/NAge, NAge, NAge),
+                   # A_M = matrix(1/NAge, NAge, NAge),
+                   
+#                    p = matrix(1, NAge, NAge),
+                   
                    ART_RR = 2.5
   )
 

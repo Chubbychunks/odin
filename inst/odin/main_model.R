@@ -73,7 +73,7 @@ alphaItot[] =
   alpha32[i] * I32[i] + alpha33[i] * I33[i] + alpha34[i] * I34[i] + alpha35[i] * I35[i] +
   alpha42[i] * I42[i] + alpha43[i] * I43[i] + alpha44[i] * I44[i] + alpha45[i] * I45[i]
 
-# BALANCING OF SEX ACTS
+# BALANCING OF PARTNERSHIPS
 ##############################################################################
 
 B = (c[2] * N[2])/(c[1] * N[1])
@@ -82,6 +82,18 @@ c1_new = c[1] * B^theta
 c2_new = c[2] * B^(-(1-theta))
 
 B_check = (c2_new * N[2])/(c1_new * N[1])
+
+
+
+
+
+
+# PROBABILITY OF SEXUAL CONTACT
+##############################################################################
+
+p = 1
+
+
 
 # INTERPOLATING FUNCTIONS
 ##############################################################################
@@ -105,6 +117,34 @@ fP[] = interpolate(fP_t, fP_y, "linear")
 #                              I22[2], I23[2], I24[2], I25[2], I32[2], I33[2], I34[2], I35[2],
 #                              I42[2], I43[2], I44[2], I45[2],
 #                              N[2], beta[2], R[2], fc[2], fP[2], n[2], eP[2], ec[2])
+#
+
+# k = group of S; i = age of S; j = group of I; l = age of I;
+
+# going into compute_lambda:
+# SPECIFIC TO k, i, j, l
+
+# partner change rate (c) of the suseptible k, i and infected j, l (matrix 21x21; doesn't vary by s, a; updates every timestep; FUNCTION?!)
+# probability of sexual contact (p) of the suseptible k, i and infected j, l (matrix 21x21; doesn't vary by s, a; fixed at beginning of simulation)
+# all care/disease states (s, a) of the infected j, l
+# efficacy of PrEP (eP), which depends on PrEP adherence category (vector of length 4)
+# transmission rate (beta) of the susceptible k, i (matrix 7x3; doesn't depend on s, a)
+# relative risk factors (R) of care state (a) and stage of infection (s) (matrix 5 x 5)
+# number of sex acts per partnership (n) of the suseptible k, i and infected j, l (matrix 21x21; doesn't vary by s, a; fixed at beginning of simulation)
+# fraction condom protected (fc) of the suseptible k, i and infected j, l (matrix 21x21; doesn't vary by s, a; updates every timestep with interpolating function)
+# fraction PrEP protected (fP) of the susceptible k, i (matrix 7x3; doesn't depend on s, a; set all to 1 for now)
+
+# lambda_0[,] = compute_lambda(c_new, p, S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+#                            I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
+#                            I42[j], I43[j], I44[j], I45[j],
+#                            N[j], beta[j], R[j], fc[j], fP[j], n[j], eP[j], ec[j])
+
+
+
+
+
+
+
 #
 
 lambda[,] = compute_lambda(c2_new, p, S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
