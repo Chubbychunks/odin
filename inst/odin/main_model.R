@@ -107,7 +107,7 @@ fP[] = interpolate(fP_t, fP_y, "linear")
 #                              N[2], beta[2], R[2], fc[2], fP[2], n[2], eP[2], ec[2])
 #
 
-lambda[,] = compute_lambda(c2_new, S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda[,] = compute_lambda(c2_new, p, S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                              I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                              I42[j], I43[j], I44[j], I45[j],
                              N[j], beta[j], R[j], fc[j], fP[j], n[j], eP[j], ec[j])
