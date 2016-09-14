@@ -76,14 +76,14 @@ alphaItot[] =
 # BALANCING OF PARTNERSHIPS
 ##############################################################################
 
-B = (c[2] * N[2])/(c[1] * N[1])
+B = (c[2,1] * N[2])/(c[1,1] * N[1])
 
-c1_new = c[1] * B^theta
-c2_new = c[2] * B^(-(1-theta))
+c1_new = c[1,1] * B^theta
+c2_new = c[2,1] * B^(-(1-theta))
 
 B_check = (c2_new * N[2])/(c1_new * N[1])
 
-
+# functions to balance partnerships
 
 
 
@@ -133,6 +133,8 @@ fP[] = interpolate(fP_t, fP_y, "linear")
 # number of sex acts per partnership (n) of the suseptible k, i and infected j, l (matrix 21x21; doesn't vary by s, a; fixed at beginning of simulation)
 # fraction condom protected (fc) of the suseptible k, i and infected j, l (matrix 21x21; doesn't vary by s, a; updates every timestep with interpolating function)
 # fraction PrEP protected (fP) of the susceptible k, i (matrix 7x3; doesn't depend on s, a; set all to 1 for now)
+
+# lambda_0[,] requires kijl... but at the moment only inputs ki?
 
 # lambda_0[,] = compute_lambda(c_new, p, S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
 #                            I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
@@ -366,7 +368,7 @@ alpha45[] = user()
 # FOI parameters
 
 beta[] = user()
-c[] = user()
+c[,] = user()
 ec[] = user()
 eP[] = user()
 n[] = user()
@@ -392,6 +394,10 @@ dim(fP_y) = user()
 
 #dimming
 Ncat = user()
+Nage = user()
+
+Ncat_times_Nage = Ncat * Nage
+
 
 #parameters
 dim(mu) = Ncat
@@ -451,7 +457,7 @@ dim(alpha43) = Ncat
 dim(alpha44) = Ncat
 dim(alpha45) = Ncat
 dim(beta) = Ncat
-dim(c) = Ncat
+dim(c) = c(Ncat_times_Nage, Ncat_times_Nage)
 dim(ec) = Ncat
 dim(eP) = Ncat
 #dim(epsilon) = Ncat

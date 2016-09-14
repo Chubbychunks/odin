@@ -1,5 +1,5 @@
 # parameteres which depend on others, etc
-fix_parameters <- function(x, Ncat) {
+fix_parameters <- function(x, Ncat, Nage) {
   # parameters dependent on others
   prog_rate = 2/(x$SC_to_200_349 - x$gamma01)
   x$gamma02 = rep_len(prog_rate, Ncat)
@@ -39,7 +39,7 @@ fix_parameters <- function(x, Ncat) {
 #
 # the parameters below will be sampled from an LHS and will replace their respective defaults
 # unless I put something in the args of the function, eg sample = mu
-lhs_parameters <- function(n, sample = NULL, Ncat = 2) {
+lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1) {
   mu <- matrix(rep(c(1/50, 1/42), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("mu", Ncat), NULL))
   omega <- matrix(rep(c(0.4, 0.6), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("omega", Ncat), NULL))
 
@@ -76,8 +76,9 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2) {
   lapply(samples_list, function(x) generate_parameters(parameters = x, Ncat = Ncat))
 }
 
-generate_parameters <- function(..., parameters = list(...), set_null = list(...), Ncat = 2) {
+generate_parameters <- function(..., parameters = list(...), set_null = list(...), Ncat = 2, Nage = 1) {
   defaults <- list(Ncat = Ncat,
+                   Nage = Nage,
 
                    S0_init = rep_len(2000, Ncat),
                    S1a_init = rep_len(0, Ncat),
@@ -178,7 +179,11 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
 
                    beta = rep_len(0.193,Ncat),
                    #beta = 0,
-                   c = rep_len(4,Ncat),
+#                  c = rep_len(4,Ncat),
+
+                   c = matrix(2, ncol = Ncat * Nage, nrow = Ncat * Nage), 
+
+
                    ec = rep_len(0.85,Ncat),
                    # ec = rep_len(1,1),
 
