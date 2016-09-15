@@ -76,9 +76,21 @@ alphaItot[] =
 # BALANCING OF PARTNERSHIPS
 ##############################################################################
 
-B = (c[2,1] * N[2])/(c[1,1] * N[1])
 
-c1_new = c[1,1] * B^theta
+B[,] <- if (i < j && c[i,j] > 0) c[j,i] * N[j] / (c[i, j] * N[i]) else 0
+cstar[,] <- c[i,j] * (if (i > j) B[j, i]^(theta - 1) else B[i, j]^theta)
+dim(B) <- c(Ncat, Ncat)
+dim(cstar) <- c(Ncat, Ncat)
+
+# # when 4d happens
+# B[,,,] <- if (i < k && c[i,j,k,l] > 0) c[j,k,i,l] * N[j,l] / (c[i,j,k,l] * N[i,k]) else 0
+# cstar[,,,] <- c[i,j,k,l] * (if (i > k) B[k, l, i, j]^(theta - 1) else B[i, j, k, l]^theta)
+# dim(B) <- c(Ncat, Nage, Ncat, Nage)
+# dim(cstar) <- c(Ncat, Nage, Ncat, Nage)
+
+
+B = (c[2,1] * N[2])/(c[1,1] * N[1])
+c1_new = c[1,2] * B^theta
 c2_new = c[2,1] * B^(-(1-theta))
 
 B_check = (c2_new * N[2])/(c1_new * N[1])
@@ -166,6 +178,12 @@ lambda[,] = compute_lambda(c2_new, p, S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11
 
 lambda[1,1] = 0
 lambda[2,2] = 0
+lambda[3,3] = 0
+lambda[4,4] = 0
+lambda[5,5] = 0
+lambda[6,6] = 0
+lambda[7,7] = 0
+
 
 lambda_sum[] = sum(lambda[i,])
 
