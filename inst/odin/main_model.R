@@ -89,12 +89,12 @@ dim(cstar) <- c(Ncat, Ncat)
 # dim(cstar) <- c(Ncat, Nage, Ncat, Nage)
 
 
-B = (c[2,1] * N[2])/(c[1,1] * N[1])
-c1_new = c[1,2] * B^theta
-c2_new = c[2,1] * B^(-(1-theta))
+# B = (c[2,1] * N[2])/(c[1,1] * N[1])
+# c1_new = c[1,2] * B^theta
+# c2_new = c[2,1] * B^(-(1-theta))
 
-B_check = (c2_new * N[2])/(c1_new * N[1])
-
+# B_check = (c2_new * N[2])/(c1_new * N[1])
+B_check = 1
 # functions to balance partnerships
 
 
@@ -157,12 +157,6 @@ fP[] = interpolate(fP_t, fP_y, "linear")
 # 1. H-FSW; 2. L-FSW; 3. GPF; 4. H-Clients; 5. L-Clients; 6. Boyfriends; 7. GPM
 # 1. 15-24; 2. 25-34; 3. 35-59
 
-# assuming 7 risk groups and 3 age groups.
-# lambda_0[9, 10] is the force of infection of high risk clients 15-24 on GPF 35-59
-lambda_0[9, 10] = compute_lambda(c_new[9, 10], p[9, 10], S0[4, 1], S1a[4, 1], S1b[4, 1], S1c[4, 1], I01[4, 1], I11[4, 1],
-                                 I02[4, 1], I03[4, 1], I04[4, 1], I05[4, 1], I22[4, 1], I23[4, 1], I24[4, 1], I25[4, 1],
-                                 I32[4, 1], I33[4, 1], I34[4, 1], I35[4, 1], I42[4, 1], I43[4, 1], I44[4, 1], I45[4, 1],
-                                 N[4, 1], beta[3, 3], R[], fc[9, 10], fP[3, 3], n[9, 10], eP[1], ec[3, 3])
 # R is a matrix, because it varies with s and a (which is being summed over in the function)
 # first element of vector eP, because lambda 0...
 
@@ -171,7 +165,7 @@ lambda_0[9, 10] = compute_lambda(c_new[9, 10], p[9, 10], S0[4, 1], S1a[4, 1], S1
 
 #
 
-lambda[,] = compute_lambda(c2_new, p, S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda[,] = compute_lambda(cstar[i,j], p, S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                            I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                            I42[j], I43[j], I44[j], I45[j],
                            N[j], beta[j], R[j], fc[j], fP[j], n[j], eP[j], ec[j])
@@ -563,7 +557,7 @@ dim(E1c) = Ncat
 
 dim(lambda) = c(Ncat, Ncat)
 
-lambda_0 = c(Ncat_times_Nage, Ncat_times_Nage)
+# dim(lambda_0) = c(Ncat_times_Nage, Ncat_times_Nage)
 
 dim(lambda_sum) = Ncat
 
