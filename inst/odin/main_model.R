@@ -78,7 +78,6 @@ alphaItot[] =
 
 
 B[,] <- if (i < j && c[i,j] > 0) c[j,i] * N[j] / (c[i, j] * N[i]) else 0
-# B[,] <- 1
 cstar[,] <- c[i,j] * (if (i > j) B[j, i]^(theta - 1) else B[i, j]^theta)
 dim(B) <- c(Ncat, Ncat)
 dim(cstar) <- c(Ncat, Ncat)
@@ -104,7 +103,7 @@ B_check = 1
 # PROBABILITY OF SEXUAL CONTACT
 ##############################################################################
 
-p = 1
+# p = 1
 
 
 
@@ -166,7 +165,7 @@ fP[] = interpolate(fP_t, fP_y, "linear")
 
 #
 
-lambda[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p, S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                            I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                            I42[j], I43[j], I44[j], I45[j],
                            N[j], beta[j], R[j], fc[j], fP[j], n[j], eP[j], ec[j])
@@ -480,7 +479,8 @@ dim(alpha43) = Ncat
 dim(alpha44) = Ncat
 dim(alpha45) = Ncat
 dim(beta) = Ncat
-dim(c) = c(Ncat_times_Nage, Ncat_times_Nage)
+dim(c) = c(Ncat, Ncat)
+dim(p) = c(Ncat, Ncat)
 dim(ec) = Ncat
 dim(eP) = Ncat
 #dim(epsilon) = Ncat

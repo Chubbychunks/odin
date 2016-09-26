@@ -59,7 +59,7 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1) {
 
     epsilon = c(0.026, 0.028),
     omega
-    )
+  )
   if (!is.null(sample)) {
     ranges <- ranges[rownames(ranges) %in% sample, , drop=FALSE]
   }
@@ -179,9 +179,10 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
 
                    beta = rep_len(0.193,Ncat),
                    #beta = 0,
-#                  c = rep_len(4,Ncat),
+                   #                  c = rep_len(4,Ncat),
 
-                   c = matrix(2, ncol = Ncat * Nage, nrow = Ncat * Nage), 
+                   c = matrix(2, ncol = Ncat, nrow = Ncat),
+                   p = matrix(2, ncol = Ncat, nrow = Ncat),
 
 
                    ec = rep_len(0.85,Ncat),
@@ -210,9 +211,9 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
 
                    # A_F = matrix(1/NAge, NAge, NAge),
                    # A_M = matrix(1/NAge, NAge, NAge),
-                   
-#                    p = matrix(1, NAge, NAge),
-                   
+
+                   #                    p = matrix(1, NAge, NAge),
+
                    ART_RR = 2.5
   )
 
