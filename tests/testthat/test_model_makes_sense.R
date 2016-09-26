@@ -11,6 +11,26 @@ test_that("example", {
 
 #result = run_model(parameters, main_model, time, output_vars = c("Ntot", "prev_client"))
 
+# devtools::load_all()
+# parameters <- generate_parameters(Ncat = 2)
+# result = run_model(parameters, main_model, time)
+# parameters <- generate_parameters(Ncat = 7)
+# gctorture(TRUE)
+# for (i in 1:50)
+# result = run_model(parameters, main_model, time)
+#
+# devtools::load_all()
+# parameters <- generate_parameters(Ncat = 7)
+# gctorture()
+# result = run_model(parameters, main_model, time)
+#
+#
+# mod <- main_model(user = parameters)
+# all_results <- mod$transform_variables(mod$run(time))
+#
+# result = run_model(parameters, main_model, time)
+
+
 #Ncat works?
 test_that("Ncat", {
   for (Ncat in c(2, 7))

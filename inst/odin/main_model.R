@@ -78,6 +78,7 @@ alphaItot[] =
 
 
 B[,] <- if (i < j && c[i,j] > 0) c[j,i] * N[j] / (c[i, j] * N[i]) else 0
+# B[,] <- 1
 cstar[,] <- c[i,j] * (if (i > j) B[j, i]^(theta - 1) else B[i, j]^theta)
 dim(B) <- c(Ncat, Ncat)
 dim(cstar) <- c(Ncat, Ncat)
@@ -165,18 +166,18 @@ fP[] = interpolate(fP_t, fP_y, "linear")
 
 #
 
-lambda[,] = compute_lambda(cstar[i,j], p, S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p, S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                            I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                            I42[j], I43[j], I44[j], I45[j],
                            N[j], beta[j], R[j], fc[j], fP[j], n[j], eP[j], ec[j])
 
-lambda[1,1] = 0
-lambda[2,2] = 0
-lambda[3,3] = 0
-lambda[4,4] = 0
-lambda[5,5] = 0
-lambda[6,6] = 0
-lambda[7,7] = 0
+# lambda[1,1] = 0
+# lambda[2,2] = 0
+# lambda[3,3] = 0
+# lambda[4,4] = 0
+# lambda[5,5] = 0
+# lambda[6,6] = 0
+# lambda[7,7] = 0
 
 
 lambda_sum[] = sum(lambda[i,])
