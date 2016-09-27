@@ -164,6 +164,7 @@ fP[] = interpolate(fP_t, fP_y, "linear")
 
 #
 
+#FOI of j on i
 lambda[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                            I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                            I42[j], I43[j], I44[j], I45[j],
@@ -191,6 +192,8 @@ Ntot = sum(N)
 N_FSW = N[1]
 N_client = N[2]
 
+frac_N[] = N[i] / Ntot
+
 # PREVALENCE
 # n.b. prevalence for all ages in each risk group will be useful, so maybe one prev array is too much info in one output
 prev_FSW = 100 * (I01[1] + I11[1] + I02[1] + I03[1] + I04[1] + I05[1] +
@@ -211,13 +214,13 @@ output(new_people) = new_people
 output(B_check) = B_check
 output(fc[]) = fc
 output(fP[]) = fP
-# output(N[]) = N # is it worth outputting N? Once we have ages, it'll be better to have separate Ns for risk groups
+output(N[]) = N # is it worth outputting N? Once we have ages, it'll be better to have separate Ns for risk groups... but eugene ages can make N a matrix!
 output(prev_FSW) = prev_FSW
 output(prev_client) = prev_client
 output(prev[]) = prev
 output(N_FSW) = N_FSW
 output(N_client) = N_client
-
+output(frac_N[]) = frac_N
 
 # INCIDENCE RATE
 
@@ -415,6 +418,9 @@ dim(fP_t) = user()
 dim(fP_y) = user()
 Ncat = user()
 Nage = user()
+
+
+
 # DIMMING
 
 
@@ -423,6 +429,7 @@ Nage = user()
 #parameters
 
 dim(omega) = Ncat
+dim(frac_N) = Ncat
 
 # care cascade
 dim(mu) = Ncat

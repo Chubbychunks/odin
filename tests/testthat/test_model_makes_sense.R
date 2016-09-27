@@ -83,11 +83,36 @@ test_that("cumulative infections", {
 
 # add test that there are the correct amounts of omega, mu etc
 
+
 test_that("omega adds to 1", {
   parameters <- lhs_parameters(1)
   expect_true(sum(parameters[[1]]$omega) == 1)
 })
 
+test_that("omega keeps consistent population?", {
+  parameters <- generate_parameters(omega = c(0.01, 0.02, 0.5, 0.1, 0.12, 0.03, 0.22), Ncat = 7, beta = c(0,0,0,0,0,0,0),
+                                    S0_init = c(100*0.01, 100*0.02, 100*0.5, 100*0.1, 100*0.12, 100*0.03, 100*0.22),
+                                    I01_init = c(100*0.01, 100*0.02, 100*0.5, 100*0.1, 100*0.12, 100*0.03, 100*0.22))
+  result = run_model(parameters, main_model, time)
+  xx <- result[grep("frac_N", names(result))] # grepping all the Ss and Is
+
+
+  expect_true(all(abs(diff(xx$frac_N))<10^-12))
+  expect_equal(as.numeric(xx$frac_N[1,]), as.numeric(xx$frac_N[2,]))
+})
+
+
+test_that("omega keeps consistent population even with HIV?", {
+  parameters <- generate_parameters(omega = c(0.01, 0.02, 0.5, 0.1, 0.12, 0.03, 0.22), Ncat = 7,
+                                    S0_init = c(100*0.01, 100*0.02, 100*0.5, 100*0.1, 100*0.12, 100*0.03, 100*0.22),
+                                    I01_init = c(100*0.01, 100*0.02, 100*0.5, 100*0.1, 100*0.12, 100*0.03, 100*0.22))
+  result = run_model(parameters, main_model, time)
+  xx <- result[grep("frac_N", names(result))] # grepping all the Ss and Is
+
+
+  expect_true(all(abs(diff(xx$frac_N))<10^-12))
+  expect_equal(as.numeric(xx$frac_N[1,]), as.numeric(xx$frac_N[2,]))
+})
 
 test_that("growth rate zero", {
   parameters <- generate_parameters(epsilon = 0)
@@ -194,7 +219,7 @@ test_that("R 2", {
 # n
 # only group 1 infected, does group 2 get infected?
 test_that("n 1", {
-  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), n = c(0, 0.01))
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), n = matrix(c(0, 1, 0, 0), nrow = 2, ncol = 2, byrow = T))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_true(sum(c(xx$I01[,2], xx$I11[,2]))==0)
@@ -202,7 +227,7 @@ test_that("n 1", {
 
 # only group 2 infected, does group 1 get infected?
 test_that("n 2", {
-  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), n = c(0.01, 0))
+  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), n = matrix(c(0, 0, 1, 0), nrow = 2, ncol = 2, byrow = T))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_true(sum(c(xx$I01[,1], xx$I11[,1]))==0)
@@ -543,12 +568,12 @@ test_that("R vs prevalence", {
 # increase n, increase overall prevalence
 
 test_that("n vs prevalence", {
-  parameters <- generate_parameters(n = c(1, 1))
+  parameters <- generate_parameters(n = matrix(1, ncol = 2, nrow = 2))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
 
-  parameters <- generate_parameters(n = c(15, 15))
+  parameters <- generate_parameters(n = matrix(10, ncol = 2, nrow = 2))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))

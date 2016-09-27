@@ -198,7 +198,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
 
                    fP_t = c(1985, 2014, 2015, 2016),
                    fP_y = matrix(
-                     rep(c(0, 0, 0.7, 0.9), Ncat), ncol = Ncat),
+                     rep(c(1, 1, 1, 1), Ncat), ncol = Ncat),
 
                    n = matrix(3, ncol = Ncat, nrow = Ncat),
                    #n = 0,
