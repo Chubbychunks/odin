@@ -79,8 +79,7 @@ alphaItot[] =
 
 B[,] <- if (i < j && c[i,j] > 0) c[j,i] * N[j] / (c[i, j] * N[i]) else 0
 cstar[,] <- c[i,j] * (if (i > j) B[j, i]^(theta - 1) else B[i, j]^theta)
-dim(B) <- c(Ncat, Ncat)
-dim(cstar) <- c(Ncat, Ncat)
+
 
 # # when 4d happens
 # B[,,,] <- if (i < k && c[i,j,k,l] > 0) c[j,k,i,l] * N[j,l] / (c[i,j,k,l] * N[i,k]) else 0
@@ -391,6 +390,7 @@ alpha45[] = user()
 
 beta[] = user()
 c[,] = user()
+p[,] = user()
 ec[] = user()
 eP[] = user()
 n[] = user()
@@ -413,16 +413,20 @@ fP_t[] = user()
 fP_y[,] = user()
 dim(fP_t) = user()
 dim(fP_y) = user()
-
-#dimming
 Ncat = user()
 Nage = user()
+# DIMMING
 
-Ncat_times_Nage = Ncat * Nage
+
 
 
 #parameters
+
+dim(omega) = Ncat
+
+# care cascade
 dim(mu) = Ncat
+
 dim(gamma01) = Ncat
 dim(gamma02) = Ncat
 dim(gamma03) = Ncat
@@ -437,10 +441,12 @@ dim(gamma34) = Ncat
 dim(gamma42) = Ncat
 dim(gamma43) = Ncat
 dim(gamma44) = Ncat
+
 dim(rho2) = Ncat
 dim(rho3) = Ncat
 dim(rho4) = Ncat
 dim(rho5) = Ncat
+
 dim(phi2) = Ncat
 dim(phi3) = Ncat
 dim(phi4) = Ncat
@@ -448,6 +454,7 @@ dim(phi5) = Ncat
 
 dim(psia) = Ncat
 dim(psib) = Ncat
+
 dim(tau01) = Ncat
 dim(tau11) = Ncat
 dim(tau2) = Ncat
@@ -478,17 +485,23 @@ dim(alpha42) = Ncat
 dim(alpha43) = Ncat
 dim(alpha44) = Ncat
 dim(alpha45) = Ncat
+
+# FOI parameters
 dim(beta) = Ncat
 dim(c) = c(Ncat, Ncat)
 dim(p) = c(Ncat, Ncat)
 dim(ec) = Ncat
 dim(eP) = Ncat
-#dim(epsilon) = Ncat
 dim(fc) = Ncat
 dim(fP) = Ncat
 dim(n) = Ncat
 dim(R) = Ncat
 
+
+dim(cumuInf) = Ncat
+
+
+# states and initial conditions
 dim(S0) = Ncat
 dim(S1a) = Ncat
 dim(S1b) = Ncat
@@ -516,8 +529,6 @@ dim(I42) = Ncat
 dim(I43) = Ncat
 dim(I44) = Ncat
 dim(I45) = Ncat
-
-dim(cumuInf) = Ncat
 
 dim(S0_init) = Ncat
 dim(S1a_init) = Ncat
@@ -547,24 +558,23 @@ dim(I43_init) = Ncat
 dim(I44_init) = Ncat
 dim(I45_init) = Ncat
 
-dim(cumuInf_init) = Ncat
 
+
+
+# other variables
 dim(N) = Ncat
 dim(E0) = Ncat
 dim(E1a) = Ncat
 dim(E1b) = Ncat
 dim(E1c) = Ncat
 
-
-dim(lambda) = c(Ncat, Ncat)
-
-# dim(lambda_0) = c(Ncat_times_Nage, Ncat_times_Nage)
-
-dim(lambda_sum) = Ncat
-
+# other summary stats that are calculated
+dim(cumuInf_init) = Ncat
 dim(alphaItot) = Ncat
-
-dim(omega) = Ncat
-#dim(c_new) = Ncat
-
 dim(prev) = Ncat
+dim(B) <- c(Ncat, Ncat)
+
+# FOI parameters
+dim(lambda) = c(Ncat, Ncat)
+dim(lambda_sum) = Ncat
+dim(cstar) <- c(Ncat, Ncat)
