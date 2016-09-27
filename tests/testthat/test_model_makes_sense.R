@@ -161,7 +161,7 @@ test_that("growth rate decreases", {
 # ALL COMPARTMENTS ARE POSITIVE
 
 test_that("all compartments positive", {
-  parameters <- generate_parameters(theta = 0.5)
+  parameters <- generate_parameters()
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("S[0-9]|I[0-9]", names(result)))]
   expect_true(all(unlist(xx) >= 0))
@@ -434,7 +434,7 @@ test_that("prep increases", {
 
 test_that("no testing", {
   relevant_parameters = parameter_names[c(grep("tau", parameter_names))]
-  parameters <- generate_parameters(theta = 0.5, set_null = relevant_parameters)
+  parameters <- generate_parameters(set_null = relevant_parameters)
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I2[0-9]|I3[0-9]|I4[0-9]", names(result)))]
   N <- rowSums(do.call(cbind, xx))
@@ -446,7 +446,7 @@ test_that("no testing", {
 
 test_that("no ART", {
   relevant_parameters = parameter_names[c(grep("rho", parameter_names))]
-  parameters <- generate_parameters(theta = 0.5, set_null = relevant_parameters)
+  parameters <- generate_parameters(set_null = relevant_parameters)
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I3[0-9]|I4[0-9]", names(result)))]
   N <- rowSums(do.call(cbind, xx))
@@ -458,7 +458,7 @@ test_that("no ART", {
 
 test_that("no drop out", {
   relevant_parameters = parameter_names[c(grep("phi", parameter_names))]
-  parameters <- generate_parameters(theta = 0.5, set_null = relevant_parameters)
+  parameters <- generate_parameters(set_null = relevant_parameters)
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I4[0-9]", names(result)))]
   N <- rowSums(do.call(cbind, xx))
@@ -471,17 +471,17 @@ test_that("no drop out", {
 
 # DUNNO!
 test_that("B check 0", {
-  parameters <- generate_parameters(theta = 0)
+  parameters <- generate_parameters(theta = matrix(0, ncol = 2, nrow = 2))
   result = run_model(parameters, main_model, time)
   expect_equal(as.numeric(result[["B_check"]]), rep(1, length(result$B_check)))
 })
 test_that("B check 0.5", {
-  parameters <- generate_parameters(theta = 0.5)
+  parameters <- generate_parameters()
   result = run_model(parameters, main_model, time)
   expect_equal(as.numeric(result[["B_check"]]), rep(1, length(result$B_check)))
 })
 test_that("B check 1", {
-  parameters <- generate_parameters(theta = 1)
+  parameters <- generate_parameters(theta = matrix(1, ncol = 2, nrow = 2))
   result = run_model(parameters, main_model, time)
   expect_equal(as.numeric(result[["B_check"]]), rep(1, length(result$B_check)))
 })
@@ -491,7 +491,7 @@ test_that("B check 1", {
 ###################################################################################################################################
 ###################################################################################################################################
 test_that("prevalence", {
-  parameters = generate_parameters(theta = 0.5)
+  parameters = generate_parameters()
   result = run_model(parameters, main_model, time)
   all_infected = result[c(grep("I[0-9]", names(result)))]
   all = result[c(grep("I[0-9]", names(result)), grep("S[0-9]", names(result)))]
@@ -600,12 +600,12 @@ test_that("c vs prevalence", {
 # increase fc, decrease overall prevalence
 
 test_that("fc vs prevalence", {
-  parameters <- generate_parameters(theta = 0.5)
+  parameters <- generate_parameters()
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
 
-  parameters <- generate_parameters(theta = 0.5, set_null = "fc_y")
+  parameters <- generate_parameters(set_null = "fc_y")
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
@@ -635,12 +635,12 @@ test_that("ec vs prevalence", {
 # increase fP, decrease overall prevalence
 
 test_that("fP vs prevalence", {
-  parameters <- generate_parameters(theta = 0.5)
+  parameters <- generate_parameters()
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
 
-  parameters <- generate_parameters(theta = 0.5, set_null = "fP_y")
+  parameters <- generate_parameters(set_null = "fP_y")
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
@@ -670,13 +670,13 @@ test_that("eP vs prevalence", {
 #
 # test_that("zeta vs prevalence", {
 #
-#   parameters <- generate_parameters(theta = 0.5)
+#   parameters <- generate_parameters()
 #   result = run_model(parameters, main_model, time)
 #   xx <- result[c(grep("S[0-9]", names(result)))]
 #   N1 <- rowSums(do.call(cbind, xx))
 #
 #   relevant_parameters = parameter_names[c(grep("zeta", parameter_names))]
-#   parameters <- generate_parameters(theta = 0.5, set_null = relevant_parameters)
+#   parameters <- generate_parameters(set_null = relevant_parameters)
 #   result = run_model(parameters, main_model, time)
 #   xx <- result[c(grep("S[0-9]", names(result)))]
 #   N2 <- rowSums(do.call(cbind, xx))
@@ -685,13 +685,13 @@ test_that("eP vs prevalence", {
 #
 #
 #
-#   parameters <- generate_parameters(theta = 0.5)
+#   parameters <- generate_parameters()
 #   result = run_model(parameters, main_model, time)
 #   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
 #   N1 <- rowSums(do.call(cbind, xx))
 #
 #   relevant_parameters = parameter_names[c(grep("zeta", parameter_names))]
-#   parameters <- generate_parameters(theta = 0.5, set_null = relevant_parameters)
+#   parameters <- generate_parameters(set_null = relevant_parameters)
 #   result = run_model(parameters, main_model, time)
 #   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
 #   N2 <- rowSums(do.call(cbind, xx))
@@ -707,13 +707,13 @@ test_that("eP vs prevalence", {
 
 test_that("ART vs prevalence", {
   skip("WIP")
-  parameters <- generate_parameters(theta = 0.5)
+  parameters <- generate_parameters()
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
 
   relevant_parameters = parameter_names[c(grep("rho", parameter_names))]
-  parameters <- generate_parameters(theta = 0.5, set_null = relevant_parameters)
+  parameters <- generate_parameters(set_null = relevant_parameters)
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))

@@ -78,7 +78,7 @@ alphaItot[] =
 
 
 B[,] <- if (i < j && c[i,j] > 0) c[j,i] * N[j] / (c[i, j] * N[i]) else 0
-cstar[,] <- c[i,j] * (if (i > j) B[j, i]^(theta - 1) else B[i, j]^theta)
+cstar[,] <- c[i,j] * (if (i > j) B[j, i]^(theta[i,j] - 1) else B[i, j]^theta[i,j])
 
 
 # # when 4d happens
@@ -405,7 +405,7 @@ epsilon = user()
 omega[] = user()
 
 # balancing
-theta = user()
+theta[,] = user()
 
 fc_t[] = user()
 fc_y[,] = user()
@@ -585,3 +585,4 @@ dim(B) <- c(Ncat, Ncat)
 dim(lambda) = c(Ncat, Ncat)
 dim(lambda_sum) = Ncat
 dim(cstar) <- c(Ncat, Ncat)
+dim(theta) <- c(Ncat, Ncat)

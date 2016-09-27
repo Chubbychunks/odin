@@ -205,7 +205,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
 
                    R = rep_len(1, Ncat),
                    omega = rep_len(1/Ncat, Ncat),
-                   theta = 0.5,
+                   theta = matrix(0.5, ncol = Ncat, nrow = Ncat),
 
                    M = matrix(1/Ncat, Ncat, Ncat),
 
