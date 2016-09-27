@@ -167,7 +167,7 @@ fP[] = interpolate(fP_t, fP_y, "linear")
 lambda[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                            I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                            I42[j], I43[j], I44[j], I45[j],
-                           N[j], beta[j], R[j], fc[j], fP[j], n[j], eP[j], ec[j])
+                           N[j], beta[j], R[j], fc[j], fP[j], n[i,j], eP[j], ec[j])
 
 # lambda[1,1] = 0
 # lambda[2,2] = 0
@@ -393,7 +393,7 @@ c[,] = user()
 p[,] = user()
 ec[] = user()
 eP[] = user()
-n[] = user()
+n[,] = user()
 R[] = user()
 
 # growth
@@ -494,7 +494,7 @@ dim(ec) = Ncat
 dim(eP) = Ncat
 dim(fc) = Ncat
 dim(fP) = Ncat
-dim(n) = Ncat
+dim(n) = c(Ncat, Ncat)
 dim(R) = Ncat
 
 

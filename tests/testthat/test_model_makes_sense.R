@@ -559,12 +559,12 @@ test_that("n vs prevalence", {
 # increase c, increase overall prevalence
 
 test_that("c vs prevalence", {
-  parameters <- generate_parameters(c = c(1, 1))
+  parameters <- generate_parameters(c = matrix(2, ncol = 2, nrow = 2))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
 
-  parameters <- generate_parameters(c = c(15, 15))
+  parameters <- generate_parameters(c = matrix(15, ncol = 2, nrow = 2))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))

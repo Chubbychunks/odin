@@ -200,7 +200,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    fP_y = matrix(
                      rep(c(0, 0, 0.7, 0.9), Ncat), ncol = Ncat),
 
-                   n = rep_len(10, Ncat),
+                   n = matrix(3, ncol = Ncat, nrow = Ncat),
                    #n = 0,
 
                    R = rep_len(1, Ncat),
