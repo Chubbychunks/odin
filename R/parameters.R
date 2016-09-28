@@ -146,9 +146,9 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    tau4 = rep_len(0.5,Ncat),
                    tau5 = rep_len(0.5,Ncat),
 
-                   zetaa = rep_len(0.1,Ncat),
-                   zetab = rep_len(0.1,Ncat),
-                   zetac = rep_len(0.1,Ncat),
+                   zetaa = c(0.1, rep_len(0,(Ncat-1))),
+                   zetab = c(0.1, rep_len(0,(Ncat-1))),
+                   zetac = c(0.1, rep_len(0,(Ncat-1))),
 
                    SC_to_200_349 = rep_len(0.3, Ncat),
 

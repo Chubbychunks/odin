@@ -23,7 +23,7 @@ deriv(S1b[]) = E1b[i] - S1b[i] * lambda_sum_1b[i] - S1b[i] * mu[i]
 deriv(S1c[]) = E1c[i] - S1c[i] * lambda_sum_1c[i] - S1c[i] * mu[i]
 
 #primary infection
-deriv(I01[]) = S0[i] * lambda_sum[i] - I01[i] * (gamma01[i] + tau01[i] + alpha01[i] + mu[i])
+deriv(I01[]) = S0[i] * lambda_sum_0[i] - I01[i] * (gamma01[i] + tau01[i] + alpha01[i] + mu[i])
 deriv(I11[]) = S1a[i] * lambda_sum_1a[i] + S1b[i] * lambda_sum_1b[i] + S1c[i] * lambda_sum_1c[i] -
   I11[i] * (gamma11[i] + tau11[i] + alpha11[i] + mu[i])
 
@@ -48,7 +48,7 @@ deriv(I43[]) = gamma42[i] * I42[i] + phi3[i] * I33[i] - I43[i] * (gamma43[i] + r
 deriv(I44[]) = gamma43[i] * I43[i] + phi4[i] * I34[i] - I44[i] * (gamma44[i] + rho4[i] + alpha44[i] + mu[i])
 deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alpha45[i] + mu[i])
 
-deriv(cumuInf[]) = S0[i] * lambda_sum[i] + S1a[i] * lambda_sum[i] + S1b[i] * lambda_sum[i] + S1c[i] * lambda_sum[i]
+deriv(cumuInf[]) = S0[i] * lambda_sum_0[i] + S1a[i] * lambda_sum_1a[i] + S1b[i] * lambda_sum_1b[i] + S1c[i] * lambda_sum_1c[i]
 
 # births due to population growth
 new_people = epsilon * sum(N)
@@ -168,8 +168,8 @@ fP[] = interpolate(fP_t, fP_y, "linear")
 lambda[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                            I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                            I42[j], I43[j], I44[j], I45[j],
-                           N[j], beta[j], R[j], fc[j], fP[j], n[i,j], eP[j], ec[j])
-
+                           N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP[i], ec[i])
+# Ras!!
 
 
 
@@ -177,22 +177,22 @@ lambda[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j],
 lambda_0[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                               I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                               I42[j], I43[j], I44[j], I45[j],
-                                              N[j], beta[j], R[j], fc[j], fP[j], n[i,j], eP0[j], ec[j])
+                                              N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP0[i], ec[i])
 #FOI of j on i. PrEP adherence category 0 (off PrEP)
 lambda_1a[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                 I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                 I42[j], I43[j], I44[j], I45[j],
-                                                N[j], beta[j], R[j], fc[j], fP[j], n[i,j], eP1a[j], ec[j])
+                                                N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1a[i], ec[i])
 #FOI of j on i. PrEP adherence category 0 (off PrEP)
 lambda_1b[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                 I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                 I42[j], I43[j], I44[j], I45[j],
-                                                N[j], beta[j], R[j], fc[j], fP[j], n[i,j], eP1b[j], ec[j])
+                                                N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1b[i], ec[i])
 #FOI of j on i. PrEP adherence category 0 (off PrEP)
 lambda_1c[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                 I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                 I42[j], I43[j], I44[j], I45[j],
-                                                N[j], beta[j], R[j], fc[j], fP[j], n[i,j], eP1c[j], ec[j])
+                                                N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1c[i], ec[i])
 
 
 lambda_sum[] = sum(lambda[i,])
@@ -244,6 +244,16 @@ output(frac_N[]) = frac_N
 
 # FOI outputs
 output(lambda[,]) = lambda
+output(lambda_0[,]) = lambda_0
+output(lambda_1a[,]) = lambda_1a
+output(lambda_1b[,]) = lambda_1b
+output(lambda_1c[,]) = lambda_1c
+
+output(lambda_sum_0[]) = lambda_sum_0
+output(lambda_sum_1a[]) = lambda_sum_1a
+output(lambda_sum_1b[]) = lambda_sum_1b
+output(lambda_sum_1c[]) = lambda_sum_1c
+
 output(fc[]) = fc
 output(fP[]) = fP
 output(c[,]) = c
