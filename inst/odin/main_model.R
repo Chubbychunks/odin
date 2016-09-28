@@ -24,7 +24,7 @@ deriv(S1c[]) = E1c[i] - S1c[i] * lambda_sum_1c[i] - S1c[i] * mu[i]
 
 #primary infection
 deriv(I01[]) = S0[i] * lambda_sum[i] - I01[i] * (gamma01[i] + tau01[i] + alpha01[i] + mu[i])
-deriv(I11[]) = S1a[i] * lambda_sum[i] + S1b[i] * lambda_sum[i] + S1c[i] * lambda_sum[i] -
+deriv(I11[]) = S1a[i] * lambda_sum_1a[i] + S1b[i] * lambda_sum_1b[i] + S1c[i] * lambda_sum_1c[i] -
   I11[i] * (gamma11[i] + tau11[i] + alpha11[i] + mu[i])
 
 #chronic
