@@ -182,13 +182,20 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    #                  c = rep_len(4,Ncat),
 
                    c = matrix(2, ncol = Ncat, nrow = Ncat),
-                   p = matrix(2, ncol = Ncat, nrow = Ncat),
+                   p = matrix(1, ncol = Ncat, nrow = Ncat),
 
 
                    ec = rep_len(0.85,Ncat),
                    # ec = rep_len(1,1),
 
                    eP = rep_len(0.6,Ncat),
+
+                   eP0 = c(0, rep_len(0, (Ncat-1))),
+                   eP1a = c(0.9, rep_len(0, (Ncat-1))),
+                   eP1b = c(0.45, rep_len(0, (Ncat-1))),
+                   eP1c = c(0, rep_len(0, (Ncat-1))),
+
+
                    epsilon = 0.001,
                    # fc = c(1,1),
                    fc_t = c(1985, 1990, 1998, 2016),

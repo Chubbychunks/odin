@@ -17,10 +17,10 @@ config(include) = "FOI.c"
 
 
 # still need to work on lambda
-deriv(S0[]) = E0[i] - S0[i] * lambda_sum[i] - S0[i] * mu[i]
-deriv(S1a[]) = E1a[i] - S1a[i] * lambda_sum[i] - S1a[i] * mu[i]
-deriv(S1b[]) = E1b[i] - S1b[i] * lambda_sum[i] - S1b[i] * mu[i]
-deriv(S1c[]) = E1c[i] - S1c[i] * lambda_sum[i] - S1c[i] * mu[i]
+deriv(S0[]) = E0[i] - S0[i] * lambda_sum_0[i] - S0[i] * mu[i]
+deriv(S1a[]) = E1a[i] - S1a[i] * lambda_sum_1a[i] - S1a[i] * mu[i]
+deriv(S1b[]) = E1b[i] - S1b[i] * lambda_sum_1b[i] - S1b[i] * mu[i]
+deriv(S1c[]) = E1c[i] - S1c[i] * lambda_sum_1c[i] - S1c[i] * mu[i]
 
 #primary infection
 deriv(I01[]) = S0[i] * lambda_sum[i] - I01[i] * (gamma01[i] + tau01[i] + alpha01[i] + mu[i])
@@ -78,7 +78,7 @@ alphaItot[] =
 
 
 B[,] <- if (i < j && c[i,j] > 0) c[j,i] * N[j] / (c[i, j] * N[i]) else 0
-cstar[,] <- c[i,j] * (if (i > j) B[j, i]^(theta[i,j] - 1) else B[i, j]^theta[i,j])
+cstar[,] <- c[i,j] * (if (i > j) B[j, i]^-(1 - theta[j,i]) else B[i, j]^theta[i,j])
 
 
 # # when 4d happens
@@ -170,16 +170,36 @@ lambda[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j],
                            I42[j], I43[j], I44[j], I45[j],
                            N[j], beta[j], R[j], fc[j], fP[j], n[i,j], eP[j], ec[j])
 
-# lambda[1,1] = 0
-# lambda[2,2] = 0
-# lambda[3,3] = 0
-# lambda[4,4] = 0
-# lambda[5,5] = 0
-# lambda[6,6] = 0
-# lambda[7,7] = 0
+
+
+
+#FOI of j on i. PrEP adherence category 0 (off PrEP)
+lambda_0[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+                                              I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
+                                              I42[j], I43[j], I44[j], I45[j],
+                                              N[j], beta[j], R[j], fc[j], fP[j], n[i,j], eP0[j], ec[j])
+#FOI of j on i. PrEP adherence category 0 (off PrEP)
+lambda_1a[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+                                                I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
+                                                I42[j], I43[j], I44[j], I45[j],
+                                                N[j], beta[j], R[j], fc[j], fP[j], n[i,j], eP1a[j], ec[j])
+#FOI of j on i. PrEP adherence category 0 (off PrEP)
+lambda_1b[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+                                                I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
+                                                I42[j], I43[j], I44[j], I45[j],
+                                                N[j], beta[j], R[j], fc[j], fP[j], n[i,j], eP1b[j], ec[j])
+#FOI of j on i. PrEP adherence category 0 (off PrEP)
+lambda_1c[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+                                                I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
+                                                I42[j], I43[j], I44[j], I45[j],
+                                                N[j], beta[j], R[j], fc[j], fP[j], n[i,j], eP1c[j], ec[j])
 
 
 lambda_sum[] = sum(lambda[i,])
+lambda_sum_0[] = sum(lambda_0[i,])
+lambda_sum_1a[] = sum(lambda_1a[i,])
+lambda_sum_1b[] = sum(lambda_1b[i,])
+lambda_sum_1c[] = sum(lambda_1c[i,])
 
 
 
@@ -212,8 +232,7 @@ prev[] = 100 * (I01[i] + I11[i] + I02[i] + I03[i] + I04[i] + I05[i] +
 output(Ntot) = Ntot
 output(new_people) = new_people
 output(B_check) = B_check
-output(fc[]) = fc
-output(fP[]) = fP
+
 output(N[]) = N # is it worth outputting N? Once we have ages, it'll be better to have separate Ns for risk groups... but eugene ages can make N a matrix!
 output(prev_FSW) = prev_FSW
 output(prev_client) = prev_client
@@ -221,7 +240,18 @@ output(prev[]) = prev
 output(N_FSW) = N_FSW
 output(N_client) = N_client
 output(frac_N[]) = frac_N
+# output(lambda_sum[]) = lambda_sum
 
+# FOI outputs
+output(lambda[,]) = lambda
+output(fc[]) = fc
+output(fP[]) = fP
+output(c[,]) = c
+output(cstar[,]) = cstar
+output(B[,]) = B
+output(p[,]) = p
+output(n[,]) = n
+output(theta[,]) = theta
 # INCIDENCE RATE
 
 # = no. disease onsets / sum of "person-time" at risk
@@ -396,6 +426,10 @@ c[,] = user()
 p[,] = user()
 ec[] = user()
 eP[] = user()
+eP0[] = user()
+eP1a[] = user()
+eP1b[] = user()
+eP1c[] = user()
 n[,] = user()
 R[] = user()
 
@@ -499,6 +533,11 @@ dim(c) = c(Ncat, Ncat)
 dim(p) = c(Ncat, Ncat)
 dim(ec) = Ncat
 dim(eP) = Ncat
+dim(eP0) = Ncat
+dim(eP1a) = Ncat
+dim(eP1b) = Ncat
+dim(eP1c) = Ncat
+
 dim(fc) = Ncat
 dim(fP) = Ncat
 dim(n) = c(Ncat, Ncat)
@@ -583,6 +622,17 @@ dim(B) <- c(Ncat, Ncat)
 
 # FOI parameters
 dim(lambda) = c(Ncat, Ncat)
+dim(lambda_0) = c(Ncat, Ncat)
+dim(lambda_1a) = c(Ncat, Ncat)
+dim(lambda_1b) = c(Ncat, Ncat)
+dim(lambda_1c) = c(Ncat, Ncat)
+
+
 dim(lambda_sum) = Ncat
+dim(lambda_sum_0) = Ncat
+dim(lambda_sum_1a) = Ncat
+dim(lambda_sum_1b) = Ncat
+dim(lambda_sum_1c) = Ncat
+
 dim(cstar) <- c(Ncat, Ncat)
 dim(theta) <- c(Ncat, Ncat)

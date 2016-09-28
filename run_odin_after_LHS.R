@@ -13,14 +13,19 @@ devtools::test()
 
 
 
+parameters <- generate_parameters(theta = matrix(c(0.5, 0.9, 0.1, 0.5), ncol = 2, nrow = 2, byrow = T),
+                                  omega = c(0.2, 0.8),
+                                  S0_init = c(100*0.2, 100*0.8),
+                                  I01_init = c(100*0.2, 100*0.8))
+result = run_model(parameters, main_model, time)
+result$p[1,,]
 
 
-
-
-
-
-
-
+# result$N
+# result$c[1,,]
+# result$cstar[1,,]
+# result$B[1,,]
+# result$theta[1,,]
 
 # RUNNING MULTIPLE SIMULATIONS
 
