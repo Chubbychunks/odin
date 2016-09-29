@@ -161,6 +161,36 @@ test_that("cumulative infections", {
 ###################################################################################################################################
 ###################################################################################################################################
 
+
+# LAMBDAS
+# if prep is useless, then cumulative infections should be equal no matter what prep adherence is
+test_that("useless prep", {
+  parameters <- generate_parameters(I11_init = c(1000,1000), I01_init = c(1000,1000), zetaa = c(1, 1), zetab = c(1, 1), zetac = c(1, 1),
+                                    eP0 = c(0, 0), eP1a = c(0, 0), eP1b = c(0, 0), eP1c = c(0, 0))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+
+  parameters <- generate_parameters(I11_init = c(1000,1000), I01_init = c(1000,1000), zetaa = c(0, 0), zetab = c(0, 0), zetac = c(0, 0),
+                                    eP0 = c(0, 0), eP1a = c(0, 0), eP1b = c(0, 0), eP1c = c(0, 0))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+
+  expect_true(all(abs(N1 - N2) < 10^-3))
+})
+
+
+test_that("useful prep", {
+  parameters <- generate_parameters(I11_init = c(1000,1000), I01_init = c(1000,1000), zetaa = c(1, 1), zetab = c(1, 1), zetac = c(1, 1),
+                                    eP0 = c(0, 0), eP1a = c(0.1, 0.1), eP1b = c(0.1, 0.1), eP1c = c(0.1, 0.1))
+  result1 = run_model(parameters, main_model, time)
+  parameters <- generate_parameters(I11_init = c(1000,1000), I01_init = c(1000,1000), zetaa = c(0, 0), zetab = c(0, 0), zetac = c(0, 0),
+                                    eP0 = c(0, 0), eP1a = c(0.1, 0.1), eP1b = c(0.1, 0.1), eP1c = c(0.1, 0.1))
+  result2 = run_model(parameters, main_model, time)
+  expect_true(result1$cumuInf[length(time)] < result2$cumuInf[length(time)])
+})
+
 # BETA
 # only group 1 infected, does group 2 get infected?
 test_that("beta 1", {
@@ -696,12 +726,48 @@ test_that("fP vs prevalence", {
 # increase eP, decrease overall prevalence
 
 test_that("eP vs prevalence", {
-  parameters <- generate_parameters(eP = c(0.9, 0.9))
+  parameters <- generate_parameters(eP0 = c(0.9, 0.9))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
 
-  parameters <- generate_parameters(eP = c(0.1, 0.1))
+  parameters <- generate_parameters(eP0 = c(0.1, 0.1))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+
+  expect_true(sum(N2) > sum(N1))
+
+  parameters <- generate_parameters(eP1a = c(0.9, 0.9))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+
+  parameters <- generate_parameters(eP1a = c(0.1, 0.1))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+
+  expect_true(sum(N2) > sum(N1))
+
+  parameters <- generate_parameters(eP1b = c(0.9, 0.9))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+
+  parameters <- generate_parameters(eP1b = c(0.1, 0.1))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+
+  expect_true(sum(N2) > sum(N1))
+
+  parameters <- generate_parameters(eP1c = c(0.9, 0.9))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+
+  parameters <- generate_parameters(eP1c = c(0.1, 0.1))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
@@ -713,22 +779,6 @@ test_that("eP vs prevalence", {
 # increase prep uptake, decrease overall prevalence
 
 test_that("zeta vs prevalence", {
-
-#   parameters <- generate_parameters()
-#   result = run_model(parameters, main_model, time)
-#   xx <- result[c(grep("S[0-9]", names(result)))]
-#   N1 <- rowSums(do.call(cbind, xx))
-#
-#   relevant_parameters = parameter_names[c(grep("zeta", parameter_names))]
-#   parameters <- generate_parameters(set_null = relevant_parameters)
-#   result = run_model(parameters, main_model, time)
-#   xx <- result[c(grep("S[0-9]", names(result)))]
-#   N2 <- rowSums(do.call(cbind, xx))
-#
-
-
-
-
   parameters <- generate_parameters()
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
@@ -741,6 +791,27 @@ test_that("zeta vs prevalence", {
   N2 <- rowSums(do.call(cbind, xx))
 
   expect_true(sum(N2) > sum(N1))
+
+  parameters <- generate_parameters(zetaa = c(0.1, 0.1))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+
+  parameters <- generate_parameters(zetaa = c(0.09, 0.09))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+
+  expect_true(sum(N2) > sum(N1))
+
+
+  # in this test, i made gammas and taus 0 to make sure prep doesn't advtange by going to ART quicker
+  parameters <- generate_parameters(zetaa = c(0.1, 0.1), eP0 = c(0, 0), eP1a = c(0, 0), eP1b = c(0, 0), eP1c = c(0, 0), gamma01 = c(0, 0), gamma11 = c(0, 0), tau01 = c(0, 0), tau11 = c(0, 0))
+  result1 = run_model(parameters, main_model, time)
+  parameters <- generate_parameters(zetaa = c(0.09, 0.09), eP0 = c(0, 0), eP1a = c(0, 0), eP1b = c(0, 0), eP1c = c(0, 0), gamma01 = c(0, 0), gamma11 = c(0, 0), tau01 = c(0, 0), tau11 = c(0, 0))
+  result2 = run_model(parameters, main_model, time)
+  expect_equal(result1$cumuInf[length(time)], result2$cumuInf[length(time)])
+
 })
 
 
@@ -750,7 +821,6 @@ test_that("zeta vs prevalence", {
 # increase ART uptake, decrease overall prevalence
 
 test_that("ART vs prevalence", {
-  skip("WIP")
   parameters <- generate_parameters()
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
@@ -766,8 +836,71 @@ test_that("ART vs prevalence", {
 })
 
 
-# testing
+# increase testing, decrease overall prevalence
 
-# prep adherence
+test_that("testing vs prevalence", {
+  parameters <- generate_parameters()
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
 
-# dropout
+  relevant_parameters = parameter_names[c(grep("tau", parameter_names))]
+  parameters <- generate_parameters(set_null = relevant_parameters)
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+
+  expect_true(sum(N2) > sum(N1))
+})
+
+
+
+
+# increase prep adherence, decrease overall prevalence
+
+
+test_that("prep adherence vs prevalence", {
+  parameters <- generate_parameters()
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+
+  relevant_parameters = parameter_names[c(grep("zeta", parameter_names))]
+  parameters <- generate_parameters(set_null = relevant_parameters)
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+
+  expect_true(sum(N2) > sum(N1))
+
+  # on the basis that higher adherence is better
+  parameters <- generate_parameters(zetaa = c(0.1,0.1), zetab = c(0,0), zetac = c(0,0))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+
+  parameters <- generate_parameters(zetaa = c(0,0), zetab = c(0.1,0.1), zetac = c(0,0))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+
+  expect_true(sum(N2) > sum(N1))
+})
+
+# increase dropout, increase overall prevalence
+
+test_that("dropout vs prevalence", {
+  parameters <- generate_parameters()
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+
+  relevant_parameters = parameter_names[c(grep("psi", parameter_names))]
+  parameters <- generate_parameters(set_null = relevant_parameters)
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+
+  expect_true(sum(N1) > sum(N2))
+})
+
