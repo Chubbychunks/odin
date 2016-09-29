@@ -16,10 +16,10 @@ parameters <- generate_parameters()
 result = run_model(parameters, main_model, time)
 
 
-result$lambda_0[1,,]
-result$lambda_1a[1,,]
-result$lambda_1b[1,,]
-result$lambda_1c[1,,]
+result$lambda_0[10,,]
+result$lambda_1a[10,,]
+result$lambda_1b[10,,]
+result$lambda_1c[10,,]
 
 result$lambda_sum_0[2,]
 result$lambda_sum_1a[2,]
