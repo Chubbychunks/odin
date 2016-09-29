@@ -31,6 +31,21 @@ fix_parameters <- function(x, Ncat, Nage) {
   x$gamma33 <- (x$gamma03)/x$ART_RR
   x$gamma34 <- (x$gamma04)/x$ART_RR
 
+  # p = M*A
+  if (Ncat == 7) {
+    # H-FSW, L-FSW, GPF, H-C, L-C, B, GPM
+    x$p <- matrix(c(0, 0, 0, 1, 1, 1, 0,
+                    0, 0, 0, 1, 1, 1, 0,
+                    0, 0, 0, 1, 1, 1, 1,
+                    1, 1, 1, 0, 0, 0, 0,
+                    1, 1, 1, 0, 0, 0, 0,
+                    1, 1, 1, 0, 0, 0, 0,
+                    0, 0, 1, 0, 0, 0, 0),
+                  , nrow = 7, ncol = 7, byrow = T)
+    x$M = matrix(1/Ncat, Ncat, Ncat) # will need to sample these
+    x$p <- x$p * x$M
+  }
+
 
   return(x)
 }

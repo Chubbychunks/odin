@@ -67,7 +67,7 @@ test_that("cumulative infections", {
 
 test_that("omega adds to 1", {
   parameters <- lhs_parameters(1)
-  expect_true(sum(parameters[[1]]$omega) == 1)
+  expect_equal(sum(parameters[[1]]$omega), 1)
 })
 
 test_that("omega keeps consistent population?", {
@@ -557,6 +557,8 @@ test_that("cstar", {
     expect_equal(result$cstar[i,,][1,3] * result$N[i,1], result$cstar[i,,][3,1] * result$N[i,3])
     expect_equal(result$cstar[i,,][2,3] * result$N[i,2], result$cstar[i,,][3,2] * result$N[i,3])
   }
+
+
 }
 )
 

@@ -12,8 +12,7 @@ devtools::load_all()
 devtools::test()
 
 
-parameters <- generate_parameters()
-result = run_model(parameters, main_model, time)
+
 
 
 result$lambda_0[10,,]
