@@ -163,30 +163,26 @@ rate_move_out[] <- 0
 # }
 
 # PrEP?
-PrEP_0[] <- 0
-PrEP_1a[] <- 0
-PrEP_1b[] <- 0
-PrEP_1c[] <- 0
-
-PrEP_0[1] <- if(t > 2013 && t < 2014 && S1a[1] == 0) -250 else 0
-PrEP_1a[1] <- if(t > 2013 && t < 2014 && S1a[1] == 0) 130 else 0
-PrEP_1b[1] <- if(t > 2013 && t < 2014 && S1a[1] == 0) 20 else 0
-PrEP_1c[1] <- if(t > 2013 && t < 2014 && S1a[1] == 0) 100 else 0
-
-deriv(OnPrEP[]) = OnPrEP[i] + zetaa[i] * S0[i] + zetab[i] * S0[i] + zetac[i] * S0[i]
-
-zetaa_switch[1] <- if(t > 2013 && t < 2014 && OnPrEP < 250) 20 else 0
-zetab_switch[1] <- if(t > 2013 && t < 2014 && OnPrEP < 250) 2 else 0
-zetac_switch[1] <- if(t > 2013 && t < 2014 && OnPrEP < 250) 20 else 0
-
-zetaa_switch[2] <- 0
-# else -150
+# PrEP_0[] <- 0
+# PrEP_1a[] <- 0
+# PrEP_1b[] <- 0
+# PrEP_1c[] <- 0
 #
-#
-#
-# PrEP_1a[2, i] <- if(t != 2013) 0 else 50
-# PrEP_1b[3, i] <- if(t != 2013) 0 else 50
-# PrEP_1c[4, i] <- if(t != 2013) 0 else 50
+# PrEP_0[1] <- if(t > 2013 && t < 2014 && S1a[1] == 0) -250 else 0
+# PrEP_1a[1] <- if(t > 2013 && t < 2014 && S1a[1] == 0) 130 else 0
+# PrEP_1b[1] <- if(t > 2013 && t < 2014 && S1a[1] == 0) 20 else 0
+# PrEP_1c[1] <- if(t > 2013 && t < 2014 && S1a[1] == 0) 100 else 0
+
+deriv(OnPrEP[]) = zetaa[i] * S0[i] + zetab[i] * S0[i] + zetac[i] * S0[i]
+
+# deriv(OnPrEP[]) = S1a[i] + S1b[i] + S1c[i]
+
+zetaa[1] <- if(t > 2012 && t < 2014 && sum(OnPrEP[i]) < 250) 1 else 0
+zetab[1] <- if(t > 2012 && t < 2014 && sum(OnPrEP[i]) < 250) 0.2 else 0
+zetac[1] <- if(t > 2012 && t < 2014 && sum(OnPrEP[i]) < 250) 1 else 0
+
+
+
 
 
 # mortality due to HIV infection
@@ -389,6 +385,9 @@ output(theta[,]) = theta
 output(rate_move_in[,]) = rate_move_in
 output(rate_move_out[]) = rate_move_out
 
+output(zetaa[]) = zetaa
+output(zetab[]) = zetab
+output(zetac[]) = zetac
 
 # INCIDENCE RATE
 
@@ -536,9 +535,9 @@ tau3[] = user()
 tau4[] = user()
 tau5[] = user()
 
-zetaa[] = user()
-zetab[] = user()
-zetac[] = user()
+# zetaa[] = user()
+# zetab[] = user()
+# zetac[] = user()
 
 # note alpha is ordered differently...
 alpha01[] = user()
@@ -785,18 +784,15 @@ dim(theta) <- c(Ncat, Ncat)
 dim(rate_move_in) <- c(Ncat, Ncat)
 dim(rate_move_out) <- Ncat
 
-dim(PrEP_0) = Ncat
-dim(PrEP_1a) = Ncat
-dim(PrEP_1b) = Ncat
-dim(PrEP_1c) = Ncat
+# dim(PrEP_0) = Ncat
+# dim(PrEP_1a) = Ncat
+# dim(PrEP_1b) = Ncat
+# dim(PrEP_1c) = Ncat
 
-output(PrEP_0[]) = PrEP_0
-output(PrEP_1a[]) = PrEP_1a
-output(PrEP_1b[]) = PrEP_1b
-output(PrEP_1c[]) = PrEP_1c
+# output(PrEP_0[]) = PrEP_0
+# output(PrEP_1a[]) = PrEP_1a
+# output(PrEP_1b[]) = PrEP_1b
+# output(PrEP_1c[]) = PrEP_1c
 
 dim(OnPrEP_init) = Ncat
 
-dim(zetaa_switch) = Ncat
-dim(zetab_switch) = Ncat
-dim(zetac_switch) = Ncat

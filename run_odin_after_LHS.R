@@ -12,8 +12,11 @@ devtools::load_all()
 devtools::test()
 
 
-parameters <- generate_parameters(zetaa = c(0,0),zetab = c(0,0),zetac = c(0,0), psia = c(0.01, 0.01), psib = c(0.01, 0.01))
+parameters <- generate_parameters(zetaa = c(0,0),zetab = c(0,0),zetac = c(0,0), psia = c(1, 1), psib = c(1, 1))
 result = run_model(parameters, main_model, time)
+
+result$OnPrEP
+result$t
 
 result$PrEP_0
 result$PrEP_1a
