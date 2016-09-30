@@ -12,9 +12,15 @@ devtools::load_all()
 devtools::test()
 
 
-parameters <- generate_parameters()
+parameters <- generate_parameters(zetaa = c(0,0),zetab = c(0,0),zetac = c(0,0), psia = c(0.01, 0.01), psib = c(0.01, 0.01))
 result = run_model(parameters, main_model, time)
 
+result$PrEP_0
+result$PrEP_1a
+
+result$S1a
+result$S1b
+result$S1c
 
 result$lambda_0[10,,]
 result$lambda_1a[10,,]

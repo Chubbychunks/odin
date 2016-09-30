@@ -1,6 +1,6 @@
 # helper files have functions that will be used a lot in the model tests
 
-time <- seq(1985, 2015, length.out = 101)
+time <- seq(1985, 2015, length.out = 310)
 
 
 # takes the new varying parameter and it meshes it with the original base parameter set

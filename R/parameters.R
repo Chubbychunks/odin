@@ -165,6 +165,11 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    zetab = c(0.1, rep_len(0,(Ncat-1))),
                    zetac = c(0.1, rep_len(0,(Ncat-1))),
 
+                   #                    fc_t = c(1985, 1990, 1998, 2016),
+                   #
+                   #                    fc_y = matrix(
+                   #                      rep(c(0, 0, 0.7, 0.9), Ncat), ncol = Ncat),
+
                    SC_to_200_349 = rep_len(0.3, Ncat),
 
                    alpha01 = rep_len(0.01,Ncat),
@@ -237,7 +242,8 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    #                    p = matrix(1, NAge, NAge),
 
                    ART_RR = 2.5,
-                   dur_FSW = 30
+                   dur_FSW = 30,
+                   OnPrEP_init = rep_len(0, Ncat)
   )
 
   if (length(set_null) > 0L) {

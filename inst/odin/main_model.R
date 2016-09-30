@@ -85,10 +85,10 @@ deriv(cumuInf[]) = S0[i] * lambda_sum_0[i] + S1a[i] * lambda_sum_1a[i] + S1b[i] 
 new_people = epsilon * sum(N)
 
 # births and prep movement
-E0[] = mu[i] * N[i] + alphaItot[i] + new_people * omega[i] - S0[i] * (zetaa[i] + zetab[i] + zetac[i])
-E1a[] = zetaa[i] * S0[i] - psia[i] * S1a[i]
-E1b[] = zetab[i] * S0[i] + psia[i] * S1a[i] - psib[i] * S1b[i]
-E1c[] = zetac[i] * S0[i] + psib[i] * S1b[i]
+E0[] = mu[i] * N[i] + alphaItot[i] + new_people * omega[i] - S0[i] * (zetaa[i] + zetab[i] + zetac[i])# + PrEP_0[i]
+E1a[] = zetaa[i] * S0[i] - psia[i] * S1a[i]# + PrEP_1a[i]
+E1b[] = zetab[i] * S0[i] + psia[i] * S1a[i] - psib[i] * S1b[i]# + PrEP_1b[i]
+E1c[] = zetac[i] * S0[i] + psib[i] * S1b[i]# + PrEP_1c[i]
 
 
 # sum of all compartments
@@ -161,6 +161,33 @@ rate_move_out[] <- 0
 #   rate_move_in[,] <- 0
 #   rate_move_out[] <- 0
 # }
+
+# PrEP?
+PrEP_0[] <- 0
+PrEP_1a[] <- 0
+PrEP_1b[] <- 0
+PrEP_1c[] <- 0
+
+PrEP_0[1] <- if(t > 2013 && t < 2014 && S1a[1] == 0) -250 else 0
+PrEP_1a[1] <- if(t > 2013 && t < 2014 && S1a[1] == 0) 130 else 0
+PrEP_1b[1] <- if(t > 2013 && t < 2014 && S1a[1] == 0) 20 else 0
+PrEP_1c[1] <- if(t > 2013 && t < 2014 && S1a[1] == 0) 100 else 0
+
+deriv(OnPrEP[]) = OnPrEP[i] + zetaa[i] * S0[i] + zetab[i] * S0[i] + zetac[i] * S0[i]
+
+zetaa_switch[1] <- if(t > 2013 && t < 2014 && OnPrEP < 250) 20 else 0
+zetab_switch[1] <- if(t > 2013 && t < 2014 && OnPrEP < 250) 2 else 0
+zetac_switch[1] <- if(t > 2013 && t < 2014 && OnPrEP < 250) 20 else 0
+
+zetaa_switch[2] <- 0
+# else -150
+#
+#
+#
+# PrEP_1a[2, i] <- if(t != 2013) 0 else 50
+# PrEP_1b[3, i] <- if(t != 2013) 0 else 50
+# PrEP_1c[4, i] <- if(t != 2013) 0 else 50
+
 
 # mortality due to HIV infection
 alphaItot[] =
@@ -362,6 +389,7 @@ output(theta[,]) = theta
 output(rate_move_in[,]) = rate_move_in
 output(rate_move_out[]) = rate_move_out
 
+
 # INCIDENCE RATE
 
 # = no. disease onsets / sum of "person-time" at risk
@@ -436,6 +464,9 @@ I45_init[] = user()
 
 initial(cumuInf[]) = cumuInf_init[i]
 cumuInf_init[] = user()
+
+initial(OnPrEP[]) = OnPrEP_init[i]
+OnPrEP_init[] = user()
 
 # initial(S0) = user()
 # initial(S1a) = user()
@@ -659,7 +690,7 @@ dim(R) = Ncat
 
 
 dim(cumuInf) = Ncat
-
+dim(OnPrEP) = Ncat
 
 # states and initial conditions
 dim(S0) = Ncat
@@ -753,3 +784,19 @@ dim(theta) <- c(Ncat, Ncat)
 
 dim(rate_move_in) <- c(Ncat, Ncat)
 dim(rate_move_out) <- Ncat
+
+dim(PrEP_0) = Ncat
+dim(PrEP_1a) = Ncat
+dim(PrEP_1b) = Ncat
+dim(PrEP_1c) = Ncat
+
+output(PrEP_0[]) = PrEP_0
+output(PrEP_1a[]) = PrEP_1a
+output(PrEP_1b[]) = PrEP_1b
+output(PrEP_1c[]) = PrEP_1c
+
+dim(OnPrEP_init) = Ncat
+
+dim(zetaa_switch) = Ncat
+dim(zetab_switch) = Ncat
+dim(zetac_switch) = Ncat
