@@ -236,7 +236,8 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
 
                    #                    p = matrix(1, NAge, NAge),
 
-                   ART_RR = 2.5
+                   ART_RR = 2.5,
+                   dur_FSW = 30
   )
 
   if (length(set_null) > 0L) {

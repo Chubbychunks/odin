@@ -1,3 +1,5 @@
+# most recent
+
 # NOTES
 ##############################################################################
 
@@ -15,8 +17,6 @@ config(include) = "FOI.c"
 # ORDINARY DIFFERENTIAL EQUATIONS
 ##############################################################################
 
-
-# still need to work on lambda
 deriv(S0[]) = E0[i] - S0[i] * lambda_sum_0[i] - S0[i] * mu[i]
 deriv(S1a[]) = E1a[i] - S1a[i] * lambda_sum_1a[i] - S1a[i] * mu[i]
 deriv(S1b[]) = E1b[i] - S1b[i] * lambda_sum_1b[i] - S1b[i] * mu[i]
@@ -48,6 +48,37 @@ deriv(I43[]) = gamma42[i] * I42[i] + phi3[i] * I33[i] - I43[i] * (gamma43[i] + r
 deriv(I44[]) = gamma43[i] * I43[i] + phi4[i] * I34[i] - I44[i] * (gamma44[i] + rho4[i] + alpha44[i] + mu[i])
 deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alpha45[i] + mu[i])
 
+# deriv(S0[]) = E0[i] - S0[i] * lambda_sum_0[i] - S0[i] * mu[i] + rate_move_out[i] * S0[i] + rate_move_in[i, j] * S0[j] # careful... here j is not the sexual partner, but origin of migration, but i think that's ok
+# deriv(S1a[]) = E1a[i] - S1a[i] * lambda_sum_1a[i] - S1a[i] * mu[i] + rate_move_out[i] * S1a[i] + rate_move_in[i, j] * S1a[j]
+# deriv(S1b[]) = E1b[i] - S1b[i] * lambda_sum_1b[i] - S1b[i] * mu[i] + rate_move_out[i] * S1b[i] + rate_move_in[i, j] * S1b[j]
+# deriv(S1c[]) = E1c[i] - S1c[i] * lambda_sum_1c[i] - S1c[i] * mu[i] + rate_move_out[i] * S1c[i] + rate_move_in[i, j] * S1c[j]
+#
+# #primary infection
+# deriv(I01[]) = S0[i] * lambda_sum_0[i] - I01[i] * (gamma01[i] + tau01[i] + alpha01[i] + mu[i]) + rate_move_out[i] * I01[i] + rate_move_in[i, j] * I01[j]
+# deriv(I11[]) = S1a[i] * lambda_sum_1a[i] + S1b[i] * lambda_sum_1b[i] + S1c[i] * lambda_sum_1c[i] -
+#   I11[i] * (gamma11[i] + tau11[i] + alpha11[i] + mu[i]) + rate_move_out[i] * I11[i] + rate_move_in[i, j] * I11[j]
+#
+# #chronic
+# deriv(I02[]) = gamma01[i] * I01[i] + gamma11[i] * I11[i] - I02[i] * (gamma02[i] + tau2[i] + alpha02[i] + mu[i]) + rate_move_out[i] * I02[i] + rate_move_in[i, j] * I02[j]
+# deriv(I03[]) = gamma02[i] * I02[i] - I03[i] * (gamma03[i] + tau3[i] + alpha03[i] + mu[i]) + rate_move_out[i] * I03[i] + rate_move_in[i, j] * I03[j]
+# deriv(I04[]) = gamma03[i] * I03[i] - I04[i] * (gamma04[i] + tau4[i] + alpha04[i] + mu[i]) + rate_move_out[i] * I04[i] + rate_move_in[i, j] * I04[j]
+# deriv(I05[]) = gamma04[i] * I04[i] - I05[i] * (tau5[i] + alpha05[i] + mu[i]) + rate_move_out[i] * I05[i] + rate_move_in[i, j] * I05[j]
+#
+# deriv(I22[]) = tau01[i] * I01[i] + tau11[i] * I11[i] + tau2[i] * I02[i] - I22[i] * (gamma22[i] + rho2[i] + alpha22[i] + mu[i]) + rate_move_out[i] * I22[i] + rate_move_in[i, j] * I22[j]
+# deriv(I23[]) = gamma22[i] * I22[i] + tau3[i] * I03[i] - I23[i] * (gamma23[i] + rho3[i] + alpha23[i] + mu[i]) + rate_move_out[i] * I23[i] + rate_move_in[i, j] * I23[j]
+# deriv(I24[]) = gamma23[i] * I23[i] + tau4[i] * I04[i] - I24[i] * (gamma24[i] + rho4[i] + alpha24[i] + mu[i]) + rate_move_out[i] * I24[i] + rate_move_in[i, j] * I24[j]
+# deriv(I25[]) = gamma24[i] * I24[i] + tau5[i] * I05[i] - I25[i] * (rho5[i] + alpha25[i] + mu[i]) + rate_move_out[i] * I25[i] + rate_move_in[i, j] * I25[j]
+#
+# deriv(I32[]) = rho2[i] * (I22[i] + I42[i]) - I32[i] * (gamma32[i] + phi2[i] + alpha32[i] + mu[i]) + rate_move_out[i] * I32[i] + rate_move_in[i, j] * I32[j]
+# deriv(I33[]) = gamma32[i] * I32[i] + rho3[i] * (I23[i] + I43[i]) - I33[i] * (gamma33[i] + phi3[i] + alpha33[i] + mu[i]) + rate_move_out[i] * I33[i] + rate_move_in[i, j] * I33[j]
+# deriv(I34[]) = gamma33[i] * I33[i] + rho4[i] * (I24[i] + I44[i]) - I34[i] * (gamma34[i] + phi4[i] + alpha34[i] + mu[i]) + rate_move_out[i] * I34[i] + rate_move_in[i, j] * I34[j]
+# deriv(I35[]) = gamma34[i] * I34[i] + rho5[i] * (I25[i] + I45[i]) - I35[i] * (phi5[i] + alpha35[i] + mu[i]) + rate_move_out[i] * I35[i] + rate_move_in[i, j] * I35[j]
+#
+# deriv(I42[]) = phi2[i] * I32[i] - I42[i] * (gamma42[i] + rho2[i] + alpha42[i] + mu[i]) + rate_move_out[i] * I42[i] + rate_move_in[i, j] * I42[j]
+# deriv(I43[]) = gamma42[i] * I42[i] + phi3[i] * I33[i] - I43[i] * (gamma43[i] + rho3[i] + alpha43[i] + mu[i]) + rate_move_out[i] * I43[i] + rate_move_in[i, j] * I43[j]
+# deriv(I44[]) = gamma43[i] * I43[i] + phi4[i] * I34[i] - I44[i] * (gamma44[i] + rho4[i] + alpha44[i] + mu[i]) + rate_move_out[i] * I44[i] + rate_move_in[i, j] * I44[j]
+# deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alpha45[i] + mu[i]) + rate_move_out[i] * I45[i] + rate_move_in[i, j] * I45[j]
+
 deriv(cumuInf[]) = S0[i] * lambda_sum_0[i] + S1a[i] * lambda_sum_1a[i] + S1b[i] * lambda_sum_1b[i] + S1c[i] * lambda_sum_1c[i]
 
 # births due to population growth
@@ -65,6 +96,71 @@ N[] = S0[i] + S1a[i] + S1b[i] + S1c[i] + I01[i] + I11[i] + I02[i] + I03[i] + I04
   I22[i] + I23[i] + I24[i] + I25[i] + I32[i] + I33[i] + I34[i] + I35[i] +
   I42[i] + I43[i] + I44[i] + I45[i]
 
+
+
+
+# MOVEMENT
+##############################################################################
+
+
+
+rate_move_in[,] <- 0
+rate_move_out[] <- 0
+
+# # calculating turnover rates
+# tur_H_FSW <- if(Ncat != 7) 0 else (N[1] / dur_FSW) / N[3] # this is a rate
+# tur_L_FSW <- if(Ncat != 7) 0 else (N[2] / dur_FSW) / N[3]
+# tur_GPF <- if(Ncat != 7) 0 else (tur_H_FSW * N[1] + tur_L_FSW * N[2]) / N[3] # leaving GPF to both H and L FSW
+#
+#
+# rate_move_out[1] <- if(Ncat != 7) 0 else - tur_H_FSW
+# rate_move_out[2] <- if(Ncat != 7) 0 else - tur_L_FSW
+# rate_move_out[3] <- if(Ncat != 7) 0 else - tur_GPF
+# rate_move_out[4] <- if(Ncat != 7) 0 else 0
+# rate_move_out[5] <- if(Ncat != 7) 0 else 0
+# rate_move_out[6] <- if(Ncat != 7) 0 else 0
+# rate_move_out[7] <- if(Ncat != 7) 0 else 0
+#
+# # going in
+#
+# # moving in from j to i
+# rate_move_in[3, 1] <- if(Ncat != 7) 0 else tur_H_FSW
+# rate_move_in[3, 2] <- if(Ncat != 7) 0 else tur_L_FSW
+# rate_move_in[1, 3] <- if(Ncat != 7) 0 else (tur_H_FSW * N[1]) / N[3]
+# rate_move_in[2, 3] <- if(Ncat != 7) 0 else (tur_H_FSW * N[2]) / N[3]
+
+
+# if(Ncat == 7)
+# {
+#   rate_move_in[,] <- 0
+#   rate_move_out[] <- 0
+#
+#   # calculating turnover rates
+#   tur_H_FSW = (N[1] / dur_FSW) / N[3] # this is a rate
+#   tur_L_FSW = (N[2] / dur_FSW) / N[3]
+#   tur_GPF = (tur_H_FSW * N[1] + tur_L_FSW * N[2]) / N[3] # leaving GPF to both H and L FSW
+#
+#
+#   rate_move_out[1] = - tur_H_FSW
+#   rate_move_out[2] = - tur_L_FSW
+#   rate_move_out[3] = - tur_GPF
+#   rate_move_out[4] = 0
+#   rate_move_out[5] = 0
+#   rate_move_out[6] = 0
+#   rate_move_out[7] = 0
+#
+#   # going in
+#
+#   # moving in from j to i
+#   rate_move_in[3, 1] = tur_H_FSW
+#   rate_move_in[3, 2] = tur_L_FSW
+#   rate_move_in[1, 3] = (tur_H_FSW * N[1]) / N[3]
+#   rate_move_in[2, 3] = (tur_H_FSW * N[2]) / N[3]
+#
+# } else {
+#   rate_move_in[,] <- 0
+#   rate_move_out[] <- 0
+# }
 
 # mortality due to HIV infection
 alphaItot[] =
@@ -166,33 +262,33 @@ fP[] = interpolate(fP_t, fP_y, "linear")
 
 #FOI of j on i
 lambda[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
-                           I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
-                           I42[j], I43[j], I44[j], I45[j],
-                           N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP[i], ec[i])
+                                              I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
+                                              I42[j], I43[j], I44[j], I45[j],
+                                              N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP[i], ec[i])
 # Ras!!
 
 
 
 #FOI of j on i. PrEP adherence category 0 (off PrEP)
 lambda_0[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
-                                              I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
-                                              I42[j], I43[j], I44[j], I45[j],
-                                              N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP0[i], ec[i])
+                                                I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
+                                                I42[j], I43[j], I44[j], I45[j],
+                                                N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP0[i], ec[i])
 #FOI of j on i. PrEP adherence category 0 (off PrEP)
 lambda_1a[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
-                                                I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
-                                                I42[j], I43[j], I44[j], I45[j],
-                                                N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1a[i], ec[i])
+                                                 I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
+                                                 I42[j], I43[j], I44[j], I45[j],
+                                                 N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1a[i], ec[i])
 #FOI of j on i. PrEP adherence category 0 (off PrEP)
 lambda_1b[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
-                                                I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
-                                                I42[j], I43[j], I44[j], I45[j],
-                                                N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1b[i], ec[i])
+                                                 I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
+                                                 I42[j], I43[j], I44[j], I45[j],
+                                                 N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1b[i], ec[i])
 #FOI of j on i. PrEP adherence category 0 (off PrEP)
 lambda_1c[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
-                                                I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
-                                                I42[j], I43[j], I44[j], I45[j],
-                                                N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1c[i], ec[i])
+                                                 I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
+                                                 I42[j], I43[j], I44[j], I45[j],
+                                                 N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1c[i], ec[i])
 
 
 lambda_sum[] = sum(lambda[i,])
@@ -262,6 +358,10 @@ output(B[,]) = B
 output(p[,]) = p
 output(n[,]) = n
 output(theta[,]) = theta
+
+output(rate_move_in[,]) = rate_move_in
+output(rate_move_out[]) = rate_move_out
+
 # INCIDENCE RATE
 
 # = no. disease onsets / sum of "person-time" at risk
@@ -276,6 +376,11 @@ output(theta[,]) = theta
 #                              I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
 #                              I42[j], I43[j], I44[j], I45[j],
 #                              N[j], beta[i,j], R[i,j], fc[i,j], fP[i,j], n[i,j], eP[j], ec[j])
+
+# parameters
+
+Ncat = user()
+Nage = user()
 
 
 # do this for all vars!
@@ -460,10 +565,9 @@ fP_t[] = user()
 fP_y[,] = user()
 dim(fP_t) = user()
 dim(fP_y) = user()
-Ncat = user()
-Nage = user()
 
 
+dur_FSW = user()
 
 # DIMMING
 
@@ -646,3 +750,6 @@ dim(lambda_sum_1c) = Ncat
 
 dim(cstar) <- c(Ncat, Ncat)
 dim(theta) <- c(Ncat, Ncat)
+
+dim(rate_move_in) <- c(Ncat, Ncat)
+dim(rate_move_out) <- Ncat
