@@ -7,11 +7,15 @@ require(reshape2)
 # ART to be defined by nubmers, not rates
 
 odin::odin_package(".") # looks for any models inside inst/odin
+
 devtools::load_all()
 
 devtools::test()
 
+parameters <- generate_parameters(Ncat = 7)
+result = run_model(parameters, main_model, time)
 
+#below to tset for PrEP
 parameters <- generate_parameters(zetaa = c(0,0),zetab = c(0,0),zetac = c(0,0), psia = c(1, 1), psib = c(1, 1))
 result = run_model(parameters, main_model, time)
 
