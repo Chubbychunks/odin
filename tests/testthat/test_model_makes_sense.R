@@ -11,6 +11,7 @@ test_that("example", {
 
 #result = run_model(parameters, main_model, time, output_vars = c("Ntot", "prev_client"))
 
+#GENERAL TESTS
 
 #Ncat works?
 test_that("Ncat", {
@@ -22,6 +23,23 @@ test_that("Ncat", {
   }
 })
 
+# ALL COMPARTMENTS ARE POSITIVE
+
+test_that("all compartments positive", {
+  parameters <- generate_parameters()
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("S[0-9]|I[0-9]", names(result)))]
+  expect_true(all(unlist(xx) >= 0))
+})
+
+# CUMULATIVE INFECTIONS ALWAYS POSITIVE
+test_that("cumulative infections", {
+  parameters <- generate_parameters(S1b_init = c(100,100), S1c_init = c(100,100))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("cumuInf", names(result)))]
+  expect_true(all(diff(xx[[1]][,1]) >= 0))
+  expect_true(all(diff(xx[[1]][,2]) >= 0))
+})
 
 # NO SEEDING OF EPIDEMIC
 ###################################################################################################################################
@@ -39,6 +57,14 @@ test_that("no incidence", {
   }
 })
 
+# no infected, then 0 cumulative infections
+test_that("cumulative infections", {
+  parameters <- generate_parameters(I11_init = c(0,0), I01_init = c(0,0), S1a_init = c(100,100), S1b_init = c(100,100), S1c_init = c(100,100))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("cumuInf", names(result)))]
+  expect_true(all(unlist(xx) == 0))
+})
+
 # no infected, then population sizes remain equal between groups?
 test_that("risk group sizes equal", {
   parameters <- generate_parameters(I11_init = c(0,0), I01_init = c(0,0), S1a_init = c(100,100), S1b_init = c(100,100), S1c_init = c(100,100))
@@ -48,13 +74,7 @@ test_that("risk group sizes equal", {
   expect_equal(N_client[[1]], N_FSW[[1]], tolerance = 1e-6)
 })
 
-# no infected, then 0 cumulative infections
-test_that("cumulative infections", {
-  parameters <- generate_parameters(I11_init = c(0,0), I01_init = c(0,0), S1a_init = c(100,100), S1b_init = c(100,100), S1c_init = c(100,100))
-  result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("cumuInf", names(result)))]
-  expect_true(all(unlist(xx) == 0))
-})
+
 
 
 # GROWTH RATE AND DEMOGRAPHY
@@ -139,27 +159,8 @@ test_that("growth rate decreases", {
 # Because the timesteps are infintessimally small?!?!?!?
 
 
-# ALL COMPARTMENTS ARE POSITIVE
 
-test_that("all compartments positive", {
-  parameters <- generate_parameters()
-  result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("S[0-9]|I[0-9]", names(result)))]
-  expect_true(all(unlist(xx) >= 0))
-})
 
-# CUMULATIVE INFECTIONS ALWAYS POSITIVE
-test_that("cumulative infections", {
-  parameters <- generate_parameters(S1b_init = c(100,100), S1c_init = c(100,100))
-  result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("cumuInf", names(result)))]
-  expect_true(all(diff(xx[[1]][,1]) >= 0))
-  expect_true(all(diff(xx[[1]][,2]) >= 0))
-})
-
-# FORCE OF INFECTION SET TO ZERO
-###################################################################################################################################
-###################################################################################################################################
 
 
 # LAMBDAS
@@ -190,6 +191,11 @@ test_that("useful prep", {
   result2 = run_model(parameters, main_model, time)
   expect_true(result1$cumuInf[length(time)] < result2$cumuInf[length(time)])
 })
+
+# FORCE OF INFECTION SET TO ZERO
+###################################################################################################################################
+###################################################################################################################################
+
 
 # BETA
 # only group 1 infected, does group 2 get infected?
@@ -316,7 +322,7 @@ test_that("fc ec 2c", {
 #
 # fP and eP
 # only group 1 infected, does group 2 get infected?
-# condom efficacy is 1 and frequency of condom use is 1 - no infections
+# prep efficacy is 1 and frequency of prep use is 1 - no infections
 test_that("fP eP 1", {
   parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 1), eP1b = c(0, 1), eP1c = c(0, 1), fP_y = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)))
   result = run_model(parameters, main_model, time)
@@ -346,7 +352,7 @@ test_that("fP eP 1b", {
 
 # condom efficacy is 1 and frequency of condom use is NOT 1 - some infections
 test_that("fP eP 1c", {
-  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 0.99), eP1a = c(0, 1), eP1b = c(0, 1), eP1c = c(0, 1), fP_y = cbind(c(0, 0, 0, 0), c(1, 1, 0.99, 1)), zetaa = c(0.1, 0.1))
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 1), eP1b = c(0, 1), eP1c = c(0, 1), fP_y = cbind(c(0, 0, 0, 0), c(1, 1, 0.99, 1)), zetaa = c(0.1, 0.1))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,2], xx$I11[,2]))==0)

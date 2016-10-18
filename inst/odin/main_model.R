@@ -130,7 +130,6 @@ N[] = S0[i] + S1a[i] + S1b[i] + S1c[i] + I01[i] + I11[i] + I02[i] + I03[i] + I04
 ##############################################################################
 
 
-
 rate_move_in[,] <- 0
 rate_move_out[] <- 0
 
@@ -145,6 +144,8 @@ output(tur_GPF) = tur_GPF
 
 # i'm not sure how to get the migration to work...
 
+rate_move_in[,] <- 
+  
 
 rate_move_out[1] <- if(Ncat != 7) 0 else -tur_H_FSW
 rate_move_out[2] <- if(Ncat != 7) 0 else -tur_L_FSW
