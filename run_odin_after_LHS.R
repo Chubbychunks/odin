@@ -3,6 +3,10 @@ require(reshape2)
 
 #
 
+# to debug:
+# open terminal in the folder
+# R- d valgrind
+
 # some parameters to be dependent on others which have been sampled
 # ART to be defined by nubmers, not rates
 
