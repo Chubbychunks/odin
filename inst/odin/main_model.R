@@ -17,92 +17,92 @@ config(include) = "FOI.c"
 # ORDINARY DIFFERENTIAL EQUATIONS
 ##############################################################################
 
-# deriv(S0[]) = E0[i] - S0[i] * lambda_sum_0[i] - S0[i] * mu[i]
-# deriv(S1a[]) = E1a[i] - S1a[i] * lambda_sum_1a[i] - S1a[i] * mu[i]
-# deriv(S1b[]) = E1b[i] - S1b[i] * lambda_sum_1b[i] - S1b[i] * mu[i]
-# deriv(S1c[]) = E1c[i] - S1c[i] * lambda_sum_1c[i] - S1c[i] * mu[i]
-#
-# #primary infection
-# deriv(I01[]) = S0[i] * lambda_sum_0[i] - I01[i] * (gamma01[i] + tau01[i] + alpha01[i] + mu[i])
-# deriv(I11[]) = S1a[i] * lambda_sum_1a[i] + S1b[i] * lambda_sum_1b[i] + S1c[i] * lambda_sum_1c[i] -
-#   I11[i] * (gamma11[i] + tau11[i] + alpha11[i] + mu[i])
-#
-# #chronic
-# deriv(I02[]) = gamma01[i] * I01[i] + gamma11[i] * I11[i] - I02[i] * (gamma02[i] + tau2[i] + alpha02[i] + mu[i])
-# deriv(I03[]) = gamma02[i] * I02[i] - I03[i] * (gamma03[i] + tau3[i] + alpha03[i] + mu[i])
-# deriv(I04[]) = gamma03[i] * I03[i] - I04[i] * (gamma04[i] + tau4[i] + alpha04[i] + mu[i])
-# deriv(I05[]) = gamma04[i] * I04[i] - I05[i] * (tau5[i] + alpha05[i] + mu[i])
-#
-# deriv(I22[]) = tau01[i] * I01[i] + tau11[i] * I11[i] + tau2[i] * I02[i] - I22[i] * (gamma22[i] + rho2[i] + alpha22[i] + mu[i])
-# deriv(I23[]) = gamma22[i] * I22[i] + tau3[i] * I03[i] - I23[i] * (gamma23[i] + rho3[i] + alpha23[i] + mu[i])
-# deriv(I24[]) = gamma23[i] * I23[i] + tau4[i] * I04[i] - I24[i] * (gamma24[i] + rho4[i] + alpha24[i] + mu[i])
-# deriv(I25[]) = gamma24[i] * I24[i] + tau5[i] * I05[i] - I25[i] * (rho5[i] + alpha25[i] + mu[i])
-#
-# deriv(I32[]) = rho2[i] * (I22[i] + I42[i]) - I32[i] * (gamma32[i] + phi2[i] + alpha32[i] + mu[i])
-# deriv(I33[]) = gamma32[i] * I32[i] + rho3[i] * (I23[i] + I43[i]) - I33[i] * (gamma33[i] + phi3[i] + alpha33[i] + mu[i])
-# deriv(I34[]) = gamma33[i] * I33[i] + rho4[i] * (I24[i] + I44[i]) - I34[i] * (gamma34[i] + phi4[i] + alpha34[i] + mu[i])
-# deriv(I35[]) = gamma34[i] * I34[i] + rho5[i] * (I25[i] + I45[i]) - I35[i] * (phi5[i] + alpha35[i] + mu[i])
-#
-# deriv(I42[]) = phi2[i] * I32[i] - I42[i] * (gamma42[i] + rho2[i] + alpha42[i] + mu[i])
-# deriv(I43[]) = gamma42[i] * I42[i] + phi3[i] * I33[i] - I43[i] * (gamma43[i] + rho3[i] + alpha43[i] + mu[i])
-# deriv(I44[]) = gamma43[i] * I43[i] + phi4[i] * I34[i] - I44[i] * (gamma44[i] + rho4[i] + alpha44[i] + mu[i])
-# deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alpha45[i] + mu[i])
-
-deriv(S0[]) = E0[i] - S0[i] * lambda_sum_0[i] - S0[i] * mu[i] + rate_move_out[i] * S0[i] + sum(in_S0[i, ])
-deriv(S1a[]) = E1a[i] - S1a[i] * lambda_sum_1a[i] - S1a[i] * mu[i] + rate_move_out[i] * S1a[i] + sum(in_S1a[i, ])
-deriv(S1b[]) = E1b[i] - S1b[i] * lambda_sum_1b[i] - S1b[i] * mu[i] + rate_move_out[i] * S1b[i] + sum(in_S1b[i, ])
-deriv(S1c[]) = E1c[i] - S1c[i] * lambda_sum_1c[i] - S1c[i] * mu[i] + rate_move_out[i] * S1c[i] + sum(in_S1c[i, ])
+deriv(S0[]) = E0[i] - S0[i] * lambda_sum_0[i] - S0[i] * mu[i]
+deriv(S1a[]) = E1a[i] - S1a[i] * lambda_sum_1a[i] - S1a[i] * mu[i]
+deriv(S1b[]) = E1b[i] - S1b[i] * lambda_sum_1b[i] - S1b[i] * mu[i]
+deriv(S1c[]) = E1c[i] - S1c[i] * lambda_sum_1c[i] - S1c[i] * mu[i]
 
 #primary infection
-deriv(I01[]) = S0[i] * lambda_sum_0[i] - I01[i] * (gamma01[i] + tau01[i] + alpha01[i] + mu[i]) + rate_move_out[i] * I01[i] + sum(in_I01[i, ])
+deriv(I01[]) = S0[i] * lambda_sum_0[i] - I01[i] * (gamma01[i] + tau01[i] + alpha01[i] + mu[i])
 deriv(I11[]) = S1a[i] * lambda_sum_1a[i] + S1b[i] * lambda_sum_1b[i] + S1c[i] * lambda_sum_1c[i] -
-  I11[i] * (gamma11[i] + tau11[i] + alpha11[i] + mu[i]) + rate_move_out[i] * I11[i] + sum(in_I11[i, ])
+  I11[i] * (gamma11[i] + tau11[i] + alpha11[i] + mu[i])
 
 #chronic
-deriv(I02[]) = gamma01[i] * I01[i] + gamma11[i] * I11[i] - I02[i] * (gamma02[i] + tau2[i] + alpha02[i] + mu[i]) + rate_move_out[i] * I02[i] + sum(in_I02[i, ])
-deriv(I03[]) = gamma02[i] * I02[i] - I03[i] * (gamma03[i] + tau3[i] + alpha03[i] + mu[i]) + rate_move_out[i] * I03[i] + sum(in_I03[i, ])
-deriv(I04[]) = gamma03[i] * I03[i] - I04[i] * (gamma04[i] + tau4[i] + alpha04[i] + mu[i]) + rate_move_out[i] * I04[i] + sum(in_I04[i, ])
-deriv(I05[]) = gamma04[i] * I04[i] - I05[i] * (tau5[i] + alpha05[i] + mu[i]) + rate_move_out[i] * I05[i] + sum(in_I05[i, ])
+deriv(I02[]) = gamma01[i] * I01[i] + gamma11[i] * I11[i] - I02[i] * (gamma02[i] + tau2[i] + alpha02[i] + mu[i])
+deriv(I03[]) = gamma02[i] * I02[i] - I03[i] * (gamma03[i] + tau3[i] + alpha03[i] + mu[i])
+deriv(I04[]) = gamma03[i] * I03[i] - I04[i] * (gamma04[i] + tau4[i] + alpha04[i] + mu[i])
+deriv(I05[]) = gamma04[i] * I04[i] - I05[i] * (tau5[i] + alpha05[i] + mu[i])
 
-deriv(I22[]) = tau01[i] * I01[i] + tau11[i] * I11[i] + tau2[i] * I02[i] - I22[i] * (gamma22[i] + rho2[i] + alpha22[i] + mu[i]) + rate_move_out[i] * I22[i] + sum(in_I22[i, ])
-deriv(I23[]) = gamma22[i] * I22[i] + tau3[i] * I03[i] - I23[i] * (gamma23[i] + rho3[i] + alpha23[i] + mu[i]) + rate_move_out[i] * I23[i] + sum(in_I23[i, ])
-deriv(I24[]) = gamma23[i] * I23[i] + tau4[i] * I04[i] - I24[i] * (gamma24[i] + rho4[i] + alpha24[i] + mu[i]) + rate_move_out[i] * I24[i] + sum(in_I24[i, ])
-deriv(I25[]) = gamma24[i] * I24[i] + tau5[i] * I05[i] - I25[i] * (rho5[i] + alpha25[i] + mu[i]) + rate_move_out[i] * I25[i] + sum(in_I25[i, ])
+deriv(I22[]) = tau01[i] * I01[i] + tau11[i] * I11[i] + tau2[i] * I02[i] - I22[i] * (gamma22[i] + rho2[i] + alpha22[i] + mu[i])
+deriv(I23[]) = gamma22[i] * I22[i] + tau3[i] * I03[i] - I23[i] * (gamma23[i] + rho3[i] + alpha23[i] + mu[i])
+deriv(I24[]) = gamma23[i] * I23[i] + tau4[i] * I04[i] - I24[i] * (gamma24[i] + rho4[i] + alpha24[i] + mu[i])
+deriv(I25[]) = gamma24[i] * I24[i] + tau5[i] * I05[i] - I25[i] * (rho5[i] + alpha25[i] + mu[i])
 
-deriv(I32[]) = rho2[i] * (I22[i] + I42[i]) - I32[i] * (gamma32[i] + phi2[i] + alpha32[i] + mu[i]) + rate_move_out[i] * I32[i] + sum(in_I32[i, ])
-deriv(I33[]) = gamma32[i] * I32[i] + rho3[i] * (I23[i] + I43[i]) - I33[i] * (gamma33[i] + phi3[i] + alpha33[i] + mu[i]) + rate_move_out[i] * I33[i] + sum(in_I33[i, ])
-deriv(I34[]) = gamma33[i] * I33[i] + rho4[i] * (I24[i] + I44[i]) - I34[i] * (gamma34[i] + phi4[i] + alpha34[i] + mu[i]) + rate_move_out[i] * I34[i] + sum(in_I34[i, ])
-deriv(I35[]) = gamma34[i] * I34[i] + rho5[i] * (I25[i] + I45[i]) - I35[i] * (phi5[i] + alpha35[i] + mu[i]) + rate_move_out[i] * I35[i] + sum(in_I35[i, ])
+deriv(I32[]) = rho2[i] * (I22[i] + I42[i]) - I32[i] * (gamma32[i] + phi2[i] + alpha32[i] + mu[i])
+deriv(I33[]) = gamma32[i] * I32[i] + rho3[i] * (I23[i] + I43[i]) - I33[i] * (gamma33[i] + phi3[i] + alpha33[i] + mu[i])
+deriv(I34[]) = gamma33[i] * I33[i] + rho4[i] * (I24[i] + I44[i]) - I34[i] * (gamma34[i] + phi4[i] + alpha34[i] + mu[i])
+deriv(I35[]) = gamma34[i] * I34[i] + rho5[i] * (I25[i] + I45[i]) - I35[i] * (phi5[i] + alpha35[i] + mu[i])
 
-deriv(I42[]) = phi2[i] * I32[i] - I42[i] * (gamma42[i] + rho2[i] + alpha42[i] + mu[i]) + rate_move_out[i] * I42[i] + sum(in_I42[i, ])
-deriv(I43[]) = gamma42[i] * I42[i] + phi3[i] * I33[i] - I43[i] * (gamma43[i] + rho3[i] + alpha43[i] + mu[i]) + rate_move_out[i] * I43[i] + sum(in_I43[i, ])
-deriv(I44[]) = gamma43[i] * I43[i] + phi4[i] * I34[i] - I44[i] * (gamma44[i] + rho4[i] + alpha44[i] + mu[i]) + rate_move_out[i] * I44[i] + sum(in_I44[i, ])
-deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alpha45[i] + mu[i]) + rate_move_out[i] * I45[i] + sum(in_I45[i, ])
+deriv(I42[]) = phi2[i] * I32[i] - I42[i] * (gamma42[i] + rho2[i] + alpha42[i] + mu[i])
+deriv(I43[]) = gamma42[i] * I42[i] + phi3[i] * I33[i] - I43[i] * (gamma43[i] + rho3[i] + alpha43[i] + mu[i])
+deriv(I44[]) = gamma43[i] * I43[i] + phi4[i] * I34[i] - I44[i] * (gamma44[i] + rho4[i] + alpha44[i] + mu[i])
+deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alpha45[i] + mu[i])
+
+# deriv(S0[]) = E0[i] - S0[i] * lambda_sum_0[i] - S0[i] * mu[i] + rate_move_out[i] * S0[i] + sum(in_S0[i, ])
+# deriv(S1a[]) = E1a[i] - S1a[i] * lambda_sum_1a[i] - S1a[i] * mu[i] + rate_move_out[i] * S1a[i] + sum(in_S1a[i, ])
+# deriv(S1b[]) = E1b[i] - S1b[i] * lambda_sum_1b[i] - S1b[i] * mu[i] + rate_move_out[i] * S1b[i] + sum(in_S1b[i, ])
+# deriv(S1c[]) = E1c[i] - S1c[i] * lambda_sum_1c[i] - S1c[i] * mu[i] + rate_move_out[i] * S1c[i] + sum(in_S1c[i, ])
+# 
+# #primary infection
+# deriv(I01[]) = S0[i] * lambda_sum_0[i] - I01[i] * (gamma01[i] + tau01[i] + alpha01[i] + mu[i]) + rate_move_out[i] * I01[i] + sum(in_I01[i, ])
+# deriv(I11[]) = S1a[i] * lambda_sum_1a[i] + S1b[i] * lambda_sum_1b[i] + S1c[i] * lambda_sum_1c[i] -
+#   I11[i] * (gamma11[i] + tau11[i] + alpha11[i] + mu[i]) + rate_move_out[i] * I11[i] + sum(in_I11[i, ])
+# 
+# #chronic
+# deriv(I02[]) = gamma01[i] * I01[i] + gamma11[i] * I11[i] - I02[i] * (gamma02[i] + tau2[i] + alpha02[i] + mu[i]) + rate_move_out[i] * I02[i] + sum(in_I02[i, ])
+# deriv(I03[]) = gamma02[i] * I02[i] - I03[i] * (gamma03[i] + tau3[i] + alpha03[i] + mu[i]) + rate_move_out[i] * I03[i] + sum(in_I03[i, ])
+# deriv(I04[]) = gamma03[i] * I03[i] - I04[i] * (gamma04[i] + tau4[i] + alpha04[i] + mu[i]) + rate_move_out[i] * I04[i] + sum(in_I04[i, ])
+# deriv(I05[]) = gamma04[i] * I04[i] - I05[i] * (tau5[i] + alpha05[i] + mu[i]) + rate_move_out[i] * I05[i] + sum(in_I05[i, ])
+# 
+# deriv(I22[]) = tau01[i] * I01[i] + tau11[i] * I11[i] + tau2[i] * I02[i] - I22[i] * (gamma22[i] + rho2[i] + alpha22[i] + mu[i]) + rate_move_out[i] * I22[i] + sum(in_I22[i, ])
+# deriv(I23[]) = gamma22[i] * I22[i] + tau3[i] * I03[i] - I23[i] * (gamma23[i] + rho3[i] + alpha23[i] + mu[i]) + rate_move_out[i] * I23[i] + sum(in_I23[i, ])
+# deriv(I24[]) = gamma23[i] * I23[i] + tau4[i] * I04[i] - I24[i] * (gamma24[i] + rho4[i] + alpha24[i] + mu[i]) + rate_move_out[i] * I24[i] + sum(in_I24[i, ])
+# deriv(I25[]) = gamma24[i] * I24[i] + tau5[i] * I05[i] - I25[i] * (rho5[i] + alpha25[i] + mu[i]) + rate_move_out[i] * I25[i] + sum(in_I25[i, ])
+# 
+# deriv(I32[]) = rho2[i] * (I22[i] + I42[i]) - I32[i] * (gamma32[i] + phi2[i] + alpha32[i] + mu[i]) + rate_move_out[i] * I32[i] + sum(in_I32[i, ])
+# deriv(I33[]) = gamma32[i] * I32[i] + rho3[i] * (I23[i] + I43[i]) - I33[i] * (gamma33[i] + phi3[i] + alpha33[i] + mu[i]) + rate_move_out[i] * I33[i] + sum(in_I33[i, ])
+# deriv(I34[]) = gamma33[i] * I33[i] + rho4[i] * (I24[i] + I44[i]) - I34[i] * (gamma34[i] + phi4[i] + alpha34[i] + mu[i]) + rate_move_out[i] * I34[i] + sum(in_I34[i, ])
+# deriv(I35[]) = gamma34[i] * I34[i] + rho5[i] * (I25[i] + I45[i]) - I35[i] * (phi5[i] + alpha35[i] + mu[i]) + rate_move_out[i] * I35[i] + sum(in_I35[i, ])
+# 
+# deriv(I42[]) = phi2[i] * I32[i] - I42[i] * (gamma42[i] + rho2[i] + alpha42[i] + mu[i]) + rate_move_out[i] * I42[i] + sum(in_I42[i, ])
+# deriv(I43[]) = gamma42[i] * I42[i] + phi3[i] * I33[i] - I43[i] * (gamma43[i] + rho3[i] + alpha43[i] + mu[i]) + rate_move_out[i] * I43[i] + sum(in_I43[i, ])
+# deriv(I44[]) = gamma43[i] * I43[i] + phi4[i] * I34[i] - I44[i] * (gamma44[i] + rho4[i] + alpha44[i] + mu[i]) + rate_move_out[i] * I44[i] + sum(in_I44[i, ])
+# deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alpha45[i] + mu[i]) + rate_move_out[i] * I45[i] + sum(in_I45[i, ])
 
 
-#moving in
-in_S0[,] <- if (i == j) 0 else rate_move_in[i, j] * S0[j]
-in_S1a[,] <- if (i == j) 0 else rate_move_in[i, j] * S1a[j]
-in_S1b[,] <- if (i == j) 0 else rate_move_in[i, j] * S1b[j]
-in_S1c[,] <- if (i == j) 0 else rate_move_in[i, j] * S1c[j]
-in_I01[,] <- if (i == j) 0 else rate_move_in[i, j] * I01[j]
-in_I11[,] <- if (i == j) 0 else rate_move_in[i, j] * I11[j]
-in_I02[,] <- if (i == j) 0 else rate_move_in[i, j] * I02[j]
-in_I03[,] <- if (i == j) 0 else rate_move_in[i, j] * I03[j]
-in_I04[,] <- if (i == j) 0 else rate_move_in[i, j] * I04[j]
-in_I05[,] <- if (i == j) 0 else rate_move_in[i, j] * I05[j]
-in_I22[,] <- if (i == j) 0 else rate_move_in[i, j] * I22[j]
-in_I23[,] <- if (i == j) 0 else rate_move_in[i, j] * I23[j]
-in_I24[,] <- if (i == j) 0 else rate_move_in[i, j] * I24[j]
-in_I25[,] <- if (i == j) 0 else rate_move_in[i, j] * I25[j]
-in_I32[,] <- if (i == j) 0 else rate_move_in[i, j] * I32[j]
-in_I33[,] <- if (i == j) 0 else rate_move_in[i, j] * I33[j]
-in_I34[,] <- if (i == j) 0 else rate_move_in[i, j] * I34[j]
-in_I35[,] <- if (i == j) 0 else rate_move_in[i, j] * I35[j]
-in_I42[,] <- if (i == j) 0 else rate_move_in[i, j] * I42[j]
-in_I43[,] <- if (i == j) 0 else rate_move_in[i, j] * I43[j]
-in_I44[,] <- if (i == j) 0 else rate_move_in[i, j] * I44[j]
-in_I45[,] <- if (i == j) 0 else rate_move_in[i, j] * I45[j]
+# #moving in
+# in_S0[,] <- if (i == j) 0 else rate_move_in[i, j] * S0[j]
+# in_S1a[,] <- if (i == j) 0 else rate_move_in[i, j] * S1a[j]
+# in_S1b[,] <- if (i == j) 0 else rate_move_in[i, j] * S1b[j]
+# in_S1c[,] <- if (i == j) 0 else rate_move_in[i, j] * S1c[j]
+# in_I01[,] <- if (i == j) 0 else rate_move_in[i, j] * I01[j]
+# in_I11[,] <- if (i == j) 0 else rate_move_in[i, j] * I11[j]
+# in_I02[,] <- if (i == j) 0 else rate_move_in[i, j] * I02[j]
+# in_I03[,] <- if (i == j) 0 else rate_move_in[i, j] * I03[j]
+# in_I04[,] <- if (i == j) 0 else rate_move_in[i, j] * I04[j]
+# in_I05[,] <- if (i == j) 0 else rate_move_in[i, j] * I05[j]
+# in_I22[,] <- if (i == j) 0 else rate_move_in[i, j] * I22[j]
+# in_I23[,] <- if (i == j) 0 else rate_move_in[i, j] * I23[j]
+# in_I24[,] <- if (i == j) 0 else rate_move_in[i, j] * I24[j]
+# in_I25[,] <- if (i == j) 0 else rate_move_in[i, j] * I25[j]
+# in_I32[,] <- if (i == j) 0 else rate_move_in[i, j] * I32[j]
+# in_I33[,] <- if (i == j) 0 else rate_move_in[i, j] * I33[j]
+# in_I34[,] <- if (i == j) 0 else rate_move_in[i, j] * I34[j]
+# in_I35[,] <- if (i == j) 0 else rate_move_in[i, j] * I35[j]
+# in_I42[,] <- if (i == j) 0 else rate_move_in[i, j] * I42[j]
+# in_I43[,] <- if (i == j) 0 else rate_move_in[i, j] * I43[j]
+# in_I44[,] <- if (i == j) 0 else rate_move_in[i, j] * I44[j]
+# in_I45[,] <- if (i == j) 0 else rate_move_in[i, j] * I45[j]
 
 
 
@@ -130,26 +130,31 @@ N[] = S0[i] + S1a[i] + S1b[i] + S1c[i] + I01[i] + I11[i] + I02[i] + I03[i] + I04
 ##############################################################################
 
 
-rate_move_in[,] <- 0
-rate_move_out[] <- 0
+# rate_move_in[,] <- 0
+# rate_move_out[] <- 0
+# 
+# # # calculating turnover rates
+# tur_H_FSW <- if(Ncat != 7) 0 else (N[1] / dur_FSW) / N[3] # this is a rate
+# tur_L_FSW <- if(Ncat != 7) 0 else (N[2] / dur_FSW) / N[3]
+# tur_GPF <- if(Ncat != 7) 0 else (tur_H_FSW * N[1] + tur_L_FSW * N[2]) / N[3] # leaving GPF to both H and L FSW
+# 
+# output(tur_H_FSW) = tur_H_FSW
+# output(tur_L_FSW) = tur_L_FSW
+# output(tur_GPF) = tur_GPF
+# 
+# # i'm not sure how to get the migration to work...
+# 
+# rate_move_in[,] <- 
+#   
+# 
+# rate_move_out[1] <- if(Ncat != 7) 0 else -tur_H_FSW
+# rate_move_out[2] <- if(Ncat != 7) 0 else -tur_L_FSW
+# rate_move_out[3] <- if(Ncat != 7) 0 else -tur_GPF
 
-# # calculating turnover rates
-tur_H_FSW <- if(Ncat != 7) 0 else (N[1] / dur_FSW) / N[3] # this is a rate
-tur_L_FSW <- if(Ncat != 7) 0 else (N[2] / dur_FSW) / N[3]
-tur_GPF <- if(Ncat != 7) 0 else (tur_H_FSW * N[1] + tur_L_FSW * N[2]) / N[3] # leaving GPF to both H and L FSW
 
-output(tur_H_FSW) = tur_H_FSW
-output(tur_L_FSW) = tur_L_FSW
-output(tur_GPF) = tur_GPF
 
-# i'm not sure how to get the migration to work...
 
-rate_move_in[,] <- 
-  
 
-rate_move_out[1] <- if(Ncat != 7) 0 else -tur_H_FSW
-rate_move_out[2] <- if(Ncat != 7) 0 else -tur_L_FSW
-rate_move_out[3] <- if(Ncat != 7) 0 else -tur_GPF
 # 
 # # going in
 # 
@@ -206,10 +211,10 @@ rate_move_out[3] <- if(Ncat != 7) 0 else -tur_GPF
 deriv(OnPrEP[]) = zetaa[i] * S0[i] + zetab[i] * S0[i] + zetac[i] * S0[i]
 
 # deriv(OnPrEP[]) = S1a[i] + S1b[i] + S1c[i]
-
-zetaa[1] <- if(t > 2012 && t < 2014 && sum(OnPrEP[i]) < 250) 1 else 0
-zetab[1] <- if(t > 2012 && t < 2014 && sum(OnPrEP[i]) < 250) 0.2 else 0
-zetac[1] <- if(t > 2012 && t < 2014 && sum(OnPrEP[i]) < 250) 1 else 0
+# 
+# zetaa[1] <- if(t > 2012 && t < 2014 && sum(OnPrEP[i]) < 250) 1 else 0
+# zetab[1] <- if(t > 2012 && t < 2014 && sum(OnPrEP[i]) < 250) 0.2 else 0
+# zetac[1] <- if(t > 2012 && t < 2014 && sum(OnPrEP[i]) < 250) 1 else 0
 
 
 
@@ -412,8 +417,8 @@ output(p[,]) = p
 output(n[,]) = n
 output(theta[,]) = theta
 
-output(rate_move_in[,]) = rate_move_in
-output(rate_move_out[]) = rate_move_out
+# output(rate_move_in[,]) = rate_move_in
+# output(rate_move_out[]) = rate_move_out
 
 output(zetaa[]) = zetaa
 output(zetab[]) = zetab
@@ -565,9 +570,9 @@ tau3[] = user()
 tau4[] = user()
 tau5[] = user()
 
-# zetaa[] = user()
-# zetab[] = user()
-# zetac[] = user()
+zetaa[] = user()
+zetab[] = user()
+zetac[] = user()
 
 # note alpha is ordered differently...
 alpha01[] = user()
@@ -811,8 +816,8 @@ dim(lambda_sum_1c) = Ncat
 dim(cstar) <- c(Ncat, Ncat)
 dim(theta) <- c(Ncat, Ncat)
 
-dim(rate_move_in) <- c(Ncat, Ncat)
-dim(rate_move_out) <- Ncat
+# dim(rate_move_in) <- c(Ncat, Ncat)
+# dim(rate_move_out) <- Ncat
 
 # dim(PrEP_0) = Ncat
 # dim(PrEP_1a) = Ncat
@@ -826,26 +831,26 @@ dim(rate_move_out) <- Ncat
 
 dim(OnPrEP_init) = Ncat
 
-dim(in_S0) <- c(Ncat, Ncat)
-dim(in_S1a) <- c(Ncat, Ncat)
-dim(in_S1b) <- c(Ncat, Ncat)
-dim(in_S1c) <- c(Ncat, Ncat)
-dim(in_I01) <- c(Ncat, Ncat)
-dim(in_I11) <- c(Ncat, Ncat)
-dim(in_I02) <- c(Ncat, Ncat)
-dim(in_I03) <- c(Ncat, Ncat)
-dim(in_I04) <- c(Ncat, Ncat)
-dim(in_I05) <- c(Ncat, Ncat)
-
-dim(in_I22) <- c(Ncat, Ncat)
-dim(in_I23) <- c(Ncat, Ncat)
-dim(in_I24) <- c(Ncat, Ncat)
-dim(in_I25) <- c(Ncat, Ncat)
-dim(in_I32) <- c(Ncat, Ncat)
-dim(in_I33) <- c(Ncat, Ncat)
-dim(in_I34) <- c(Ncat, Ncat)
-dim(in_I35) <- c(Ncat, Ncat)
-dim(in_I42) <- c(Ncat, Ncat)
-dim(in_I43) <- c(Ncat, Ncat)
-dim(in_I44) <- c(Ncat, Ncat)
-dim(in_I45) <- c(Ncat, Ncat)
+# dim(in_S0) <- c(Ncat, Ncat)
+# dim(in_S1a) <- c(Ncat, Ncat)
+# dim(in_S1b) <- c(Ncat, Ncat)
+# dim(in_S1c) <- c(Ncat, Ncat)
+# dim(in_I01) <- c(Ncat, Ncat)
+# dim(in_I11) <- c(Ncat, Ncat)
+# dim(in_I02) <- c(Ncat, Ncat)
+# dim(in_I03) <- c(Ncat, Ncat)
+# dim(in_I04) <- c(Ncat, Ncat)
+# dim(in_I05) <- c(Ncat, Ncat)
+# 
+# dim(in_I22) <- c(Ncat, Ncat)
+# dim(in_I23) <- c(Ncat, Ncat)
+# dim(in_I24) <- c(Ncat, Ncat)
+# dim(in_I25) <- c(Ncat, Ncat)
+# dim(in_I32) <- c(Ncat, Ncat)
+# dim(in_I33) <- c(Ncat, Ncat)
+# dim(in_I34) <- c(Ncat, Ncat)
+# dim(in_I35) <- c(Ncat, Ncat)
+# dim(in_I42) <- c(Ncat, Ncat)
+# dim(in_I43) <- c(Ncat, Ncat)
+# dim(in_I44) <- c(Ncat, Ncat)
+# dim(in_I45) <- c(Ncat, Ncat)
