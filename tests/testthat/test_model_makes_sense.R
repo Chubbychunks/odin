@@ -178,7 +178,7 @@ test_that("useless prep", {
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
 
-  expect_true(all(abs(N1 - N2) < 10^-3))
+  expect_true(all(abs(N1 - N2) < 10^-2))
 })
 
 

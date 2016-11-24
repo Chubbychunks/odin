@@ -16,11 +16,19 @@ config(include) = "FOI.c"
 
 # ORDINARY DIFFERENTIAL EQUATIONS
 ##############################################################################
+# births and prep movement
+E0[] = mu[i] * N[i] + alphaItot[i] + new_people * omega[i] - S0[i] * (zetaa[i] + zetab[i] + zetac[i])# + PrEP_0[i]
+E1a[] = zetaa[i] * S0[i] - psia[i] * S1a[i]
+E1b[] = zetab[i] * S0[i] + psia[i] * S1a[i] - psib[i] * S1b[i]
+E1c[] = zetac[i] * S0[i] + psib[i] * S1b[i]
+E1d[] = 
+
 
 deriv(S0[]) = E0[i] - S0[i] * lambda_sum_0[i] - S0[i] * mu[i]
 deriv(S1a[]) = E1a[i] - S1a[i] * lambda_sum_1a[i] - S1a[i] * mu[i]
 deriv(S1b[]) = E1b[i] - S1b[i] * lambda_sum_1b[i] - S1b[i] * mu[i]
 deriv(S1c[]) = E1c[i] - S1c[i] * lambda_sum_1c[i] - S1c[i] * mu[i]
+# deriv(S1d[]) = 
 
 #primary infection
 deriv(I01[]) = S0[i] * lambda_sum_0[i] - I01[i] * (gamma01[i] + tau01[i] + alpha01[i] + mu[i])
@@ -81,41 +89,37 @@ deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alph
 
 
 # #moving in
-# in_S0[,] <- if (i == j) 0 else rate_move_in[i, j] * S0[j]
-# in_S1a[,] <- if (i == j) 0 else rate_move_in[i, j] * S1a[j]
-# in_S1b[,] <- if (i == j) 0 else rate_move_in[i, j] * S1b[j]
-# in_S1c[,] <- if (i == j) 0 else rate_move_in[i, j] * S1c[j]
-# in_I01[,] <- if (i == j) 0 else rate_move_in[i, j] * I01[j]
-# in_I11[,] <- if (i == j) 0 else rate_move_in[i, j] * I11[j]
-# in_I02[,] <- if (i == j) 0 else rate_move_in[i, j] * I02[j]
-# in_I03[,] <- if (i == j) 0 else rate_move_in[i, j] * I03[j]
-# in_I04[,] <- if (i == j) 0 else rate_move_in[i, j] * I04[j]
-# in_I05[,] <- if (i == j) 0 else rate_move_in[i, j] * I05[j]
-# in_I22[,] <- if (i == j) 0 else rate_move_in[i, j] * I22[j]
-# in_I23[,] <- if (i == j) 0 else rate_move_in[i, j] * I23[j]
-# in_I24[,] <- if (i == j) 0 else rate_move_in[i, j] * I24[j]
-# in_I25[,] <- if (i == j) 0 else rate_move_in[i, j] * I25[j]
-# in_I32[,] <- if (i == j) 0 else rate_move_in[i, j] * I32[j]
-# in_I33[,] <- if (i == j) 0 else rate_move_in[i, j] * I33[j]
-# in_I34[,] <- if (i == j) 0 else rate_move_in[i, j] * I34[j]
-# in_I35[,] <- if (i == j) 0 else rate_move_in[i, j] * I35[j]
-# in_I42[,] <- if (i == j) 0 else rate_move_in[i, j] * I42[j]
-# in_I43[,] <- if (i == j) 0 else rate_move_in[i, j] * I43[j]
-# in_I44[,] <- if (i == j) 0 else rate_move_in[i, j] * I44[j]
-# in_I45[,] <- if (i == j) 0 else rate_move_in[i, j] * I45[j]
+in_S0[,] <- if (i == j) 0 else rate_move_in[i, j] * S0[j]
+in_S1a[,] <- if (i == j) 0 else rate_move_in[i, j] * S1a[j]
+in_S1b[,] <- if (i == j) 0 else rate_move_in[i, j] * S1b[j]
+in_S1c[,] <- if (i == j) 0 else rate_move_in[i, j] * S1c[j]
+in_I01[,] <- if (i == j) 0 else rate_move_in[i, j] * I01[j]
+in_I11[,] <- if (i == j) 0 else rate_move_in[i, j] * I11[j]
+in_I02[,] <- if (i == j) 0 else rate_move_in[i, j] * I02[j]
+in_I03[,] <- if (i == j) 0 else rate_move_in[i, j] * I03[j]
+in_I04[,] <- if (i == j) 0 else rate_move_in[i, j] * I04[j]
+in_I05[,] <- if (i == j) 0 else rate_move_in[i, j] * I05[j]
+in_I22[,] <- if (i == j) 0 else rate_move_in[i, j] * I22[j]
+in_I23[,] <- if (i == j) 0 else rate_move_in[i, j] * I23[j]
+in_I24[,] <- if (i == j) 0 else rate_move_in[i, j] * I24[j]
+in_I25[,] <- if (i == j) 0 else rate_move_in[i, j] * I25[j]
+in_I32[,] <- if (i == j) 0 else rate_move_in[i, j] * I32[j]
+in_I33[,] <- if (i == j) 0 else rate_move_in[i, j] * I33[j]
+in_I34[,] <- if (i == j) 0 else rate_move_in[i, j] * I34[j]
+in_I35[,] <- if (i == j) 0 else rate_move_in[i, j] * I35[j]
+in_I42[,] <- if (i == j) 0 else rate_move_in[i, j] * I42[j]
+in_I43[,] <- if (i == j) 0 else rate_move_in[i, j] * I43[j]
+in_I44[,] <- if (i == j) 0 else rate_move_in[i, j] * I44[j]
+in_I45[,] <- if (i == j) 0 else rate_move_in[i, j] * I45[j]
 
-
+sum_in_S0[] = sum(in_S0[i, ])
 
 deriv(cumuInf[]) = S0[i] * lambda_sum_0[i] + S1a[i] * lambda_sum_1a[i] + S1b[i] * lambda_sum_1b[i] + S1c[i] * lambda_sum_1c[i]
 
 # births due to population growth
 new_people = epsilon * sum(N)
 
-# births and prep movement
-E0[] = mu[i] * N[i] + alphaItot[i] + new_people * omega[i] - S0[i] * (zetaa[i] + zetab[i] + zetac[i])# + PrEP_0[i]
-E1a[] = zetaa[i] * S0[i] - psia[i] * S1a[i]# + PrEP_1a[i]
-E1b[] = zetab[i] * S0[i] + psia[i] * S1a[i] - psib[i] * S1b[i]# + PrEP_1b[i]
-E1c[] = zetac[i] * S0[i] + psib[i] * S1b[i]# + PrEP_1c[i]
+
 
 
 # sum of all compartments
@@ -424,6 +428,11 @@ output(zetaa[]) = zetaa
 output(zetab[]) = zetab
 output(zetac[]) = zetac
 
+
+output(in_S0[, ]) = in_S0
+
+output(sum_in_S0[]) = sum_in_S0
+
 # INCIDENCE RATE
 
 # = no. disease onsets / sum of "person-time" at risk
@@ -634,6 +643,8 @@ dim(fP_y) = user()
 
 dur_FSW = user()
 
+
+
 # DIMMING
 
 
@@ -816,8 +827,10 @@ dim(lambda_sum_1c) = Ncat
 dim(cstar) <- c(Ncat, Ncat)
 dim(theta) <- c(Ncat, Ncat)
 
-# dim(rate_move_in) <- c(Ncat, Ncat)
-# dim(rate_move_out) <- Ncat
+dim(rate_move_in) <- c(Ncat, Ncat)
+dim(rate_move_out) <- Ncat
+rate_move_in[,] = user()
+rate_move_out[] = user()
 
 # dim(PrEP_0) = Ncat
 # dim(PrEP_1a) = Ncat
@@ -831,26 +844,28 @@ dim(theta) <- c(Ncat, Ncat)
 
 dim(OnPrEP_init) = Ncat
 
-# dim(in_S0) <- c(Ncat, Ncat)
-# dim(in_S1a) <- c(Ncat, Ncat)
-# dim(in_S1b) <- c(Ncat, Ncat)
-# dim(in_S1c) <- c(Ncat, Ncat)
-# dim(in_I01) <- c(Ncat, Ncat)
-# dim(in_I11) <- c(Ncat, Ncat)
-# dim(in_I02) <- c(Ncat, Ncat)
-# dim(in_I03) <- c(Ncat, Ncat)
-# dim(in_I04) <- c(Ncat, Ncat)
-# dim(in_I05) <- c(Ncat, Ncat)
-# 
-# dim(in_I22) <- c(Ncat, Ncat)
-# dim(in_I23) <- c(Ncat, Ncat)
-# dim(in_I24) <- c(Ncat, Ncat)
-# dim(in_I25) <- c(Ncat, Ncat)
-# dim(in_I32) <- c(Ncat, Ncat)
-# dim(in_I33) <- c(Ncat, Ncat)
-# dim(in_I34) <- c(Ncat, Ncat)
-# dim(in_I35) <- c(Ncat, Ncat)
-# dim(in_I42) <- c(Ncat, Ncat)
-# dim(in_I43) <- c(Ncat, Ncat)
-# dim(in_I44) <- c(Ncat, Ncat)
-# dim(in_I45) <- c(Ncat, Ncat)
+dim(in_S0) <- c(Ncat, Ncat)
+dim(in_S1a) <- c(Ncat, Ncat)
+dim(in_S1b) <- c(Ncat, Ncat)
+dim(in_S1c) <- c(Ncat, Ncat)
+dim(in_I01) <- c(Ncat, Ncat)
+dim(in_I11) <- c(Ncat, Ncat)
+dim(in_I02) <- c(Ncat, Ncat)
+dim(in_I03) <- c(Ncat, Ncat)
+dim(in_I04) <- c(Ncat, Ncat)
+dim(in_I05) <- c(Ncat, Ncat)
+
+dim(in_I22) <- c(Ncat, Ncat)
+dim(in_I23) <- c(Ncat, Ncat)
+dim(in_I24) <- c(Ncat, Ncat)
+dim(in_I25) <- c(Ncat, Ncat)
+dim(in_I32) <- c(Ncat, Ncat)
+dim(in_I33) <- c(Ncat, Ncat)
+dim(in_I34) <- c(Ncat, Ncat)
+dim(in_I35) <- c(Ncat, Ncat)
+dim(in_I42) <- c(Ncat, Ncat)
+dim(in_I43) <- c(Ncat, Ncat)
+dim(in_I44) <- c(Ncat, Ncat)
+dim(in_I45) <- c(Ncat, Ncat)
+
+dim(sum_in_S0) <- Ncat

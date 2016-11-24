@@ -19,6 +19,16 @@ devtools::test()
 parameters <- generate_parameters(Ncat = 7)
 result = run_model(parameters, main_model, time)
 
+names(result)
+
+result$in_S0[2,,]
+
+result$sum_in_S0
+
+
+
+
+
 #below to tset for PrEP
 parameters <- generate_parameters(zetaa = c(0,0),zetab = c(0,0),zetac = c(0,0), psia = c(1, 1), psib = c(1, 1))
 result = run_model(parameters, main_model, time)

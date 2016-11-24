@@ -243,7 +243,15 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
 
                    ART_RR = 2.5,
                    dur_FSW = 30,
-                   OnPrEP_init = rep_len(0, Ncat)
+                   OnPrEP_init = rep_len(0, Ncat),
+                   
+                   rate_move_in = matrix(0, ncol = Ncat, nrow = Ncat),
+                   rate_move_out = rep_len(0, Ncat)
+                   
+                   
+                   
+                   
+                   
   )
 
   if (length(set_null) > 0L) {
