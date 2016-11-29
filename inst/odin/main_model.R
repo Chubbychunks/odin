@@ -18,20 +18,20 @@ config(include) = "FOI.c"
 ##############################################################################
 # births and prep movement
 E0[] = mu[i] * N[i] + alphaItot[i] + new_people * omega[i] - S0[i] * (zetaa[i] + zetab[i] + zetac[i])# + PrEP_0[i]
-E1a[] = zetaa[i] * S0[i] - psia[i] * S1a[i]
-E1b[] = zetab[i] * S0[i] + psia[i] * S1a[i] - psib[i] * S1b[i]
-E1c[] = zetac[i] * S0[i] + psib[i] * S1b[i]
-E1d[] = 
+E1a[] = zetaa[i] * S0[i] - psia[i] * S1a[i] - kappaa[i] * S1a[i]
+E1b[] = zetab[i] * S0[i] + psia[i] * S1a[i] - psib[i] * S1b[i]  - kappab[i] * S1b[i]
+E1c[] = zetac[i] * S0[i] + psib[i] * S1b[i] - kappac[i] * S1c[i]
+E1d[] = kappaa[i] * S1a[i] + kappab[i] * S1b[i] + kappac[i] * S1c[i]
 
 
 deriv(S0[]) = E0[i] - S0[i] * lambda_sum_0[i] - S0[i] * mu[i]
 deriv(S1a[]) = E1a[i] - S1a[i] * lambda_sum_1a[i] - S1a[i] * mu[i]
 deriv(S1b[]) = E1b[i] - S1b[i] * lambda_sum_1b[i] - S1b[i] * mu[i]
 deriv(S1c[]) = E1c[i] - S1c[i] * lambda_sum_1c[i] - S1c[i] * mu[i]
-# deriv(S1d[]) = 
+deriv(S1d[]) = E1d[i] - S1d[i] * lambda_sum_1d[i] - S1d[i] * mu[i]
 
 #primary infection
-deriv(I01[]) = S0[i] * lambda_sum_0[i] - I01[i] * (gamma01[i] + tau01[i] + alpha01[i] + mu[i])
+deriv(I01[]) = S0[i] * lambda_sum_0[i] + S1d[i] * lambda_sum_1d[i] - I01[i] * (gamma01[i] + tau01[i] + alpha01[i] + mu[i])
 deriv(I11[]) = S1a[i] * lambda_sum_1a[i] + S1b[i] * lambda_sum_1b[i] + S1c[i] * lambda_sum_1c[i] -
   I11[i] * (gamma11[i] + tau11[i] + alpha11[i] + mu[i])
 
@@ -93,6 +93,7 @@ in_S0[,] <- if (i == j) 0 else rate_move_in[i, j] * S0[j]
 in_S1a[,] <- if (i == j) 0 else rate_move_in[i, j] * S1a[j]
 in_S1b[,] <- if (i == j) 0 else rate_move_in[i, j] * S1b[j]
 in_S1c[,] <- if (i == j) 0 else rate_move_in[i, j] * S1c[j]
+in_S1d[,] <- if (i == j) 0 else rate_move_in[i, j] * S1d[j]
 in_I01[,] <- if (i == j) 0 else rate_move_in[i, j] * I01[j]
 in_I11[,] <- if (i == j) 0 else rate_move_in[i, j] * I11[j]
 in_I02[,] <- if (i == j) 0 else rate_move_in[i, j] * I02[j]
@@ -114,7 +115,7 @@ in_I45[,] <- if (i == j) 0 else rate_move_in[i, j] * I45[j]
 
 sum_in_S0[] = sum(in_S0[i, ])
 
-deriv(cumuInf[]) = S0[i] * lambda_sum_0[i] + S1a[i] * lambda_sum_1a[i] + S1b[i] * lambda_sum_1b[i] + S1c[i] * lambda_sum_1c[i]
+deriv(cumuInf[]) = S0[i] * lambda_sum_0[i] + S1a[i] * lambda_sum_1a[i] + S1b[i] * lambda_sum_1b[i] + S1c[i] * lambda_sum_1c[i] + S1d[i] * lambda_sum_1d[i]
 
 # births due to population growth
 new_people = epsilon * sum(N)
@@ -123,7 +124,7 @@ new_people = epsilon * sum(N)
 
 
 # sum of all compartments
-N[] = S0[i] + S1a[i] + S1b[i] + S1c[i] + I01[i] + I11[i] + I02[i] + I03[i] + I04[i] + I05[i] +
+N[] = S0[i] + S1a[i] + S1b[i] + S1c[i] + S1d[i] + I01[i] + I11[i] + I02[i] + I03[i] + I04[i] + I05[i] +
   I22[i] + I23[i] + I24[i] + I25[i] + I32[i] + I33[i] + I34[i] + I35[i] +
   I42[i] + I43[i] + I44[i] + I45[i]
 
@@ -336,28 +337,33 @@ lambda_0[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j
                                                 I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                 I42[j], I43[j], I44[j], I45[j],
                                                 N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP0[i], ec[i])
-#FOI of j on i. PrEP adherence category 0 (off PrEP)
+#FOI of j on i. PrEP adherence category 1a (daily adherence)
 lambda_1a[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                  I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                  I42[j], I43[j], I44[j], I45[j],
                                                  N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1a[i], ec[i])
-#FOI of j on i. PrEP adherence category 0 (off PrEP)
+#FOI of j on i. PrEP adherence category 1b (intermittent adherence)
 lambda_1b[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                  I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                  I42[j], I43[j], I44[j], I45[j],
                                                  N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1b[i], ec[i])
-#FOI of j on i. PrEP adherence category 0 (off PrEP)
+#FOI of j on i. PrEP adherence category 1c (no adherence)
 lambda_1c[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                  I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                  I42[j], I43[j], I44[j], I45[j],
                                                  N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1c[i], ec[i])
-
+#FOI of j on i. PrEP adherence category 1d (dropout)
+lambda_1d[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+                                                 I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
+                                                 I42[j], I43[j], I44[j], I45[j],
+                                                 N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1d[i], ec[i])
 
 lambda_sum[] = sum(lambda[i,])
 lambda_sum_0[] = sum(lambda_0[i,])
 lambda_sum_1a[] = sum(lambda_1a[i,])
 lambda_sum_1b[] = sum(lambda_1b[i,])
 lambda_sum_1c[] = sum(lambda_1c[i,])
+lambda_sum_1d[] = sum(lambda_1d[i,])
 
 
 
@@ -406,11 +412,13 @@ output(lambda_0[,]) = lambda_0
 output(lambda_1a[,]) = lambda_1a
 output(lambda_1b[,]) = lambda_1b
 output(lambda_1c[,]) = lambda_1c
+output(lambda_1d[,]) = lambda_1d
 
 output(lambda_sum_0[]) = lambda_sum_0
 output(lambda_sum_1a[]) = lambda_sum_1a
 output(lambda_sum_1b[]) = lambda_sum_1b
 output(lambda_sum_1c[]) = lambda_sum_1c
+output(lambda_sum_1d[]) = lambda_sum_1d
 
 output(fc[]) = fc
 output(fP[]) = fP
@@ -463,6 +471,8 @@ initial(S1b[]) = S1b_init[i]
 S1b_init[] = user()
 initial(S1c[]) = S1c_init[i]
 S1c_init[] = user()
+initial(S1d[]) = S1d_init[i]
+S1d_init[] = user()
 
 initial(I01[]) = I01_init[i]
 I01_init[] = user()
@@ -583,6 +593,10 @@ zetaa[] = user()
 zetab[] = user()
 zetac[] = user()
 
+kappaa[] = user()
+kappab[] = user()
+kappac[] = user()
+
 # note alpha is ordered differently...
 alpha01[] = user()
 alpha02[] = user()
@@ -619,6 +633,8 @@ eP0[] = user()
 eP1a[] = user()
 eP1b[] = user()
 eP1c[] = user()
+eP1d[] = user()
+
 n[,] = user()
 R[] = user()
 
@@ -697,6 +713,10 @@ dim(zetaa) = Ncat
 dim(zetab) = Ncat
 dim(zetac) = Ncat
 
+dim(kappaa) = Ncat
+dim(kappab) = Ncat
+dim(kappac) = Ncat
+
 dim(alpha01) = Ncat
 dim(alpha02) = Ncat
 dim(alpha03) = Ncat
@@ -727,6 +747,7 @@ dim(eP0) = Ncat
 dim(eP1a) = Ncat
 dim(eP1b) = Ncat
 dim(eP1c) = Ncat
+dim(eP1d) = Ncat
 
 dim(fc) = Ncat
 dim(fP) = Ncat
@@ -742,6 +763,7 @@ dim(S0) = Ncat
 dim(S1a) = Ncat
 dim(S1b) = Ncat
 dim(S1c) = Ncat
+dim(S1d) = Ncat
 
 dim(I01) = Ncat
 dim(I11) = Ncat
@@ -770,6 +792,7 @@ dim(S0_init) = Ncat
 dim(S1a_init) = Ncat
 dim(S1b_init) = Ncat
 dim(S1c_init) = Ncat
+dim(S1d_init) = Ncat
 
 dim(I01_init) = Ncat
 dim(I11_init) = Ncat
@@ -803,6 +826,7 @@ dim(E0) = Ncat
 dim(E1a) = Ncat
 dim(E1b) = Ncat
 dim(E1c) = Ncat
+dim(E1d) = Ncat
 
 # other summary stats that are calculated
 dim(cumuInf_init) = Ncat
@@ -816,6 +840,7 @@ dim(lambda_0) = c(Ncat, Ncat)
 dim(lambda_1a) = c(Ncat, Ncat)
 dim(lambda_1b) = c(Ncat, Ncat)
 dim(lambda_1c) = c(Ncat, Ncat)
+dim(lambda_1d) = c(Ncat, Ncat)
 
 
 dim(lambda_sum) = Ncat
@@ -823,6 +848,7 @@ dim(lambda_sum_0) = Ncat
 dim(lambda_sum_1a) = Ncat
 dim(lambda_sum_1b) = Ncat
 dim(lambda_sum_1c) = Ncat
+dim(lambda_sum_1d) = Ncat
 
 dim(cstar) <- c(Ncat, Ncat)
 dim(theta) <- c(Ncat, Ncat)
@@ -848,6 +874,8 @@ dim(in_S0) <- c(Ncat, Ncat)
 dim(in_S1a) <- c(Ncat, Ncat)
 dim(in_S1b) <- c(Ncat, Ncat)
 dim(in_S1c) <- c(Ncat, Ncat)
+dim(in_S1d) <- c(Ncat, Ncat)
+
 dim(in_I01) <- c(Ncat, Ncat)
 dim(in_I11) <- c(Ncat, Ncat)
 dim(in_I02) <- c(Ncat, Ncat)

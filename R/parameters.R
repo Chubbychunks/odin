@@ -99,6 +99,8 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    S1a_init = rep_len(0, Ncat),
                    S1b_init = rep_len(0, Ncat),
                    S1c_init = rep_len(0, Ncat),
+                   S1d_init = rep_len(0, Ncat),
+                   
                    I01_init = rep_len(1000, Ncat),
                    I11_init = rep_len(0, Ncat),
                    I02_init = rep_len(0, Ncat),
@@ -164,7 +166,10 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    zetaa = c(0.1, rep_len(0,(Ncat-1))),
                    zetab = c(0.1, rep_len(0,(Ncat-1))),
                    zetac = c(0.1, rep_len(0,(Ncat-1))),
-
+                   
+                   kappaa = c(0.1, rep_len(0,(Ncat-1))),
+                   kappab = c(0.1, rep_len(0,(Ncat-1))),
+                   kappac = c(0.1, rep_len(0,(Ncat-1))),
                    #                    fc_t = c(1985, 1990, 1998, 2016),
                    #
                    #                    fc_y = matrix(
@@ -214,7 +219,8 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    eP1a = c(0.9, rep_len(0, (Ncat-1))),
                    eP1b = c(0.45, rep_len(0, (Ncat-1))),
                    eP1c = c(0, rep_len(0, (Ncat-1))),
-
+                   eP1d = c(0, rep_len(0, (Ncat-1))),
+                   
 
                    epsilon = 0.001,
                    # fc = c(1,1),

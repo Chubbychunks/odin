@@ -16,12 +16,12 @@ devtools::load_all()
 
 devtools::test()
 
-parameters <- generate_parameters(Ncat = 7)
+parameters <- generate_parameters(Ncat = 8)
 result = run_model(parameters, main_model, time)
 
 names(result)
 
-result$in_S0[2,,]
+result$in_S0[1,,]
 
 result$sum_in_S0
 
