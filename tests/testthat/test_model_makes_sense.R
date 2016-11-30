@@ -15,7 +15,7 @@ test_that("example", {
 
 #Ncat works?
 test_that("Ncat", {
-  for (Ncat in c(2, 7))
+  for (Ncat in c(2, 8))
   {
     parameters <- generate_parameters(Ncat = Ncat)
     result = run_model(parameters, main_model, time)
@@ -361,7 +361,7 @@ test_that("fP eP 1c", {
 #
 # only group 2 infected, does group 1 get infected?
 test_that("fP eP 2", {
-  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(1, 0), fP_y = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))
+  parameters <- generate_parameters(Ncat = 2, I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(1, 0), fP_y = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_true(sum(c(xx$I01[,1], xx$I11[,1]))==0)
