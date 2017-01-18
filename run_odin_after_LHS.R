@@ -21,7 +21,7 @@ result = run_model(parameters, main_model, time)
 
 names(result)
 
-result$in_S0[1,,]
+result$S0[1,,]
 
 result$sum_in_S0
 
@@ -134,10 +134,10 @@ ggplot(data = yy_plot, aes(x = time, y = value, colour = variable)) + geom_line(
 
 
 # plot N
-parameters <- generate_parameters(theta = 0.5)
-result = run_model(parameters, main_model, time)
+parameters <- generate_parameters()
+result = run_model(parameters, main_model, time = seq(1985, 2016, length.out = 310))
 yy <- result[grep("N_client|N_FSW", names(result))]
-df = melt(data.frame(time, FSW = yy$N_FSW, client = yy$N_client), id.vars = "time")
+df = melt(data.frame(time = seq(1985, 2016, length.out = 310), FSW = yy$N_FSW, client = yy$N_client), id.vars = "time")
 ggplot(data = df, aes(x = time, y = value, colour = variable)) + geom_line(alpha = 0.5) + theme_bw()
 
 

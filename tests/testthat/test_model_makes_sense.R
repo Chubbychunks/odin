@@ -361,7 +361,7 @@ test_that("fP eP 1c", {
 #
 # only group 2 infected, does group 1 get infected?
 test_that("fP eP 2", {
-  parameters <- generate_parameters(Ncat = 2, I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(1, 0), fP_y = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))
+  parameters <- generate_parameters(Ncat = 2, I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(1, 0), eP1d = c(1, 0), fP_y = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_true(sum(c(xx$I01[,1], xx$I11[,1]))==0)
@@ -527,46 +527,46 @@ test_that("B check 1", {
   expect_equal(as.numeric(result[["B_check"]]), rep(1, length(result$B_check)))
 })
 
-test_that("cstar", {
-  # this is to check diagonal of matrix is 0
-  parameters <- generate_parameters()
-  result = run_model(parameters, main_model, time)
-  for(i in 1:length(result$cstar[,1,1]))
-  {
-    for(j in 1:length(result$cstar[1,1,]))
-    {
-      expect_equal(result$cstar[i,,][j,j], 0)
-    }
-  }
-
-  # this is to check that sex acts balance with 2 groups
-  parameters <- generate_parameters(theta = matrix(c(0.5, 0.9, 0.1, 0.5), ncol = 2, nrow = 2, byrow = T),
-                                    omega = c(0.2, 0.8),
-                                    S0_init = c(100*0.2, 100*0.8),
-                                    I01_init = c(100*0.2, 100*0.8))
-  result = run_model(parameters, main_model, time)
-  for(i in 1:length(result$cstar[,1,1]))
-  {
-    expect_equal(result$cstar[i,,][1,2] * result$N[i,1], result$cstar[i,,][2,1] * result$N[i,2])
-  }
-
-  # this is to check that sex acts balance with 3 groups
-  parameters <- generate_parameters(theta = matrix(c(0.5, 0.9, 0.6, 0.1, 0.5, 0.2, 0.4, 0.8, 0.5), ncol = 3, nrow = 3, byrow = T),
-                                    omega = c(0.1, 0.4, 0.5),
-                                    S0_init = c(100*0.1, 100*0.4, 100*0.5),
-                                    I01_init = c(100*0.1, 100*0.4, 100*0.5),
-                                    Ncat = 3)
-  result = run_model(parameters, main_model, time)
-  for(i in 1:length(result$cstar[,1,1]))
-  {
-    expect_equal(result$cstar[i,,][1,2] * result$N[i,1], result$cstar[i,,][2,1] * result$N[i,2])
-    expect_equal(result$cstar[i,,][1,3] * result$N[i,1], result$cstar[i,,][3,1] * result$N[i,3])
-    expect_equal(result$cstar[i,,][2,3] * result$N[i,2], result$cstar[i,,][3,2] * result$N[i,3])
-  }
-
-
-}
-)
+# test_that("cstar", {
+#   # this is to check diagonal of matrix is 0
+#   parameters <- generate_parameters()
+#   result = run_model(parameters, main_model, time)
+#   for(i in 1:length(result$cstar[,1,1]))
+#   {
+#     for(j in 1:length(result$cstar[1,1,]))
+#     {
+#       expect_equal(result$cstar[i,,][j,j], 0)
+#     }
+#   }
+# 
+#   # this is to check that sex acts balance with 2 groups
+#   parameters <- generate_parameters(theta = matrix(c(0.5, 0.9, 0.1, 0.5), ncol = 2, nrow = 2, byrow = T),
+#                                     omega = c(0.2, 0.8),
+#                                     S0_init = c(100*0.2, 100*0.8),
+#                                     I01_init = c(100*0.2, 100*0.8))
+#   result = run_model(parameters, main_model, time)
+#   for(i in 1:length(result$cstar[,1,1]))
+#   {
+#     expect_equal(result$cstar[i,,][1,2] * result$N[i,1], result$cstar[i,,][2,1] * result$N[i,2])
+#   }
+# 
+#   # this is to check that sex acts balance with 3 groups
+#   parameters <- generate_parameters(theta = matrix(c(0.5, 0.9, 0.6, 0.1, 0.5, 0.2, 0.4, 0.8, 0.5), ncol = 3, nrow = 3, byrow = T),
+#                                     omega = c(0.1, 0.4, 0.5),
+#                                     S0_init = c(100*0.1, 100*0.4, 100*0.5),
+#                                     I01_init = c(100*0.1, 100*0.4, 100*0.5),
+#                                     Ncat = 3)
+#   result = run_model(parameters, main_model, time)
+#   for(i in 1:length(result$cstar[,1,1]))
+#   {
+#     expect_equal(result$cstar[i,,][1,2] * result$N[i,1], result$cstar[i,,][2,1] * result$N[i,2])
+#     expect_equal(result$cstar[i,,][1,3] * result$N[i,1], result$cstar[i,,][3,1] * result$N[i,3])
+#     expect_equal(result$cstar[i,,][2,3] * result$N[i,2], result$cstar[i,,][3,2] * result$N[i,3])
+#   }
+# 
+# 
+# }
+# )
 
 
 # CALCULATING PREVALENCE
@@ -576,7 +576,7 @@ test_that("prevalence", {
   parameters = generate_parameters()
   result = run_model(parameters, main_model, time)
   all_infected = result[c(grep("I[0-9]", names(result)))]
-  all = result[c(grep("I[0-9]", names(result)), grep("S[0-9]", names(result)))]
+  all = result[c(grep("I[0-9]", names(result)), grep("^S[0-9]", names(result)))]
 
   expect_equal(result$prev_FSW, 100 * rowSums(do.call(cbind, lapply(all_infected, function(x) x <- x[,1]))) / rowSums(do.call(cbind, lapply(all, function(x) x <- x[,1]))), tolerance = 1e-6)
   expect_equal(result$prev_client, 100 * rowSums(do.call(cbind, lapply(all_infected, function(x) x <- x[,2]))) / rowSums(do.call(cbind, lapply(all, function(x) x <- x[,2]))), tolerance = 1e-6)
@@ -833,6 +833,8 @@ test_that("ART vs prevalence", {
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
+  
+  # this test won't work until R is a matrix with r,s (I think)
 
   relevant_parameters = parameter_names[c(grep("rho", parameter_names))]
   parameters <- generate_parameters(set_null = relevant_parameters)

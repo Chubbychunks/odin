@@ -1,4 +1,30 @@
-# most recent
+
+############################################################################################################################################################
+############################################################################################################################################################
+############################################################################################################################################################
+########################################################## MAIN MODEL ######################################################################################
+############################################################################################################################################################
+############################################################################################################################################################
+############################################################################################################################################################
+
+# INDEXING
+##############################################################################
+
+# Risk group (i)
+# 1. Professional FSW
+# 2. Low-level FSW
+# 3. General population female
+# 4. Former FSW in Cotonou
+# 5. Clients
+# 6. General population male
+# 7. Former FSW in Benin, outside Cotonou (not involved in epidemic, but tracked anyway)
+
+# Age (x)
+# 1. 15 - 24
+# 2. 25 - 34
+# 3. 35 - 59
+
+
 
 # NOTES
 ##############################################################################
@@ -235,9 +261,32 @@ alphaItot[] =
 # BALANCING OF PARTNERSHIPS
 ##############################################################################
 
+# Risk group (i)
+# 1. Professional FSW
+# 2. Low-level FSW
+# 3. General population female
+# 4. Former FSW in Cotonou
+# 5. Clients
+# 6. General population male
+# 7. Former FSW in Benin, outside Cotonou (not involved in epidemic, but tracked anyway)
 
-B[,] <- if (i < j && c[i,j] > 0) c[j,i] * N[j] / (c[i, j] * N[i]) else 0
-cstar[,] <- c[i,j] * (if (i > j) B[j, i]^-(1 - theta[j,i]) else B[i, j]^theta[i,j])
+# BALANCING COMMERCIAL PARTNERSHIPS
+
+# cstar is the balanced matrix
+
+cstar[,] <- c[i,j]
+
+
+
+
+
+
+
+# BALANCING NON-COMMERCIAL PARTNERSHIPS
+
+# old method!!!
+# B[,] <- if (i < j && c[i,j] > 0) c[j,i] * N[j] / (c[i, j] * N[i]) else 0
+# cstar[,] <- c[i,j] * (if (i > j) B[j, i]^-(1 - theta[j,i]) else B[i, j]^theta[i,j])
 
 
 # # when 4d happens
@@ -258,7 +307,7 @@ B_check = 1
 
 
 
-# PROBABILITY OF SEXUAL CONTACT
+# PROBABILITY OF SEXUAL CONTACT (MIXING)
 ##############################################################################
 
 # p = 1
@@ -424,7 +473,7 @@ output(fc[]) = fc
 output(fP[]) = fP
 output(c[,]) = c
 output(cstar[,]) = cstar
-output(B[,]) = B
+# output(B[,]) = B
 output(p[,]) = p
 output(n[,]) = n
 output(theta[,]) = theta
@@ -832,7 +881,7 @@ dim(E1d) = Ncat
 dim(cumuInf_init) = Ncat
 dim(alphaItot) = Ncat
 dim(prev) = Ncat
-dim(B) <- c(Ncat, Ncat)
+# dim(B) <- c(Ncat, Ncat)
 
 # FOI parameters
 dim(lambda) = c(Ncat, Ncat)
