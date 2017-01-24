@@ -274,9 +274,12 @@ alphaItot[] =
 
 # cstar is the balanced matrix
 
-cstar[,] <- c[i,j]
+# cstar[,] <- if(Ncat = 7) {
+#   
+# }
+# else c[i,j]
 
-
+cstar[,] = c[i, j]
 
 
 
