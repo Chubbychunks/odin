@@ -115,31 +115,31 @@ deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alph
 
 
 # #moving in
-in_S0[,] <- if (i == j) 0 else rate_move_in[i, j] * S0[j]
-in_S1a[,] <- if (i == j) 0 else rate_move_in[i, j] * S1a[j]
-in_S1b[,] <- if (i == j) 0 else rate_move_in[i, j] * S1b[j]
-in_S1c[,] <- if (i == j) 0 else rate_move_in[i, j] * S1c[j]
-in_S1d[,] <- if (i == j) 0 else rate_move_in[i, j] * S1d[j]
-in_I01[,] <- if (i == j) 0 else rate_move_in[i, j] * I01[j]
-in_I11[,] <- if (i == j) 0 else rate_move_in[i, j] * I11[j]
-in_I02[,] <- if (i == j) 0 else rate_move_in[i, j] * I02[j]
-in_I03[,] <- if (i == j) 0 else rate_move_in[i, j] * I03[j]
-in_I04[,] <- if (i == j) 0 else rate_move_in[i, j] * I04[j]
-in_I05[,] <- if (i == j) 0 else rate_move_in[i, j] * I05[j]
-in_I22[,] <- if (i == j) 0 else rate_move_in[i, j] * I22[j]
-in_I23[,] <- if (i == j) 0 else rate_move_in[i, j] * I23[j]
-in_I24[,] <- if (i == j) 0 else rate_move_in[i, j] * I24[j]
-in_I25[,] <- if (i == j) 0 else rate_move_in[i, j] * I25[j]
-in_I32[,] <- if (i == j) 0 else rate_move_in[i, j] * I32[j]
-in_I33[,] <- if (i == j) 0 else rate_move_in[i, j] * I33[j]
-in_I34[,] <- if (i == j) 0 else rate_move_in[i, j] * I34[j]
-in_I35[,] <- if (i == j) 0 else rate_move_in[i, j] * I35[j]
-in_I42[,] <- if (i == j) 0 else rate_move_in[i, j] * I42[j]
-in_I43[,] <- if (i == j) 0 else rate_move_in[i, j] * I43[j]
-in_I44[,] <- if (i == j) 0 else rate_move_in[i, j] * I44[j]
-in_I45[,] <- if (i == j) 0 else rate_move_in[i, j] * I45[j]
+# in_S0[,] <- if (i == j) 0 else rate_move_in[i, j] * S0[j]
+# in_S1a[,] <- if (i == j) 0 else rate_move_in[i, j] * S1a[j]
+# in_S1b[,] <- if (i == j) 0 else rate_move_in[i, j] * S1b[j]
+# in_S1c[,] <- if (i == j) 0 else rate_move_in[i, j] * S1c[j]
+# in_S1d[,] <- if (i == j) 0 else rate_move_in[i, j] * S1d[j]
+# in_I01[,] <- if (i == j) 0 else rate_move_in[i, j] * I01[j]
+# in_I11[,] <- if (i == j) 0 else rate_move_in[i, j] * I11[j]
+# in_I02[,] <- if (i == j) 0 else rate_move_in[i, j] * I02[j]
+# in_I03[,] <- if (i == j) 0 else rate_move_in[i, j] * I03[j]
+# in_I04[,] <- if (i == j) 0 else rate_move_in[i, j] * I04[j]
+# in_I05[,] <- if (i == j) 0 else rate_move_in[i, j] * I05[j]
+# in_I22[,] <- if (i == j) 0 else rate_move_in[i, j] * I22[j]
+# in_I23[,] <- if (i == j) 0 else rate_move_in[i, j] * I23[j]
+# in_I24[,] <- if (i == j) 0 else rate_move_in[i, j] * I24[j]
+# in_I25[,] <- if (i == j) 0 else rate_move_in[i, j] * I25[j]
+# in_I32[,] <- if (i == j) 0 else rate_move_in[i, j] * I32[j]
+# in_I33[,] <- if (i == j) 0 else rate_move_in[i, j] * I33[j]
+# in_I34[,] <- if (i == j) 0 else rate_move_in[i, j] * I34[j]
+# in_I35[,] <- if (i == j) 0 else rate_move_in[i, j] * I35[j]
+# in_I42[,] <- if (i == j) 0 else rate_move_in[i, j] * I42[j]
+# in_I43[,] <- if (i == j) 0 else rate_move_in[i, j] * I43[j]
+# in_I44[,] <- if (i == j) 0 else rate_move_in[i, j] * I44[j]
+# in_I45[,] <- if (i == j) 0 else rate_move_in[i, j] * I45[j]
 
-sum_in_S0[] = sum(in_S0[i, ])
+# sum_in_S0[] = sum(in_S0[i, ])
 
 deriv(cumuInf[]) = S0[i] * lambda_sum_0[i] + S1a[i] * lambda_sum_1a[i] + S1b[i] * lambda_sum_1b[i] + S1c[i] * lambda_sum_1c[i] + S1d[i] * lambda_sum_1d[i]
 
@@ -279,7 +279,7 @@ alphaItot[] =
 # }
 # else c[i,j]
 
-cstar[,] = c[i, j]
+cstar[] = c[i]
 
 
 
@@ -376,7 +376,7 @@ fP[] = interpolate(fP_t, fP_y, "linear")
 #
 
 #FOI of j on i
-lambda[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda[,] = if (i == j) 0 else compute_lambda(cstar[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                               I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                               I42[j], I43[j], I44[j], I45[j],
                                               N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP[i], ec[i])
@@ -385,27 +385,27 @@ lambda[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j],
 
 
 #FOI of j on i. PrEP adherence category 0 (off PrEP)
-lambda_0[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda_0[,] = if (i == j) 0 else compute_lambda(cstar[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                 I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                 I42[j], I43[j], I44[j], I45[j],
                                                 N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP0[i], ec[i])
 #FOI of j on i. PrEP adherence category 1a (daily adherence)
-lambda_1a[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda_1a[,] = if (i == j) 0 else compute_lambda(cstar[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                  I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                  I42[j], I43[j], I44[j], I45[j],
                                                  N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1a[i], ec[i])
 #FOI of j on i. PrEP adherence category 1b (intermittent adherence)
-lambda_1b[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda_1b[,] = if (i == j) 0 else compute_lambda(cstar[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                  I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                  I42[j], I43[j], I44[j], I45[j],
                                                  N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1b[i], ec[i])
 #FOI of j on i. PrEP adherence category 1c (no adherence)
-lambda_1c[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda_1c[,] = if (i == j) 0 else compute_lambda(cstar[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                  I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                  I42[j], I43[j], I44[j], I45[j],
                                                  N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1c[i], ec[i])
 #FOI of j on i. PrEP adherence category 1d (dropout)
-lambda_1d[,] = if (i == j) 0 else compute_lambda(cstar[i,j], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda_1d[,] = if (i == j) 0 else compute_lambda(cstar[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                  I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                  I42[j], I43[j], I44[j], I45[j],
                                                  N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1d[i], ec[i])
@@ -474,8 +474,8 @@ output(lambda_sum_1d[]) = lambda_sum_1d
 
 output(fc[]) = fc
 output(fP[]) = fP
-output(c[,]) = c
-output(cstar[,]) = cstar
+output(c[]) = c
+output(cstar[]) = cstar
 # output(B[,]) = B
 output(p[,]) = p
 output(n[,]) = n
@@ -489,9 +489,9 @@ output(zetab[]) = zetab
 output(zetac[]) = zetac
 
 
-output(in_S0[, ]) = in_S0
+# output(in_S0[, ]) = in_S0
 
-output(sum_in_S0[]) = sum_in_S0
+# output(sum_in_S0[]) = sum_in_S0
 
 # INCIDENCE RATE
 
@@ -677,7 +677,7 @@ alpha45[] = user()
 # FOI parameters
 
 beta[] = user()
-c[,] = user()
+c[] = user()
 p[,] = user()
 ec[] = user()
 eP[] = user()
@@ -791,7 +791,7 @@ dim(alpha45) = Ncat
 
 # FOI parameters
 dim(beta) = Ncat
-dim(c) = c(Ncat, Ncat)
+dim(c) = Ncat
 dim(p) = c(Ncat, Ncat)
 dim(ec) = Ncat
 dim(eP) = Ncat
@@ -902,7 +902,7 @@ dim(lambda_sum_1b) = Ncat
 dim(lambda_sum_1c) = Ncat
 dim(lambda_sum_1d) = Ncat
 
-dim(cstar) <- c(Ncat, Ncat)
+dim(cstar) <- Ncat
 dim(theta) <- c(Ncat, Ncat)
 
 dim(rate_move_in) <- c(Ncat, Ncat)
@@ -922,30 +922,30 @@ rate_move_out[] = user()
 
 dim(OnPrEP_init) = Ncat
 
-dim(in_S0) <- c(Ncat, Ncat)
-dim(in_S1a) <- c(Ncat, Ncat)
-dim(in_S1b) <- c(Ncat, Ncat)
-dim(in_S1c) <- c(Ncat, Ncat)
-dim(in_S1d) <- c(Ncat, Ncat)
+# dim(in_S0) <- c(Ncat, Ncat)
+# dim(in_S1a) <- c(Ncat, Ncat)
+# dim(in_S1b) <- c(Ncat, Ncat)
+# dim(in_S1c) <- c(Ncat, Ncat)
+# dim(in_S1d) <- c(Ncat, Ncat)
+# 
+# dim(in_I01) <- c(Ncat, Ncat)
+# dim(in_I11) <- c(Ncat, Ncat)
+# dim(in_I02) <- c(Ncat, Ncat)
+# dim(in_I03) <- c(Ncat, Ncat)
+# dim(in_I04) <- c(Ncat, Ncat)
+# dim(in_I05) <- c(Ncat, Ncat)
+# 
+# dim(in_I22) <- c(Ncat, Ncat)
+# dim(in_I23) <- c(Ncat, Ncat)
+# dim(in_I24) <- c(Ncat, Ncat)
+# dim(in_I25) <- c(Ncat, Ncat)
+# dim(in_I32) <- c(Ncat, Ncat)
+# dim(in_I33) <- c(Ncat, Ncat)
+# dim(in_I34) <- c(Ncat, Ncat)
+# dim(in_I35) <- c(Ncat, Ncat)
+# dim(in_I42) <- c(Ncat, Ncat)
+# dim(in_I43) <- c(Ncat, Ncat)
+# dim(in_I44) <- c(Ncat, Ncat)
+# dim(in_I45) <- c(Ncat, Ncat)
 
-dim(in_I01) <- c(Ncat, Ncat)
-dim(in_I11) <- c(Ncat, Ncat)
-dim(in_I02) <- c(Ncat, Ncat)
-dim(in_I03) <- c(Ncat, Ncat)
-dim(in_I04) <- c(Ncat, Ncat)
-dim(in_I05) <- c(Ncat, Ncat)
-
-dim(in_I22) <- c(Ncat, Ncat)
-dim(in_I23) <- c(Ncat, Ncat)
-dim(in_I24) <- c(Ncat, Ncat)
-dim(in_I25) <- c(Ncat, Ncat)
-dim(in_I32) <- c(Ncat, Ncat)
-dim(in_I33) <- c(Ncat, Ncat)
-dim(in_I34) <- c(Ncat, Ncat)
-dim(in_I35) <- c(Ncat, Ncat)
-dim(in_I42) <- c(Ncat, Ncat)
-dim(in_I43) <- c(Ncat, Ncat)
-dim(in_I44) <- c(Ncat, Ncat)
-dim(in_I45) <- c(Ncat, Ncat)
-
-dim(sum_in_S0) <- Ncat
+# dim(sum_in_S0) <- Ncat
