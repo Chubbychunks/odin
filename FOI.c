@@ -45,3 +45,8 @@ double partnerships2(double c1, double c2, double N1, double N2, double theta) {
   return c2 * pow((c2 * N2) / (c1 * N1), theta - 1);
 }
 
+
+
+
+
+//double assortative_mixing(double p)
