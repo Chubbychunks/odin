@@ -16,17 +16,38 @@ devtools::load_all()
 
 devtools::test()
 
-parameters <- generate_parameters(Ncat = 8)
+parameters <- generate_parameters(Ncat = 8, c_comm=c(11,22,0,0,2.5,0,0,0))
 result = run_model(parameters, main_model, time)
-
 names(result)
+
+result$Ncat
+result$c_comm
+result$c_comm_balanced
+result$c_noncomm
+result$c_noncomm_balanced
+result$N
+
+parameters <- generate_parameters(Ncat = 7, c_comm=c(1244,52,0,0,24,0,0), c_noncomm=c(0.377,0.96,0.96,0.96,2.03,1.34,0),
+                                  omega = c(1000, 1127, 143728, 500, 27323, 112436, 0)/(1000+1127+143728+500+27323+112436),
+                                  S0_init = c(1000, 1127, 143728, 500, 27323, 112436, 0)*0.99,
+                                  I01_init = c(1000, 1127, 143728, 500, 27323, 112436, 0)*0.01)
+result = run_model(parameters, main_model, time)
+names(result)
+
+result$Ncat
+result$c_comm
+result$c_comm_balanced
+result$c_noncomm
+result$c_noncomm_balanced
+result$N
 
 result$S0[1,,]
 
 result$sum_in_S0
 
 
-
+result$B_check_comm
+result$B_check_noncomm
 
 
 #below to tset for PrEP

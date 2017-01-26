@@ -29,6 +29,7 @@
 # NOTES
 ##############################################################################
 
+# hopefully not dividing by 0 for the balancing
 # lambdas should be different for each compartment??!?!?!?!
 # I05 no gamma5s anywhere!
 # calculate E for all, then fraction for each pop
@@ -271,22 +272,45 @@ alphaItot[] =
 # 7. Former FSW in Benin, outside Cotonou (not involved in epidemic, but tracked anyway)
 
 # BALANCING COMMERCIAL PARTNERSHIPS
+##############################################################################
 
-# cstar is the balanced matrix
+c_comm_balanced[] <- c_comm[i]
 
-cstar[] <- if(Ncat == 7) c[i] else c[i]
+##############
+# BALANCING BY CHANGING THE NUMBER OF CLIENTS : DO I WANT TO DO THIS ?
+# not the code below won't work: need to change the inits before passing parameters
+# this needs to be only at t=0
+# N[5] = if(Ncat == 7 && t == 1985) (c_comm[1] * N[1] + c_comm[2] * N[2]) / c_comm[5] else N[5]
+# S0_init[5] = if(Ncat == 7 && t == 1985) (S0[5]/N[5])*(c_comm[1] * N[1] + c_comm[2] * N[2]) / c_comm[5] else S0_init[5]
+# I0_init[5] = if(Ncat == 7 && t == 1985) (I0[5]/N[5])*(c_comm[1] * N[1] + c_comm[2] * N[2]) / c_comm[5] else I0_init[5]
+##############
 
+##############
+# BALANCING BY CHANGING THE PARTNER CHANGE RATE OF CLIENTS
+# c_comm_balanced[5] = if(Ncat == 7) (c_comm[1] * N[1] + c_comm[2] * N[2])/N[5] else c_comm_balanced[5]
+##############
 
-N[i]
-
-
-# cstar[] = c[i]
-
-
-
+##############
+# BALANCING BY CHANGING THE PARTNER CHANGE RATE OF PRO FSW
+c_comm_balanced[1] = if(Ncat == 7) (c_comm[5] * N[5] - c_comm[2] * N[2])/N[1] else c_comm_balanced[1]
+##############
 
 
 # BALANCING NON-COMMERCIAL PARTNERSHIPS
+##############################################################################
+
+c_noncomm_balanced[] <- c_noncomm[i]
+
+##############
+# BALANCING BY CHANGING THE PARTNER CHANGE RATE OF GPF (AND FORMER FSW)
+c_noncomm_balanced[3] = if(Ncat == 7) (N[5] * c_noncomm[5] + N[6] * c_noncomm[6] - N[1] * c_noncomm[1] - N[2] * c_noncomm[2]) / (N[3] + N[4]) else c_noncomm_balanced[3]
+c_noncomm_balanced[4] = if(Ncat == 7) c_noncomm_balanced[3] else c_noncomm_balanced[4]
+##############
+
+# CHECKING THE BALANCING IS CORRECT
+##############################################################################
+B_check_comm = if(Ncat == 7) c_comm_balanced[1]*N[1] + c_comm_balanced[2]*N[2] + c_comm_balanced[3]*N[3] + c_comm_balanced[4]*N[4] + c_comm_balanced[7]*N[7] - c_comm_balanced[5]*N[5] - c_comm_balanced[6]*N[6] else 1
+B_check_noncomm = if(Ncat == 7) c_noncomm_balanced[1]*N[1] + c_noncomm_balanced[2]*N[2] + c_noncomm_balanced[3]*N[3] + c_noncomm_balanced[4]*N[4] + c_noncomm_balanced[7]*N[7] - c_noncomm_balanced[5]*N[5] - c_noncomm_balanced[6]*N[6] else 1
 
 # old method!!!
 # B[,] <- if (i < j && c[i,j] > 0) c[j,i] * N[j] / (c[i, j] * N[i]) else 0
@@ -305,7 +329,6 @@ N[i]
 # c2_new = c[2,1] * B^(-(1-theta))
 
 # B_check = (c2_new * N[2])/(c1_new * N[1])
-B_check = 1
 # functions to balance partnerships
 
 
@@ -377,7 +400,7 @@ fP[] = interpolate(fP_t, fP_y, "linear")
 #
 
 #FOI of j on i
-lambda[,] = if (i == j) 0 else compute_lambda(cstar[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                               I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                               I42[j], I43[j], I44[j], I45[j],
                                               N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP[i], ec[i])
@@ -386,27 +409,27 @@ lambda[,] = if (i == j) 0 else compute_lambda(cstar[i], p[i,j], S0[j], S1a[j], S
 
 
 #FOI of j on i. PrEP adherence category 0 (off PrEP)
-lambda_0[,] = if (i == j) 0 else compute_lambda(cstar[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda_0[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                 I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                 I42[j], I43[j], I44[j], I45[j],
                                                 N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP0[i], ec[i])
 #FOI of j on i. PrEP adherence category 1a (daily adherence)
-lambda_1a[,] = if (i == j) 0 else compute_lambda(cstar[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda_1a[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                  I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                  I42[j], I43[j], I44[j], I45[j],
                                                  N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1a[i], ec[i])
 #FOI of j on i. PrEP adherence category 1b (intermittent adherence)
-lambda_1b[,] = if (i == j) 0 else compute_lambda(cstar[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda_1b[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                  I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                  I42[j], I43[j], I44[j], I45[j],
                                                  N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1b[i], ec[i])
 #FOI of j on i. PrEP adherence category 1c (no adherence)
-lambda_1c[,] = if (i == j) 0 else compute_lambda(cstar[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda_1c[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                  I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                  I42[j], I43[j], I44[j], I45[j],
                                                  N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1c[i], ec[i])
 #FOI of j on i. PrEP adherence category 1d (dropout)
-lambda_1d[,] = if (i == j) 0 else compute_lambda(cstar[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda_1d[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                  I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                  I42[j], I43[j], I44[j], I45[j],
                                                  N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1d[i], ec[i])
@@ -445,10 +468,12 @@ prev[] = 100 * (I01[i] + I11[i] + I02[i] + I03[i] + I04[i] + I05[i] +
                   I22[i] + I23[i] + I24[i] + I25[i] + I32[i] + I33[i] + I34[i] + I35[i] +
                   I42[i] + I43[i] + I44[i] + I45[i]) / N[i]
 
+output(Ncat) = Ncat
 
 output(Ntot) = Ntot
 output(new_people) = new_people
-output(B_check) = B_check
+output(B_check_comm) = B_check_comm
+output(B_check_noncomm) = B_check_noncomm
 
 output(N[]) = N # is it worth outputting N? Once we have ages, it'll be better to have separate Ns for risk groups... but eugene ages can make N a matrix!
 output(prev_FSW) = prev_FSW
@@ -475,8 +500,10 @@ output(lambda_sum_1d[]) = lambda_sum_1d
 
 output(fc[]) = fc
 output(fP[]) = fP
-output(c[]) = c
-output(cstar[]) = cstar
+output(c_comm[]) = c_comm
+output(c_comm_balanced[]) = c_comm_balanced
+output(c_noncomm[]) = c_noncomm
+output(c_noncomm_balanced[]) = c_noncomm_balanced
 # output(B[,]) = B
 output(p[,]) = p
 output(n[,]) = n
@@ -678,7 +705,8 @@ alpha45[] = user()
 # FOI parameters
 
 beta[] = user()
-c[] = user()
+c_comm[] = user()
+c_noncomm[] = user()
 p[,] = user()
 ec[] = user()
 eP[] = user()
@@ -792,7 +820,8 @@ dim(alpha45) = Ncat
 
 # FOI parameters
 dim(beta) = Ncat
-dim(c) = Ncat
+dim(c_comm) = Ncat
+dim(c_noncomm) = Ncat
 dim(p) = c(Ncat, Ncat)
 dim(ec) = Ncat
 dim(eP) = Ncat
@@ -903,7 +932,8 @@ dim(lambda_sum_1b) = Ncat
 dim(lambda_sum_1c) = Ncat
 dim(lambda_sum_1d) = Ncat
 
-dim(cstar) <- Ncat
+dim(c_comm_balanced) <- Ncat
+dim(c_noncomm_balanced) <- Ncat
 dim(theta) <- c(Ncat, Ncat)
 
 dim(rate_move_in) <- c(Ncat, Ncat)

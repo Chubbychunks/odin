@@ -215,7 +215,8 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    
                    beta = rep_len(0.193,Ncat),
                    #beta = 0,
-                   c = rep_len(4,Ncat),
+                   c_comm = rep_len(4,Ncat),
+                   c_noncomm = rep_len(2,Ncat),
                    
                    # c = matrix(2, ncol = Ncat, nrow = Ncat),
                    p = matrix(1, ncol = Ncat, nrow = Ncat),

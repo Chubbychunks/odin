@@ -665,19 +665,33 @@ test_that("n vs prevalence", {
 
 # increase c, increase overall prevalence
 
-test_that("c vs prevalence", {
-  parameters <- generate_parameters(c = rep_len(2, 2))
+test_that("c_comm vs prevalence", {
+  parameters <- generate_parameters(c_comm = rep_len(2, 2))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
 
-  parameters <- generate_parameters(c = rep_len(23, 2))
+  parameters <- generate_parameters(c_comm = rep_len(23, 2))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
 
   expect_true(sum(N2) > sum(N1))
 })
+
+# test_that("c_noncomm vs prevalence", {
+#   parameters <- generate_parameters(c_noncomm = rep_len(2, 2))
+#   result = run_model(parameters, main_model, time)
+#   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+#   N1 <- rowSums(do.call(cbind, xx))
+#   
+#   parameters <- generate_parameters(c_noncomm = rep_len(23, 2))
+#   result = run_model(parameters, main_model, time)
+#   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+#   N2 <- rowSums(do.call(cbind, xx))
+#   
+#   expect_true(sum(N2) > sum(N1))
+# })
 
 # increase fc, decrease overall prevalence
 
