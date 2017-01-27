@@ -19,6 +19,14 @@
 # 6. General population male
 # 7. Former FSW in Benin, outside Cotonou (not involved in epidemic, but tracked anyway)
 
+# Pro_FSW = 1
+# Low_FSW = 2
+# GPF = 3
+# Form_FSW = 4
+# Client = 5
+# GPM = 6
+# Form_FSW_OUT = 7
+  
 # Age (x)
 # 1. 15 - 24
 # 2. 25 - 34
@@ -271,10 +279,12 @@ alphaItot[] =
 # 6. General population male
 # 7. Former FSW in Benin, outside Cotonou (not involved in epidemic, but tracked anyway)
 
+c_comm_balanced[] <- c_comm[i]
+c_noncomm_balanced[] <- c_noncomm[i]
+
 # BALANCING COMMERCIAL PARTNERSHIPS
 ##############################################################################
 
-c_comm_balanced[] <- c_comm[i]
 
 ##############
 # BALANCING BY CHANGING THE NUMBER OF CLIENTS : DO I WANT TO DO THIS ?
@@ -299,7 +309,6 @@ c_comm_balanced[1] = if(Ncat == 7) (c_comm[5] * N[5] - c_comm[2] * N[2])/N[1] el
 # BALANCING NON-COMMERCIAL PARTNERSHIPS
 ##############################################################################
 
-c_noncomm_balanced[] <- c_noncomm[i]
 
 ##############
 # BALANCING BY CHANGING THE PARTNER CHANGE RATE OF GPF (AND FORMER FSW)
@@ -309,8 +318,11 @@ c_noncomm_balanced[4] = if(Ncat == 7) c_noncomm_balanced[3] else c_noncomm_balan
 
 # CHECKING THE BALANCING IS CORRECT
 ##############################################################################
-B_check_comm = if(Ncat == 7) c_comm_balanced[1]*N[1] + c_comm_balanced[2]*N[2] + c_comm_balanced[3]*N[3] + c_comm_balanced[4]*N[4] + c_comm_balanced[7]*N[7] - c_comm_balanced[5]*N[5] - c_comm_balanced[6]*N[6] else 1
-B_check_noncomm = if(Ncat == 7) c_noncomm_balanced[1]*N[1] + c_noncomm_balanced[2]*N[2] + c_noncomm_balanced[3]*N[3] + c_noncomm_balanced[4]*N[4] + c_noncomm_balanced[7]*N[7] - c_noncomm_balanced[5]*N[5] - c_noncomm_balanced[6]*N[6] else 1
+B_check_comm = if(Ncat == 7) c_comm_balanced[1]*N[1] + c_comm_balanced[2]*N[2] + c_comm_balanced[3]*N[3] + c_comm_balanced[4]*N[4] - c_comm_balanced[5]*N[5] - c_comm_balanced[6]*N[6] else 1
+B_check_noncomm = if(Ncat == 7) c_noncomm_balanced[1]*N[1] + c_noncomm_balanced[2]*N[2] + c_noncomm_balanced[3]*N[3] + c_noncomm_balanced[4]*N[4] - c_noncomm_balanced[5]*N[5] - c_noncomm_balanced[6]*N[6] else 1
+
+
+
 
 # old method!!!
 # B[,] <- if (i < j && c[i,j] > 0) c[j,i] * N[j] / (c[i, j] * N[i]) else 0
@@ -345,9 +357,11 @@ B_check_noncomm = if(Ncat == 7) c_noncomm_balanced[1]*N[1] + c_noncomm_balanced[
 ##############################################################################
 
 
-fc[] = interpolate(fc_t, fc_y, "linear")
-fP[] = interpolate(fP_t, fP_y, "linear")
+fc_comm[] = interpolate(fc_t_comm, fc_y_comm, "linear")
+fP_comm[] = interpolate(fP_t_comm, fP_y_comm, "linear")
 
+fc_noncomm[] = interpolate(fc_t_noncomm, fc_y_noncomm, "linear")
+fP_noncomm[] = interpolate(fP_t_noncomm, fP_y_noncomm, "linear")
 
 # FORCE OF INFECTION
 ##############################################################################
@@ -400,39 +414,39 @@ fP[] = interpolate(fP_t, fP_y, "linear")
 #
 
 #FOI of j on i
-lambda[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p_comm[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                               I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                               I42[j], I43[j], I44[j], I45[j],
-                                              N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP[i], ec[i])
+                                              N[j], beta[i], R[j], fc_comm[i], fP_comm[i], n_comm[i,j], eP[i], ec[i])
 # Ras!!
 
 
 
 #FOI of j on i. PrEP adherence category 0 (off PrEP)
-lambda_0[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda_0[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p_comm[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                 I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                 I42[j], I43[j], I44[j], I45[j],
-                                                N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP0[i], ec[i])
+                                                N[j], beta[i], R[j], fc_comm[i], fP_comm[i], n_comm[i,j], eP0[i], ec[i])
 #FOI of j on i. PrEP adherence category 1a (daily adherence)
-lambda_1a[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda_1a[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p_comm[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                  I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                  I42[j], I43[j], I44[j], I45[j],
-                                                 N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1a[i], ec[i])
+                                                 N[j], beta[i], R[j], fc_comm[i], fP_comm[i], n_comm[i,j], eP1a[i], ec[i])
 #FOI of j on i. PrEP adherence category 1b (intermittent adherence)
-lambda_1b[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda_1b[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p_comm[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                  I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                  I42[j], I43[j], I44[j], I45[j],
-                                                 N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1b[i], ec[i])
+                                                 N[j], beta[i], R[j], fc_comm[i], fP_comm[i], n_comm[i,j], eP1b[i], ec[i])
 #FOI of j on i. PrEP adherence category 1c (no adherence)
-lambda_1c[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda_1c[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p_comm[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                  I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                  I42[j], I43[j], I44[j], I45[j],
-                                                 N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1c[i], ec[i])
+                                                 N[j], beta[i], R[j], fc_comm[i], fP_comm[i], n_comm[i,j], eP1c[i], ec[i])
 #FOI of j on i. PrEP adherence category 1d (dropout)
-lambda_1d[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
+lambda_1d[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p_comm[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
                                                  I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
                                                  I42[j], I43[j], I44[j], I45[j],
-                                                 N[j], beta[i], R[j], fc[i], fP[i], n[i,j], eP1d[i], ec[i])
+                                                 N[j], beta[i], R[j], fc_comm[i], fP_comm[i], n_comm[i,j], eP1d[i], ec[i])
 
 lambda_sum[] = sum(lambda[i,])
 lambda_sum_0[] = sum(lambda_0[i,])
@@ -449,8 +463,6 @@ lambda_sum_1d[] = sum(lambda_1d[i,])
 # Calculations
 Ntot = sum(N)
 
-N_FSW = N[1]
-N_client = N[2]
 
 frac_N[] = N[i] / Ntot
 
@@ -479,8 +491,6 @@ output(N[]) = N # is it worth outputting N? Once we have ages, it'll be better t
 output(prev_FSW) = prev_FSW
 output(prev_client) = prev_client
 output(prev[]) = prev
-output(N_FSW) = N_FSW
-output(N_client) = N_client
 output(frac_N[]) = frac_N
 # output(lambda_sum[]) = lambda_sum
 
@@ -498,15 +508,21 @@ output(lambda_sum_1b[]) = lambda_sum_1b
 output(lambda_sum_1c[]) = lambda_sum_1c
 output(lambda_sum_1d[]) = lambda_sum_1d
 
-output(fc[]) = fc
-output(fP[]) = fP
+output(fc_comm[]) = fc_comm
+output(fP_comm[]) = fP_comm
+output(fc_noncomm[]) = fc_noncomm
+output(fP_noncomm[]) = fP_noncomm
 output(c_comm[]) = c_comm
 output(c_comm_balanced[]) = c_comm_balanced
 output(c_noncomm[]) = c_noncomm
 output(c_noncomm_balanced[]) = c_noncomm_balanced
 # output(B[,]) = B
-output(p[,]) = p
-output(n[,]) = n
+output(p_comm[,]) = p_comm
+output(p_noncomm[,]) = p_noncomm
+
+output(n_comm[,]) = n_comm
+output(n_noncomm[,]) = n_noncomm
+
 output(theta[,]) = theta
 
 # output(rate_move_in[,]) = rate_move_in
@@ -707,7 +723,9 @@ alpha45[] = user()
 beta[] = user()
 c_comm[] = user()
 c_noncomm[] = user()
-p[,] = user()
+p_comm[,] = user()
+p_noncomm[,] = user()
+
 ec[] = user()
 eP[] = user()
 eP0[] = user()
@@ -716,7 +734,9 @@ eP1b[] = user()
 eP1c[] = user()
 eP1d[] = user()
 
-n[,] = user()
+n_comm[,] = user()
+n_noncomm[,] = user()
+
 R[] = user()
 
 # growth
@@ -727,16 +747,25 @@ omega[] = user()
 # balancing
 theta[,] = user()
 
-fc_t[] = user()
-fc_y[,] = user()
-dim(fc_t) = user()
-dim(fc_y) = user()
+fc_t_comm[] = user()
+fc_y_comm[,] = user()
+dim(fc_t_comm) = user()
+dim(fc_y_comm) = user()
 
-fP_t[] = user()
-fP_y[,] = user()
-dim(fP_t) = user()
-dim(fP_y) = user()
+fP_t_comm[] = user()
+fP_y_comm[,] = user()
+dim(fP_t_comm) = user()
+dim(fP_y_comm) = user()
 
+fc_t_noncomm[] = user()
+fc_y_noncomm[,] = user()
+dim(fc_t_noncomm) = user()
+dim(fc_y_noncomm) = user()
+
+fP_t_noncomm[] = user()
+fP_y_noncomm[,] = user()
+dim(fP_t_noncomm) = user()
+dim(fP_y_noncomm) = user()
 
 dur_FSW = user()
 
@@ -822,7 +851,9 @@ dim(alpha45) = Ncat
 dim(beta) = Ncat
 dim(c_comm) = Ncat
 dim(c_noncomm) = Ncat
-dim(p) = c(Ncat, Ncat)
+dim(p_comm) = c(Ncat, Ncat)
+dim(p_noncomm) = c(Ncat, Ncat)
+
 dim(ec) = Ncat
 dim(eP) = Ncat
 dim(eP0) = Ncat
@@ -831,9 +862,14 @@ dim(eP1b) = Ncat
 dim(eP1c) = Ncat
 dim(eP1d) = Ncat
 
-dim(fc) = Ncat
-dim(fP) = Ncat
-dim(n) = c(Ncat, Ncat)
+dim(fc_comm) = Ncat
+dim(fP_comm) = Ncat
+dim(fc_noncomm) = Ncat
+dim(fP_noncomm) = Ncat
+
+dim(n_comm) = c(Ncat, Ncat)
+dim(n_noncomm) = c(Ncat, Ncat)
+
 dim(R) = Ncat
 
 

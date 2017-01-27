@@ -27,11 +27,33 @@ result$c_noncomm
 result$c_noncomm_balanced
 result$N
 
-parameters <- generate_parameters(Ncat = 7, c_comm=c(1244,52,0,0,24,0,0), c_noncomm=c(0.377,0.96,0.96,0.96,2.03,1.34,0),
-                                  omega = c(1000, 1127, 143728, 500, 27323, 112436, 0)/(1000+1127+143728+500+27323+112436),
-                                  S0_init = c(1000, 1127, 143728, 500, 27323, 112436, 0)*0.99,
-                                  I01_init = c(1000, 1127, 143728, 500, 27323, 112436, 0)*0.01)
+
+
+
+
+
+parameters <- generate_parameters(Ncat = 7, c_comm=c(1,2,3,4,5,6,7))
 result = run_model(parameters, main_model, time)
+
+
+
+
+
+
+
+parameters <- generate_parameters(Ncat = 7, c_comm=c(1244,52,0,0,24,0,0), c_noncomm=c(0.377,0.96,0.96,0.96,2.03,1.34,0),
+                                  omega = c(1000, 1127, 143728, 500, 27323, 112436, 10)/(1000+1127+143728+500+27323+112436),
+                                  S0_init = c(1000, 1127, 143728, 500, 27323, 112436, 10)*0.99,
+                                  I01_init = c(1000, 1127, 143728, 500, 27323, 112436, 10)*0.01)
+result = run_model(parameters, main_model, time)
+result$N
+
+result$B_check_comm
+result$B_check_noncomm
+
+
+
+
 names(result)
 
 result$Ncat

@@ -219,7 +219,8 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    c_noncomm = rep_len(2,Ncat),
                    
                    # c = matrix(2, ncol = Ncat, nrow = Ncat),
-                   p = matrix(1, ncol = Ncat, nrow = Ncat),
+                   p_comm = matrix(1, ncol = Ncat, nrow = Ncat),
+                   p_noncomm = matrix(1, ncol = Ncat, nrow = Ncat),
                    
                    
                    ec = rep_len(0.85,Ncat),
@@ -236,16 +237,25 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    
                    epsilon = 0.001,
                    # fc = c(1,1),
-                   fc_t = c(1985, 1990, 1998, 2016),
-                   
-                   fc_y = matrix(
+                   fc_t_comm = c(1985, 1990, 1998, 2016),
+                   fc_y_comm = matrix(
                      rep(c(0, 0, 0.7, 0.9), Ncat), ncol = Ncat),
                    
-                   fP_t = c(1985, 2014, 2015, 2016),
-                   fP_y = matrix(
+                   fP_t_comm = c(1985, 2014, 2015, 2016),
+                   fP_y_comm = matrix(
                      rep(c(1, 1, 1, 1), Ncat), ncol = Ncat),
                    
-                   n = matrix(3, ncol = Ncat, nrow = Ncat),
+                   fc_t_noncomm = c(1985, 1990, 1998, 2016),
+                   fc_y_noncomm = matrix(
+                     rep(c(0, 0, 0.2, 0.3), Ncat), ncol = Ncat),
+                   
+                   fP_t_noncomm = c(1985, 2014, 2015, 2016),
+                   fP_y_noncomm = matrix(
+                     rep(c(1, 1, 1, 1), Ncat), ncol = Ncat),
+                   
+                   n_comm = matrix(3, ncol = Ncat, nrow = Ncat),
+                   n_noncomm = matrix(1, ncol = Ncat, nrow = Ncat),
+                   
                    #n = 0,
                    
                    R = rep_len(1, Ncat),
