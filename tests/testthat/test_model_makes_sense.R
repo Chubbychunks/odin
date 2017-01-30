@@ -69,9 +69,7 @@ test_that("cumulative infections", {
 test_that("risk group sizes equal", {
   parameters <- generate_parameters(I11_init = c(0,0), I01_init = c(0,0), S1a_init = c(100,100), S1b_init = c(100,100), S1c_init = c(100,100))
   result = run_model(parameters, main_model, time)
-  N_client <- result[c(grep("N_client", names(result)))]
-  N_FSW <- result[c(grep("N_FSW", names(result)))]
-  expect_equal(N_client[[1]], N_FSW[[1]], tolerance = 1e-6)
+  expect_equal(result$N[,1], result$N[,2], tolerance = 1e-6)
 })
 
 
@@ -236,7 +234,7 @@ test_that("R 2", {
 # n
 # only group 1 infected, does group 2 get infected?
 test_that("n 1", {
-  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), n = matrix(c(0, 1, 0, 0), nrow = 2, ncol = 2, byrow = T))
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), n_comm = matrix(c(0, 1, 0, 0), nrow = 2, ncol = 2, byrow = T), n_noncomm = matrix(c(0, 1, 0, 0), nrow = 2, ncol = 2, byrow = T))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_true(sum(c(xx$I01[,2], xx$I11[,2]))==0)
@@ -244,11 +242,14 @@ test_that("n 1", {
 
 # only group 2 infected, does group 1 get infected?
 test_that("n 2", {
-  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), n = matrix(c(0, 0, 1, 0), nrow = 2, ncol = 2, byrow = T))
+  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), n_comm = matrix(c(0, 0, 1, 0), nrow = 2, ncol = 2, byrow = T), n_noncomm = matrix(c(0, 0, 1, 0), nrow = 2, ncol = 2, byrow = T))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_true(sum(c(xx$I01[,1], xx$I11[,1]))==0)
 })
+
+
+
 
 # c is a bit more complicated, with the balancing sex acts
 
@@ -273,7 +274,7 @@ test_that("n 2", {
 # only group 1 infected, does group 2 get infected?
 # condom efficacy is 1 and frequency of condom use is 1 - no infections
 test_that("fc ec 1", {
-  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), ec = c(0, 1), fc_y = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)))
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), ec = c(0, 1), fc_y_comm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), fc_y_noncomm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_true(sum(c(xx$I01[,2], xx$I11[,2]))==0)
@@ -281,7 +282,7 @@ test_that("fc ec 1", {
 
 # condom efficacy is NOT 1 and frequency of condom use is 1 - some infections
 test_that("fc ec 1b", {
-  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), ec = c(0, 0.9), fc_y = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)))
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), ec = c(0, 0.9), fc_y_comm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), fc_y_noncomm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,2], xx$I11[,2]))==0)
@@ -289,7 +290,7 @@ test_that("fc ec 1b", {
 
 # condom efficacy is 1 and frequency of condom use is NOT 1 - some infections
 test_that("fc ec 1c", {
-  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), ec = c(0, 1), fc_y = cbind(c(0, 0, 0, 0), c(1, 1, 1, 0.99)))
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), ec = c(0, 1), fc_y_comm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 0.99)), fc_y_noncomm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 0.99)))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,2], xx$I11[,2]))==0)
@@ -298,21 +299,21 @@ test_that("fc ec 1c", {
 
 # only group 2 infected, does group 1 get infected?
 test_that("fc ec 2", {
-  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), ec = c(1, 0), fc_y = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)))
+  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), ec = c(1, 0), fc_y_comm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), fc_y_noncomm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_true(sum(c(xx$I01[,1], xx$I11[,1]))==0)
 })
 
 test_that("fc ec 2b", {
-  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), ec = c(0.9, 0), fc_y = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)))
+  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), ec = c(0.9, 0), fc_y_comm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), fc_y_noncomm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,1], xx$I11[,1]))==0)
 })
 
 test_that("fc ec 2c", {
-  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), ec = c(1, 0), fc_y = cbind(c(1, 1, 1, 0.99), c(0, 0, 0, 0)))
+  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), ec = c(1, 0), fc_y_comm = cbind(c(1, 1, 1, 0.99), c(0, 0, 0, 0)), fc_y_noncomm = cbind(c(1, 1, 1, 0.99), c(0, 0, 0, 0)))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,1], xx$I11[,1]))==0)
@@ -324,27 +325,30 @@ test_that("fc ec 2c", {
 # only group 1 infected, does group 2 get infected?
 # prep efficacy is 1 and frequency of prep use is 1 - no infections
 test_that("fP eP 1", {
-  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 1), eP1b = c(0, 1), eP1c = c(0, 1), fP_y = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)))
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 1), eP1b = c(0, 1), eP1c = c(0, 1), fP_y_comm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), fP_y_noncomm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_true(sum(c(xx$I01[,2], xx$I11[,2]))==0)
 })
+
+
+
 #
-# condom efficacy is NOT 1 and frequency of condom use is 1 - some infections
+# PREP efficacy is NOT 1 and frequency of PREP use is 1 - some infections
 test_that("fP eP 1b", {
-  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 0.99), eP1a = c(0, 1), eP1b = c(0, 1), eP1c = c(0, 1), fP_y = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), zetaa = c(0.1, 0.1))
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 0.99), eP1a = c(0, 1), eP1b = c(0, 1), eP1c = c(0, 1), fP_y_comm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), fP_y_noncomm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), zetaa = c(0.1, 0.1))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,2], xx$I11[,2]))==0)
-  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 0.99), eP1b = c(0, 1), eP1c = c(0, 1), fP_y = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), zetaa = c(0.1, 0.1))
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 0.99), eP1b = c(0, 1), eP1c = c(0, 1), fP_y_comm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), fP_y_noncomm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), zetaa = c(0.1, 0.1))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,2], xx$I11[,2]))==0)
-  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 1), eP1b = c(0, 0.99), eP1c = c(0, 1), fP_y = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), zetaa = c(0.1, 0.1))
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 1), eP1b = c(0, 0.99), eP1c = c(0, 1), fP_y_comm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), fP_y_noncomm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), zetaa = c(0.1, 0.1))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,2], xx$I11[,2]))==0)
-  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 1), eP1b = c(0, 1), eP1c = c(0, 0.99), fP_y = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), zetaa = c(0.1, 0.1))
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 1), eP1b = c(0, 1), eP1c = c(0, 0.99), fP_y_comm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), fP_y_noncomm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), zetaa = c(0.1, 0.1))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,2], xx$I11[,2]))==0)
@@ -352,7 +356,7 @@ test_that("fP eP 1b", {
 
 # condom efficacy is 1 and frequency of condom use is NOT 1 - some infections
 test_that("fP eP 1c", {
-  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 1), eP1b = c(0, 1), eP1c = c(0, 1), fP_y = cbind(c(0, 0, 0, 0), c(1, 1, 0.99, 1)), zetaa = c(0.1, 0.1))
+  parameters <- generate_parameters(I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 1), eP1b = c(0, 1), eP1c = c(0, 1), fP_y_comm = cbind(c(0, 0, 0, 0), c(1, 1, 0.99, 1)), fP_y_noncomm = cbind(c(0, 0, 0, 0), c(1, 1, 0.99, 1)), zetaa = c(0.1, 0.1))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,2], xx$I11[,2]))==0)
@@ -361,33 +365,33 @@ test_that("fP eP 1c", {
 #
 # only group 2 infected, does group 1 get infected?
 test_that("fP eP 2", {
-  parameters <- generate_parameters(Ncat = 2, I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(1, 0), eP1d = c(1, 0), fP_y = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))
+  parameters <- generate_parameters(Ncat = 2, I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(1, 0), eP1d = c(1, 0), fP_y_comm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), fP_y_noncomm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_true(sum(c(xx$I01[,1], xx$I11[,1]))==0)
 })
 
 test_that("fP eP 2b", {
-  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(0.99, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(1, 0), fP_y = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))
+  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(0.99, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(1, 0), fP_y_comm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), fP_y_noncomm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,1], xx$I11[,1]))==0)
-  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(0.99, 0), eP1b = c(1, 0), eP1c = c(1, 0), fP_y = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))
+  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(0.99, 0), eP1b = c(1, 0), eP1c = c(1, 0), fP_y_comm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), fP_y_noncomm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,1], xx$I11[,1]))==0)
-  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(1, 0), eP1b = c(0.99, 0), eP1c = c(1, 0), fP_y = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))
+  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(1, 0), eP1b = c(0.99, 0), eP1c = c(1, 0), fP_y_comm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), fP_y_noncomm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,1], xx$I11[,1]))==0)
-  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(0.99, 0), fP_y = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))
+  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(0.99, 0), fP_y_comm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), fP_y_noncomm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,1], xx$I11[,1]))==0)
 })
 
 test_that("fP eP 2c", {
-  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(0.99, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(1, 0), fP_y = cbind(c(1, 1, 1, 0.99), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))
+  parameters <- generate_parameters(I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(0.99, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(1, 0), fP_y_comm = cbind(c(1, 1, 1, 0.99), c(0, 0, 0, 0)), fP_y_noncomm = cbind(c(1, 1, 1, 0.99), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,1], xx$I11[,1]))==0)
@@ -650,16 +654,30 @@ test_that("R vs prevalence", {
 # increase n, increase overall prevalence
 
 test_that("n vs prevalence", {
-  parameters <- generate_parameters(n = matrix(1, ncol = 2, nrow = 2))
+  parameters <- generate_parameters(n_comm = matrix(1, ncol = 2, nrow = 2))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
 
-  parameters <- generate_parameters(n = matrix(10, ncol = 2, nrow = 2))
+  parameters <- generate_parameters(n_comm = matrix(10, ncol = 2, nrow = 2))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
 
+  expect_true(sum(N2) > sum(N1))
+})
+
+test_that("n vs prevalence", {
+  parameters <- generate_parameters(n_noncomm = matrix(1, ncol = 2, nrow = 2))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+  
+  parameters <- generate_parameters(n_noncomm = matrix(10, ncol = 2, nrow = 2))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+  
   expect_true(sum(N2) > sum(N1))
 })
 
@@ -679,6 +697,19 @@ test_that("c_comm vs prevalence", {
   expect_true(sum(N2) > sum(N1))
 })
 
+test_that("c_noncomm vs prevalence", {
+  parameters <- generate_parameters(c_noncomm = rep_len(2, 2))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+  
+  parameters <- generate_parameters(c_noncomm = rep_len(23, 2))
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+  
+  expect_true(sum(N2) > sum(N1))
+})
 # test_that("c_noncomm vs prevalence", {
 #   parameters <- generate_parameters(c_noncomm = rep_len(2, 2))
 #   result = run_model(parameters, main_model, time)
@@ -701,7 +732,7 @@ test_that("fc vs prevalence", {
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
 
-  parameters <- generate_parameters(set_null = "fc_y")
+  parameters <- generate_parameters(set_null = "fc_y_comm")
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
@@ -709,6 +740,19 @@ test_that("fc vs prevalence", {
   expect_true(sum(N2) > sum(N1))
 })
 
+test_that("fc vs prevalence", {
+  parameters <- generate_parameters()
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+  
+  parameters <- generate_parameters(set_null = "fc_y_noncomm")
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+  
+  expect_true(sum(N2) > sum(N1))
+})
 
 # increase ec, decrease overall prevalence
 
@@ -736,7 +780,7 @@ test_that("fP vs prevalence", {
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
 
-  parameters <- generate_parameters(set_null = "fP_y")
+  parameters <- generate_parameters(set_null = "fP_y_comm")
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
@@ -744,6 +788,19 @@ test_that("fP vs prevalence", {
   expect_true(sum(N2) > sum(N1))
 })
 
+test_that("fP vs prevalence", {
+  parameters <- generate_parameters()
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+  
+  parameters <- generate_parameters(set_null = "fP_y_noncomm")
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+  
+  expect_true(sum(N2) > sum(N1))
+})
 
 # increase eP, decrease overall prevalence
 
@@ -842,22 +899,22 @@ test_that("zeta vs prevalence", {
 
 # increase ART uptake, decrease overall prevalence
 
-test_that("ART vs prevalence", {
-  parameters <- generate_parameters()
-  result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
-  N1 <- rowSums(do.call(cbind, xx))
-  
-  # this test won't work until R is a matrix with r,s (I think)
-
-  relevant_parameters = parameter_names[c(grep("rho", parameter_names))]
-  parameters <- generate_parameters(set_null = relevant_parameters)
-  result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
-  N2 <- rowSums(do.call(cbind, xx))
-
-  expect_true(sum(N2) > sum(N1))
-})
+# test_that("ART vs prevalence", {
+#   parameters <- generate_parameters()
+#   result = run_model(parameters, main_model, time)
+#   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+#   N1 <- rowSums(do.call(cbind, xx))
+#   
+#   # this test won't work until R is a matrix with r,s (I think)
+# 
+#   relevant_parameters = parameter_names[c(grep("rho", parameter_names))]
+#   parameters <- generate_parameters(set_null = relevant_parameters)
+#   result = run_model(parameters, main_model, time)
+#   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+#   N2 <- rowSums(do.call(cbind, xx))
+# 
+#   expect_true(sum(N2) > sum(N1))
+# })
 
 
 # increase testing, decrease overall prevalence

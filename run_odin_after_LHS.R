@@ -109,11 +109,7 @@ number_simulations = 3
 
 parms = lhs_parameters(number_simulations)
 
-
-# main_model <- odin::odin("ODEs_odin.R")
-
-
-time <- seq(1985, 2016, length.out = 32)
+time <- seq(1986, 2016, length.out = 31)
 
 groups <- c("FSW", "Clients")
 
@@ -122,24 +118,77 @@ groups <- c("FSW", "Clients")
 f <- function(p, gen, time) {
   mod <- gen(user = p)
   all_results <- mod$transform_variables(mod$run(time))
-  all_results[c("prev_client", "prev_FSW","fc","prev_1")]
+  all_results[c("prev_client", "prev_FSW","fc_comm","prev_1","prev")]
 }
 res = lapply(parms, f, main_model, time)
 mu_input <- t(sapply(parms, "[[", "mu"))
-fc_y_input <- t(sapply(parms, "[[", "fc_y"))
+fc_y_input <- t(sapply(parms, "[[", "fc_y_comm"))
 prev_client_output <- t(sapply(res, "[[", "prev_client"))
 
-# PLOTTING MULTIPLE SIMULATIONS
 # fc over time
-df = melt(data.frame(time, res[[1]]$fc), id.vars = "time")
+df = melt(data.frame(time, res[[1]]$fc_comm), id.vars = "time")
 ggplot(data = df, aes(x = time, y = value, colour = variable)) + geom_line() + theme_bw()
 
 # prevalence over time
+matplot(time, res[[1]]$prev, type = "l")#, lty = 1, col = "#00000055")
 
-# mu vs prev
-matplot(time, prev_client_output, type = "l", lty = 1, col = "#00000055")
+
+# mu vs prev?
 plot(mu_input[, 1], prev_client_output[length(time), ])
 
+
+# PLOTTING MULTIPLE SIMULATIONS
+
+
+number_simulations = 100
+parms = lhs_parameters(number_simulations, Ncat = 2)
+time <- seq(1986, 2016, length.out = 31)
+f <- function(p, gen, time) {
+  mod <- gen(user = p)
+  all_results <- mod$transform_variables(mod$run(time))
+  all_results[c("prev")]
+}
+res = lapply(parms, f, main_model, time)
+
+df=data.frame(time,do.call(cbind, lapply(res, function(x) x <- x$prev[,1])), group = "group 1")
+df_2=data.frame(time,do.call(cbind, lapply(res, function(x) x <- x$prev[,2])), group = "group 2")
+
+df_melted = melt(df, id.vars = c("time","group"))
+df_melted_2 = melt(df_2, id.vars = c("time","group"))
+df_all = rbind(df_melted, df_melted_2)
+ggplot(data = df_all, aes(x = time, y = value, factor = variable, color = group)) + geom_line(alpha = 0.5) + theme_bw()
+
+
+#### Ncat = 7
+
+number_simulations = 10
+parms = lhs_parameters(number_simulations, Ncat = 7)
+time <- seq(1986, 2016, length.out = 31)
+f <- function(p, gen, time) {
+  mod <- gen(user = p)
+  all_results <- mod$transform_variables(mod$run(time))
+  all_results[c("prev")]
+}
+res = lapply(parms, f, main_model, time)
+
+df=data.frame(time,do.call(cbind, lapply(res, function(x) x <- x$prev[,1])), group = "group 1")
+df_2=data.frame(time,do.call(cbind, lapply(res, function(x) x <- x$prev[,2])), group = "group 2")
+df_3=data.frame(time,do.call(cbind, lapply(res, function(x) x <- x$prev[,3])), group = "group 3")
+df_4=data.frame(time,do.call(cbind, lapply(res, function(x) x <- x$prev[,4])), group = "group 4")
+df_5=data.frame(time,do.call(cbind, lapply(res, function(x) x <- x$prev[,5])), group = "group 5")
+df_6=data.frame(time,do.call(cbind, lapply(res, function(x) x <- x$prev[,6])), group = "group 6")
+df_7=data.frame(time,do.call(cbind, lapply(res, function(x) x <- x$prev[,7])), group = "group 7")
+
+df_melted = melt(df, id.vars = c("time","group"))
+df_melted_2 = melt(df_2, id.vars = c("time","group"))
+df_melted_3 = melt(df_3, id.vars = c("time","group"))
+df_melted_4 = melt(df_4, id.vars = c("time","group"))
+df_melted_5 = melt(df_5, id.vars = c("time","group"))
+df_melted_6 = melt(df_6, id.vars = c("time","group"))
+df_melted_7 = melt(df_7, id.vars = c("time","group"))
+
+df_all = rbind(df_melted, df_melted_2, df_melted_3, df_melted_4, df_melted_5, df_melted_6, df_melted_7)
+ggplot(data = df_all, aes(x = time, y = value, factor = variable, color = group)) + geom_line(alpha = 0.5) + theme_bw()
 
 
 

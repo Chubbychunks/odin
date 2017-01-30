@@ -1,66 +1,90 @@
 # parameteres which depend on others, etc
-fix_parameters <- function(x, Ncat, Nage) {
+fix_parameters <- function(y, Ncat, Nage) {
+  
+  N = y$S0_init + y$I01_init
+  init_prev = c(y$prev_init_FSW, rep_len(y$prev_init_rest, Ncat-1))
+  y$S0_init = (1-init_prev) * N
+  y$I01_init = init_prev * N
+  
+#   if (Ncat == 7) {
+#     N_1 = y$S0_init[1] + y$I01_init[1] + y$I02_init[1] + y$I03_init[1] + y$I04_init[1] + y$I05_init[1]
+#     N_2 = y$S0_init[2] + y$I01_init[2] + y$I02_init[2] + y$I03_init[2] + y$I04_init[2] + y$I05_init[2]
+# #     
+# #     y$S0_init[1] = (1 - y$prev_init_FSW) * N_1
+# #     y$I01_init[1] = y$prev_init_FSW * N_1
+# #     y$S0_init[2] = (1 - y$prev_init_rest) * N_2
+# #     y$I01_init[2] = y$prev_init_rest * N_2
+#     
+#     y$S0_init <- c((1 - y$prev_init_FSW) * N_1, (1 - y$prev_init_rest) * N_2, 4, 4, 4, 4, 5)
+#     y$I01_init <- c(y$prev_init_FSW * N_1, (1 - y$prev_init_rest) * N_2, 4, 4, 4, 4, 5)
+#     
+#   }
+  
+  
+  # BIOLOGICAL
+  
   # parameters dependent on others
-  prog_rate = 2/(x$SC_to_200_349 - x$gamma01)
-  x$gamma02 = rep_len(prog_rate, Ncat)
-  x$gamma03 = rep_len(prog_rate, Ncat)
+  prog_rate = 2/(y$SC_to_200_349 - y$gamma01)
+  y$gamma02 = rep_len(prog_rate, Ncat)
+  y$gamma03 = rep_len(prog_rate, Ncat)
   
   # converting durations into rates
-  x$gamma01 = 1/x$gamma01
-  x$SC_to_200_349 = 1/x$SC_to_200_349
-  x$gamma04 = 1/x$gamma04
+  y$gamma01 = 1/y$gamma01
+  y$SC_to_200_349 = 1/y$SC_to_200_349
+  y$gamma04 = 1/y$gamma04
   
   # filling in other parameters
-  x$gamma01 <- rep_len(x$gamma01, Ncat)
-  x$gamma04 <- rep_len(x$gamma04, Ncat)
+  y$gamma01 <- rep_len(y$gamma01, Ncat)
+  y$gamma04 <- rep_len(y$gamma04, Ncat)
   
   
-  x$omega <- x$omega/sum(x$omega)
+  y$omega <- y$omega/sum(y$omega)
   
-  x$gamma22 <- x$gamma02
-  x$gamma23 <- x$gamma03
-  x$gamma24 <- x$gamma04
+  y$gamma22 <- y$gamma02
+  y$gamma23 <- y$gamma03
+  y$gamma24 <- y$gamma04
   
-  x$gamma42 <- x$gamma02
-  x$gamma43 <- x$gamma03
-  x$gamma44 <- x$gamma04
+  y$gamma42 <- y$gamma02
+  y$gamma43 <- y$gamma03
+  y$gamma44 <- y$gamma04
   
   # progression is slowed by ART_RR
   
-  x$gamma32 <- (x$gamma02)/x$ART_RR
-  x$gamma33 <- (x$gamma03)/x$ART_RR
-  x$gamma34 <- (x$gamma04)/x$ART_RR
+  y$gamma32 <- (y$gamma02)/y$ART_RR
+  y$gamma33 <- (y$gamma03)/y$ART_RR
+  y$gamma34 <- (y$gamma04)/y$ART_RR
   
-  # p = M*A
-  if (Ncat == 7) {
-    # P-FSW, L-FSW, GPF, F-FSW, C, GPM, F-FSW(not in Cotonou)
-    x$pnc <- matrix(c(0, 0, 0, 0, 1, 1, 0,
-                      0, 0, 0, 0, 1, 1, 0,
-                      0, 0, 0, 0, 1, 1, 0,
-                      0, 0, 0, 0, 1, 1, 0,
-                      1, 1, 1, 1, 0, 0, 0,
-                      1, 1, 1, 1, 0, 0, 0,
-                      0, 0, 0, 0, 0, 0, 0),
-                    , nrow = 7, ncol = 7, byrow = T)
-    x$Mnc = matrix(1/Ncat, Ncat, Ncat) # will need to sample these
-    x$pnc <- x$pnc * x$Mnc
-    
-    x$pcc <- matrix(c(0, 0, 0, 0, 1, 0, 0,
-                      0, 0, 0, 0, 1, 0, 0,
-                      0, 0, 0, 0, 0, 0, 0,
-                      0, 0, 0, 0, 0, 0, 0,
-                      1, 1, 0, 0, 0, 0, 0,
-                      0, 0, 0, 0, 0, 0, 0,
-                      0, 0, 0, 0, 0, 0, 0),
-                    , nrow = 7, ncol = 7, byrow = T)
-    x$Mcc = matrix(1/Ncat, Ncat, Ncat) # will need to sample these
-    x$pcc <- x$pcc * x$Mcc
-  }
+  #   # p = M*A
+  #   if (Ncat == 7) {
+  #     # P-FSW, L-FSW, GPF, F-FSW, C, GPM, F-FSW(not in Cotonou)
+  #     y$pnc <- matrix(c(0, 0, 0, 0, 1, 1, 0,
+  #                       0, 0, 0, 0, 1, 1, 0,
+  #                       0, 0, 0, 0, 1, 1, 0,
+  #                       0, 0, 0, 0, 1, 1, 0,
+  #                       1, 1, 1, 1, 0, 0, 0,
+  #                       1, 1, 1, 1, 0, 0, 0,
+  #                       0, 0, 0, 0, 0, 0, 0),
+  #                     , nrow = 7, ncol = 7, byrow = T)
+  #     y$Mnc = matrix(1/Ncat, Ncat, Ncat) # will need to sample these
+  #     y$pnc <- y$pnc * y$Mnc
+  #     
+  #     y$pcc <- matrix(c(0, 0, 0, 0, 1, 0, 0,
+  #                       0, 0, 0, 0, 1, 0, 0,
+  #                       0, 0, 0, 0, 0, 0, 0,
+  #                       0, 0, 0, 0, 0, 0, 0,
+  #                       1, 1, 0, 0, 0, 0, 0,
+  #                       0, 0, 0, 0, 0, 0, 0,
+  #                       0, 0, 0, 0, 0, 0, 0),
+  #                     , nrow = 7, ncol = 7, byrow = T)
+  #     y$Mcc = matrix(1/Ncat, Ncat, Ncat) # will need to sample these
+  #     y$pcc <- y$pcc * y$Mcc
+  #   }
   
   
-  return(x)
+  return(y)
 }
 
+# N_Ncat7 = function(y) return S0_init[1] + I01_init[1] + I02_init[1] + I03_init[1] + I04_init[1] + I05_init[1]
 
 #
 # the parameters below will be sampled from an LHS and will replace their respective defaults
@@ -68,8 +92,16 @@ fix_parameters <- function(x, Ncat, Nage) {
 lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1) {
   mu <- matrix(rep(c(1/50, 1/42), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("mu", Ncat), NULL))
   omega <- matrix(rep(c(0.4, 0.6), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("omega", Ncat), NULL))
+
+  #these parameters need to be here so fix_parameters works?
+  S0_init = matrix(rep(c(4000, 4000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("S0_init", Ncat), NULL))
+  I01_init = matrix(rep(c(1000, 1000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("I01_init", Ncat), NULL))
   
-  ranges <- rbind(
+   ranges <- rbind(
+    
+    prev_init_FSW = c(0.01318836, 0.06592892),
+    prev_init_rest = c(0.0003134459, 0.0029420363),
+    
     mu,
     
     gamma01 = c(0.16, 0.5), # from Mathieu's parameters  IN YEARS
@@ -84,7 +116,9 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1) {
     ART_RR = c(2, 3), # from Mathieu's parameters  IN YEARS
     
     epsilon = c(0.026, 0.028),
-    omega
+    omega,
+    S0_init,
+    I01_init
   )
   if (!is.null(sample)) {
     ranges <- ranges[rownames(ranges) %in% sample, , drop=FALSE]
@@ -97,7 +131,7 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1) {
   }
   samples_list <- apply(samples, 1, f)
   
-  samples_list <- lapply(samples_list, fix_parameters, Ncat)
+  samples_list <- lapply(samples_list, fix_parameters, Ncat = Ncat)
   
   lapply(samples_list, function(x) generate_parameters(parameters = x, Ncat = Ncat))
 }
@@ -105,6 +139,8 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1) {
 generate_parameters <- function(..., parameters = list(...), set_null = list(...), Ncat = 2, Nage = 1) {
   defaults <- list(Ncat = Ncat,
                    Nage = Nage,
+                   
+                   N_init = 300000,
                    
                    S0_init = rep_len(2000, Ncat),
                    S1a_init = rep_len(0, Ncat),
@@ -186,7 +222,6 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    #                    fc_y = matrix(
                    #                      rep(c(0, 0, 0.7, 0.9), Ncat), ncol = Ncat),
                    
-                   SC_to_200_349 = rep_len(0.3, Ncat),
                    
                    alpha01 = rep_len(0.01,Ncat),
                    alpha02 = rep_len(0.01,Ncat),
@@ -274,7 +309,12 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    OnPrEP_init = rep_len(0, Ncat),
                    
                    rate_move_in = matrix(0, ncol = Ncat, nrow = Ncat),
-                   rate_move_out = rep_len(0, Ncat)
+                   rate_move_out = rep_len(0, Ncat),
+                   
+                   # have to include the follow in the function for it to work just using generate_parameters(), and not lhs_parameters()
+                   SC_to_200_349 = rep_len(0.3, Ncat),
+                   prev_init_FSW = 0.04,
+                   prev_init_rest = 0.0008
                    
                    
                    
