@@ -1,24 +1,10 @@
 # parameteres which depend on others, etc
 fix_parameters <- function(y, Ncat, Nage) {
   
-  N = y$S0_init + y$I01_init
+  # N = y$S0_init + y$I01_init
   init_prev = c(y$prev_init_FSW, rep_len(y$prev_init_rest, Ncat-1))
-  y$S0_init = (1-init_prev) * N
-  y$I01_init = init_prev * N
-  
-#   if (Ncat == 7) {
-#     N_1 = y$S0_init[1] + y$I01_init[1] + y$I02_init[1] + y$I03_init[1] + y$I04_init[1] + y$I05_init[1]
-#     N_2 = y$S0_init[2] + y$I01_init[2] + y$I02_init[2] + y$I03_init[2] + y$I04_init[2] + y$I05_init[2]
-# #     
-# #     y$S0_init[1] = (1 - y$prev_init_FSW) * N_1
-# #     y$I01_init[1] = y$prev_init_FSW * N_1
-# #     y$S0_init[2] = (1 - y$prev_init_rest) * N_2
-# #     y$I01_init[2] = y$prev_init_rest * N_2
-#     
-#     y$S0_init <- c((1 - y$prev_init_FSW) * N_1, (1 - y$prev_init_rest) * N_2, 4, 4, 4, 4, 5)
-#     y$I01_init <- c(y$prev_init_FSW * N_1, (1 - y$prev_init_rest) * N_2, 4, 4, 4, 4, 5)
-#     
-#   }
+  y$S0_init = (1-init_prev) * y$N_init
+  y$I01_init = init_prev * y$N_init
   
   
   # BIOLOGICAL
@@ -97,6 +83,10 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1) {
   S0_init = matrix(rep(c(4000, 4000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("S0_init", Ncat), NULL))
   I01_init = matrix(rep(c(1000, 1000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("I01_init", Ncat), NULL))
   
+  if(Ncat == 7)
+  {
+    N_init = matrix(c(672, 672, 757, 757, 146110, 146110, 0, 0, 27091, 27091, 111483, 111483, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("N_init", Ncat), NULL))
+  } else N_init = 300000
    ranges <- rbind(
     
     prev_init_FSW = c(0.01318836, 0.06592892),
@@ -120,7 +110,8 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1) {
     
     #below are fixed...
     S0_init,
-    I01_init
+    I01_init,
+    N_init
   )
   if (!is.null(sample)) {
     ranges <- ranges[rownames(ranges) %in% sample, , drop=FALSE]
