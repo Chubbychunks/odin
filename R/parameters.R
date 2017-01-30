@@ -93,7 +93,7 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1) {
   mu <- matrix(rep(c(1/50, 1/42), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("mu", Ncat), NULL))
   omega <- matrix(rep(c(0.4, 0.6), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("omega", Ncat), NULL))
 
-  #these parameters need to be here so fix_parameters works?
+  #these parameters need to be here so fix_parameters works? below are fixed...
   S0_init = matrix(rep(c(4000, 4000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("S0_init", Ncat), NULL))
   I01_init = matrix(rep(c(1000, 1000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("I01_init", Ncat), NULL))
   
@@ -117,6 +117,8 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1) {
     
     epsilon = c(0.026, 0.028),
     omega,
+    
+    #below are fixed...
     S0_init,
     I01_init
   )
