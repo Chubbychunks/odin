@@ -16,18 +16,13 @@ devtools::load_all()
 
 devtools::test()
 
-parameters <- generate_parameters(Ncat = 8, c_comm=c(11,22,0,0,2.5,0,0,0))
+time <- seq(1986, 2016, length.out = 31)
+parameters <- generate_parameters(Ncat = 7)
 result = run_model(parameters, main_model, time)
-names(result)
+out=data.frame(time=result$t,output=result$Ntot)
+out
 
-result$Ncat
-result$c_comm
-result$c_comm_balanced
-result$c_noncomm
-result$c_noncomm_balanced
-result$N
-
-
+ggplot(out, aes(x = time, y = output)) + geom_line() + theme_bw()
 
 
 

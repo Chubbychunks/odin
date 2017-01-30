@@ -153,6 +153,7 @@ deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alph
 deriv(cumuInf[]) = S0[i] * lambda_sum_0[i] + S1a[i] * lambda_sum_1a[i] + S1b[i] * lambda_sum_1b[i] + S1c[i] * lambda_sum_1c[i] + S1d[i] * lambda_sum_1d[i]
 
 # births due to population growth
+# epsilon = interpolate(epsilon_t_comm, epsilon_y_comm, "constant")
 new_people = epsilon * sum(N)
 
 
@@ -746,12 +747,17 @@ n_noncomm[,] = user()
 R[] = user()
 
 # growth
-#epsilon[] = user()
-epsilon = user()
+
 omega[] = user()
 
 # balancing
 theta[,] = user()
+
+epsilon_t_comm[] = user()
+epsilon_y_comm[] = user()
+
+dim(epsilon_t_comm) = user()
+dim(epsilon_y_comm) = user()
 
 fc_t_comm[] = user()
 fc_y_comm[,] = user()
@@ -868,6 +874,7 @@ dim(eP1b) = Ncat
 dim(eP1c) = Ncat
 dim(eP1d) = Ncat
 
+# dim(epsilon) = Ncat
 dim(fc_comm) = Ncat
 dim(fP_comm) = Ncat
 dim(fc_noncomm) = Ncat
