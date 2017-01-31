@@ -324,33 +324,27 @@ B_check_noncomm = if(Ncat == 7) c_noncomm_balanced[1]*N[1] + c_noncomm_balanced[
 
 
 
-
-# old method!!!
-# B[,] <- if (i < j && c[i,j] > 0) c[j,i] * N[j] / (c[i, j] * N[i]) else 0
-# cstar[,] <- c[i,j] * (if (i > j) B[j, i]^-(1 - theta[j,i]) else B[i, j]^theta[i,j])
-
-
-# # when 4d happens
-# B[,,,] <- if (i < k && c[i,j,k,l] > 0) c[j,k,i,l] * N[j,l] / (c[i,j,k,l] * N[i,k]) else 0
-# cstar[,,,] <- c[i,j,k,l] * (if (i > k) B[k, l, i, j]^(theta - 1) else B[i, j, k, l]^theta)
-# dim(B) <- c(Ncat, Nage, Ncat, Nage)
-# dim(cstar) <- c(Ncat, Nage, Ncat, Nage)
-
-
-# B = (c[2,1] * N[2])/(c[1,1] * N[1])
-# c1_new = c[1,2] * B^theta
-# c2_new = c[2,1] * B^(-(1-theta))
-
-# B_check = (c2_new * N[2])/(c1_new * N[1])
-# functions to balance partnerships
-
-
-
-
 # PROBABILITY OF SEXUAL CONTACT (MIXING)
 ##############################################################################
 
-# p = 1
+# p_comm_balanced_old[,] = if(sum(M_comm[i,]) == 1 && M_comm[i,j] == 1) 1 else N[j] * c_comm_balanced[j] * M_comm[j, i] / (N[i] * c_comm_balanced[i])
+# dim(p_comm_balanced_old) = c(Ncat, Ncat)
+# output(p_comm_balanced_old[,]) = p_comm_balanced_old
+
+comm_partnerships_requested[,] = N[j] * c_comm_balanced[j] * M_comm[i,j]
+noncomm_partnerships_requested[,] = N[j] * c_noncomm_balanced[j] * M_noncomm[i,j]
+
+dim(comm_partnerships_requested) = c(Ncat, Ncat)
+
+
+dim(noncomm_partnerships_requested) = c(Ncat, Ncat)
+
+
+
+p_comm[,] = if(M_comm[i, j] == 0) 0 else M_comm[i, j] * N[j] * c_comm_balanced[j] / sum(comm_partnerships_requested[i,])
+p_noncomm[,] = if(M_noncomm[i, j] == 0) 0 else M_noncomm[i, j] * N[j] * c_noncomm_balanced[j] / sum(noncomm_partnerships_requested[i,])
+
+
 
 
 
@@ -363,6 +357,8 @@ fP_comm[] = interpolate(fP_t_comm, fP_y_comm, "linear")
 
 fc_noncomm[] = interpolate(fc_t_noncomm, fc_y_noncomm, "linear")
 fP_noncomm[] = interpolate(fP_t_noncomm, fP_y_noncomm, "linear")
+
+
 
 # FORCE OF INFECTION
 ##############################################################################
@@ -540,6 +536,8 @@ output(zetab[]) = zetab
 output(zetac[]) = zetac
 
 output(epsilon) = epsilon
+output(M_comm[,]) = M_comm
+output(M_noncomm[,]) = M_noncomm
 
 # output(in_S0[, ]) = in_S0
 
@@ -731,8 +729,8 @@ alpha45[] = user()
 beta[] = user()
 c_comm[] = user()
 c_noncomm[] = user()
-p_comm[,] = user()
-p_noncomm[,] = user()
+# p_comm[,] = user()
+# p_noncomm[,] = user()
 
 ec[] = user()
 eP[] = user()
@@ -744,6 +742,9 @@ eP1d[] = user()
 
 n_comm[,] = user()
 n_noncomm[,] = user()
+
+M_comm[,] = user()
+M_noncomm[,] = user()
 
 R[] = user()
 
@@ -1003,6 +1004,9 @@ rate_move_out[] = user()
 
 dim(OnPrEP_init) = Ncat
 
+dim(M_comm) = c(Ncat, Ncat)
+dim(M_noncomm) = c(Ncat, Ncat)
+
 # dim(in_S0) <- c(Ncat, Ncat)
 # dim(in_S1a) <- c(Ncat, Ncat)
 # dim(in_S1b) <- c(Ncat, Ncat)
@@ -1030,3 +1034,4 @@ dim(OnPrEP_init) = Ncat
 # dim(in_I45) <- c(Ncat, Ncat)
 
 # dim(sum_in_S0) <- Ncat
+

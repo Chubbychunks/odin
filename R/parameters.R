@@ -40,34 +40,24 @@ fix_parameters <- function(y, Ncat, Nage) {
   y$gamma33 <- (y$gamma03)/y$ART_RR
   y$gamma34 <- (y$gamma04)/y$ART_RR
   
-  
-  
-#   # p = M*A
-#   if (Ncat == 7) {
-#     # P-FSW, L-FSW, GPF, F-FSW, C, GPM, F-FSW(not in Cotonou)
-#     y$pnc <- matrix(c(0, 0, 0, 0, 1, 1, 0,
-#                       0, 0, 0, 0, 1, 1, 0,
-#                       0, 0, 0, 0, 1, 1, 0,
-#                       0, 0, 0, 0, 1, 1, 0,
-#                       1, 1, 1, 1, 0, 0, 0,
-#                       1, 1, 1, 1, 0, 0, 0,
-#                       0, 0, 0, 0, 0, 0, 0),
-#                     , nrow = 7, ncol = 7, byrow = T)
-#     y$Mnc = matrix(1/Ncat, Ncat, Ncat) # will need to sample these
-#     y$pnc <- y$pnc * y$Mnc
-#     
-#     y$pcc <- matrix(c(0, 0, 0, 0, 1, 0, 0,
-#                       0, 0, 0, 0, 1, 0, 0,
-#                       0, 0, 0, 0, 0, 0, 0,
-#                       0, 0, 0, 0, 0, 0, 0,
-#                       1, 1, 0, 0, 0, 0, 0,
-#                       0, 0, 0, 0, 0, 0, 0,
-#                       0, 0, 0, 0, 0, 0, 0),
-#                     , nrow = 7, ncol = 7, byrow = T)
-#     y$Mcc = matrix(1/Ncat, Ncat, Ncat) # will need to sample these
-#     y$pcc <- y$pcc * y$Mcc
-#   }
-  
+  if (Ncat == 7) {
+    y$M_noncomm = matrix(c(0, 0, 0, 0, 1, 0, 0,
+                           0, 0, 0, 0, 1, 0, 0,
+                           0, 0, 0, 0, 1, 1, 0,
+                           0, 0, 0, 0, 1, 1, 0,
+                           1, 1, 1, 1, 0, 0, 0,
+                           0, 0, 1, 1, 0, 0, 0,
+                           0, 0, 0, 0, 0, 0, 0),
+                         nrow = 7, ncol = 7, byrow = T)
+    y$M_comm = matrix(c(0, 0, 0, 0, 1, 0, 0,
+                        0, 0, 0, 0, 1, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0,
+                        1, 1, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0),
+                      nrow = 7, ncol = 7, byrow = T)
+  }
   
   return(y)
 }
@@ -254,8 +244,8 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    c_noncomm = rep_len(2,Ncat),
                    
                    # c = matrix(2, ncol = Ncat, nrow = Ncat),
-                   p_comm = matrix(0.15, ncol = Ncat, nrow = Ncat),
-                   p_noncomm = matrix(0.15, ncol = Ncat, nrow = Ncat),
+                   p_comm = matrix(1, ncol = Ncat, nrow = Ncat),
+                   p_noncomm = matrix(1, ncol = Ncat, nrow = Ncat),
                    
                    
                    ec = rep_len(0.85,Ncat),
@@ -297,7 +287,8 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    omega = rep_len(1/Ncat, Ncat),
                    theta = matrix(0.5, ncol = Ncat, nrow = Ncat),
                    
-                   M = matrix(1/Ncat, Ncat, Ncat),
+                   M_comm = matrix(1/Ncat, Ncat, Ncat),
+                   M_noncomm = matrix(1/Ncat, Ncat, Ncat),
                    
                    # A_F = matrix(1/NAge, NAge, NAge),
                    # A_M = matrix(1/NAge, NAge, NAge),

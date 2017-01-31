@@ -11,7 +11,6 @@ require(reshape2)
 # ART to be defined by nubmers, not rates
 
 odin::odin_package(".") # looks for any models inside inst/odin
-
 devtools::load_all()
 
 devtools::test()
@@ -35,7 +34,7 @@ result = run_model(parameters, main_model, time)
 
 
 
-
+# balancing
 parameters <- generate_parameters(Ncat = 7, c_comm=c(1244,52,0,0,24,0,0), c_noncomm=c(0.377,0.96,0.96,0.96,2.03,1.34,0),
                                   omega = c(1000, 1127, 143728, 500, 27323, 112436, 10)/(1000+1127+143728+500+27323+112436),
                                   S0_init = c(1000, 1127, 143728, 500, 27323, 112436, 10)*0.99,
@@ -65,6 +64,49 @@ result$sum_in_S0
 
 result$B_check_comm
 result$B_check_noncomm
+#
+
+# mixing
+
+
+
+
+odin::odin_package(".") # looks for any models inside inst/odin
+devtools::load_all()
+
+parameters <- lhs_parameters(1,Ncat = 7)[[1]]
+time <- seq(1986, 2016, length.out = 31)
+result = run_model(parameters, main_model, time)
+result$M_comm[2,,]
+result$M_noncomm[2,,]
+result$p_comm[2,,]
+result$p_noncomm[2,,]
+
+
+# need to write general test solutions. done! general test below
+timestep = 3
+all_female_partnerships = 0; all_male_partnerships = 0;
+for(i in 1:4)
+  for (j in 1:7)
+    all_female_partnerships = all_female_partnerships + result$p_comm[timestep, i, j] * result$c_comm_balanced[timestep,i] * result$N[timestep,i]
+
+for(i in 5:6)
+  for (j in 1:7)
+    all_male_partnerships = all_male_partnerships + result$p_comm[timestep, i, j] * result$c_comm_balanced[timestep,i] * result$N[timestep,i]
+all_female_partnerships/all_male_partnerships
+#nonnoncomm check
+# need to write general test solutions. done! general test below
+timestep = 3
+all_female_partnerships = 0; all_male_partnerships = 0;
+for(i in 1:4)
+  for (j in 1:7)
+    all_female_partnerships = all_female_partnerships + result$p_noncomm[timestep, i, j] * result$c_noncomm_balanced[timestep,i] * result$N[timestep,i]
+
+for(i in 5:6)
+  for (j in 1:7)
+    all_male_partnerships = all_male_partnerships + result$p_noncomm[timestep, i, j] * result$c_noncomm_balanced[timestep,i] * result$N[timestep,i]
+all_female_partnerships/all_male_partnerships
+
 
 
 #below to tset for PrEP
@@ -156,7 +198,7 @@ ggplot(data = df_all, aes(x = time, y = value, factor = variable, color = group)
 
 #### Ncat = 7
 
-number_simulations = 10
+number_simulations = 1
 parms = lhs_parameters(number_simulations, Ncat = 7)
 time <- seq(1986, 2016, length.out = 31)
 f <- function(p, gen, time) {
