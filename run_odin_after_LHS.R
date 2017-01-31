@@ -17,7 +17,7 @@ devtools::load_all()
 devtools::test()
 
 time <- seq(1986, 2016, length.out = 31)
-parameters <- generate_parameters(Ncat = 7)
+parameters <- lhs_parameters(1,Ncat = 7)[[1]]
 result = run_model(parameters, main_model, time)
 out=data.frame(time=result$t,output=result$Ntot)
 out

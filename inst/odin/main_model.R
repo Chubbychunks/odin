@@ -153,7 +153,7 @@ deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alph
 deriv(cumuInf[]) = S0[i] * lambda_sum_0[i] + S1a[i] * lambda_sum_1a[i] + S1b[i] * lambda_sum_1b[i] + S1c[i] * lambda_sum_1c[i] + S1d[i] * lambda_sum_1d[i]
 
 # births due to population growth
-# epsilon = interpolate(epsilon_t_comm, epsilon_y_comm, "constant")
+epsilon = interpolate(epsilon_t_comm, epsilon_y_comm, "constant")
 new_people = epsilon * sum(N)
 
 
@@ -539,6 +539,7 @@ output(zetaa[]) = zetaa
 output(zetab[]) = zetab
 output(zetac[]) = zetac
 
+output(epsilon) = epsilon
 
 # output(in_S0[, ]) = in_S0
 

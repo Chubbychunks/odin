@@ -40,31 +40,33 @@ fix_parameters <- function(y, Ncat, Nage) {
   y$gamma33 <- (y$gamma03)/y$ART_RR
   y$gamma34 <- (y$gamma04)/y$ART_RR
   
-  #   # p = M*A
-  #   if (Ncat == 7) {
-  #     # P-FSW, L-FSW, GPF, F-FSW, C, GPM, F-FSW(not in Cotonou)
-  #     y$pnc <- matrix(c(0, 0, 0, 0, 1, 1, 0,
-  #                       0, 0, 0, 0, 1, 1, 0,
-  #                       0, 0, 0, 0, 1, 1, 0,
-  #                       0, 0, 0, 0, 1, 1, 0,
-  #                       1, 1, 1, 1, 0, 0, 0,
-  #                       1, 1, 1, 1, 0, 0, 0,
-  #                       0, 0, 0, 0, 0, 0, 0),
-  #                     , nrow = 7, ncol = 7, byrow = T)
-  #     y$Mnc = matrix(1/Ncat, Ncat, Ncat) # will need to sample these
-  #     y$pnc <- y$pnc * y$Mnc
-  #     
-  #     y$pcc <- matrix(c(0, 0, 0, 0, 1, 0, 0,
-  #                       0, 0, 0, 0, 1, 0, 0,
-  #                       0, 0, 0, 0, 0, 0, 0,
-  #                       0, 0, 0, 0, 0, 0, 0,
-  #                       1, 1, 0, 0, 0, 0, 0,
-  #                       0, 0, 0, 0, 0, 0, 0,
-  #                       0, 0, 0, 0, 0, 0, 0),
-  #                     , nrow = 7, ncol = 7, byrow = T)
-  #     y$Mcc = matrix(1/Ncat, Ncat, Ncat) # will need to sample these
-  #     y$pcc <- y$pcc * y$Mcc
-  #   }
+  
+  
+#   # p = M*A
+#   if (Ncat == 7) {
+#     # P-FSW, L-FSW, GPF, F-FSW, C, GPM, F-FSW(not in Cotonou)
+#     y$pnc <- matrix(c(0, 0, 0, 0, 1, 1, 0,
+#                       0, 0, 0, 0, 1, 1, 0,
+#                       0, 0, 0, 0, 1, 1, 0,
+#                       0, 0, 0, 0, 1, 1, 0,
+#                       1, 1, 1, 1, 0, 0, 0,
+#                       1, 1, 1, 1, 0, 0, 0,
+#                       0, 0, 0, 0, 0, 0, 0),
+#                     , nrow = 7, ncol = 7, byrow = T)
+#     y$Mnc = matrix(1/Ncat, Ncat, Ncat) # will need to sample these
+#     y$pnc <- y$pnc * y$Mnc
+#     
+#     y$pcc <- matrix(c(0, 0, 0, 0, 1, 0, 0,
+#                       0, 0, 0, 0, 1, 0, 0,
+#                       0, 0, 0, 0, 0, 0, 0,
+#                       0, 0, 0, 0, 0, 0, 0,
+#                       1, 1, 0, 0, 0, 0, 0,
+#                       0, 0, 0, 0, 0, 0, 0,
+#                       0, 0, 0, 0, 0, 0, 0),
+#                     , nrow = 7, ncol = 7, byrow = T)
+#     y$Mcc = matrix(1/Ncat, Ncat, Ncat) # will need to sample these
+#     y$pcc <- y$pcc * y$Mcc
+#   }
   
   
   return(y)
@@ -78,16 +80,16 @@ fix_parameters <- function(y, Ncat, Nage) {
 lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1) {
   mu <- matrix(rep(c(1/50, 1/42), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("mu", Ncat), NULL))
   omega <- matrix(rep(c(0.4, 0.6), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("omega", Ncat), NULL))
-
+  
   #these parameters need to be here so fix_parameters works? below are fixed...
   S0_init = matrix(rep(c(4000, 4000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("S0_init", Ncat), NULL))
   I01_init = matrix(rep(c(1000, 1000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("I01_init", Ncat), NULL))
   
   if(Ncat == 7)
   {
-    N_init = matrix(c(672, 672, 757, 757, 146110, 146110, 0, 0, 27091, 27091, 111483, 111483, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("N_init", Ncat), NULL))
+    N_init = matrix(c(672, 672, 757, 757, 146110, 146110, 0.01, 0.01, 27091, 27091, 111483, 111483, 0.01, 0.01), nrow = Ncat, byrow = TRUE, dimnames = list(rep("N_init", Ncat), NULL))
   } else N_init = 300000
-   ranges <- rbind(
+  ranges <- rbind(
     
     prev_init_FSW = c(0.01318836, 0.06592892),
     prev_init_rest = c(0.0003134459, 0.0029420363),
@@ -135,9 +137,9 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    
                    N_init = 300000,
                    
-#                    epsilon_t_comm = c(1986, 1991.99, 1992, 2001.99, 2002, 2012.99, 2013, 2016),
-#                    epsilon_y_comm = c(0.059346131, 0.059346131, 0.053594832, 0.053594832, 0.026936907, 0.026936907, 0.026936907, 0.026936907),
-                   epsilon_t_comm = c(1986, 1992, 2002, 2013, 2016),
+                   #                    epsilon_t_comm = c(1985, 1991.99, 1992, 2001.99, 2002, 2012.99, 2013, 2016),
+                   #                    epsilon_y_comm = c(0.059346131, 0.059346131, 0.053594832, 0.053594832, 0.026936907, 0.026936907, 0.026936907, 0.026936907),
+                   epsilon_t_comm = c(1985, 1992, 2002, 2013, 2016),
                    epsilon_y_comm = c(0.059346131, 0.053594832, 0.026936907, 0.026936907, 0.026936907),
                    
                    S0_init = rep_len(2000, Ncat),
@@ -215,7 +217,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    kappaa = c(0.1, rep_len(0,(Ncat-1))),
                    kappab = c(0.1, rep_len(0,(Ncat-1))),
                    kappac = c(0.1, rep_len(0,(Ncat-1))),
-                   #                    fc_t = c(1986, 1990, 1998, 2016),
+                   #                    fc_t = c(1985, 1990, 1998, 2016),
                    #
                    #                    fc_y = matrix(
                    #                      rep(c(0, 0, 0.7, 0.9), Ncat), ncol = Ncat),
@@ -248,12 +250,12 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    
                    beta = rep_len(0.193,Ncat),
                    #beta = 0,
-                   c_comm = rep_len(4,Ncat),
+                   c_comm = rep_len(10,Ncat),
                    c_noncomm = rep_len(2,Ncat),
                    
                    # c = matrix(2, ncol = Ncat, nrow = Ncat),
-                   p_comm = matrix(1, ncol = Ncat, nrow = Ncat),
-                   p_noncomm = matrix(1, ncol = Ncat, nrow = Ncat),
+                   p_comm = matrix(0.15, ncol = Ncat, nrow = Ncat),
+                   p_noncomm = matrix(0.15, ncol = Ncat, nrow = Ncat),
                    
                    
                    ec = rep_len(0.85,Ncat),
@@ -270,23 +272,23 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    
                    epsilon = 0.001,
                    # fc = c(1,1),
-                   fc_t_comm = c(1986, 1990, 1998, 2016),
+                   fc_t_comm = c(1985, 1990, 1998, 2016),
                    fc_y_comm = matrix(
                      rep(c(0, 0, 0.7, 0.9), Ncat), ncol = Ncat),
                    
-                   fP_t_comm = c(1986, 2014, 2015, 2016),
+                   fP_t_comm = c(1985, 2014, 2015, 2016),
                    fP_y_comm = matrix(
                      rep(c(1, 1, 1, 1), Ncat), ncol = Ncat),
                    
-                   fc_t_noncomm = c(1986, 1990, 1998, 2016),
+                   fc_t_noncomm = c(1985, 1990, 1998, 2016),
                    fc_y_noncomm = matrix(
                      rep(c(0, 0, 0.2, 0.3), Ncat), ncol = Ncat),
                    
-                   fP_t_noncomm = c(1986, 2014, 2015, 2016),
+                   fP_t_noncomm = c(1985, 2014, 2015, 2016),
                    fP_y_noncomm = matrix(
                      rep(c(1, 1, 1, 1), Ncat), ncol = Ncat),
                    
-                   n_comm = matrix(3, ncol = Ncat, nrow = Ncat),
+                   n_comm = matrix(1, ncol = Ncat, nrow = Ncat),
                    n_noncomm = matrix(1, ncol = Ncat, nrow = Ncat),
                    
                    #n = 0,
