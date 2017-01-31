@@ -234,23 +234,15 @@ ggplot(data = df_all, aes(x = time, y = value, factor = variable, color = group)
 ##############################################################################
 
 # plot fc
-parameters <- generate_parameters(theta = 0.5)
+parameters <- lhs_parameters(1)[[1]]
 result = run_model(parameters, main_model, time)
-yy <- result[grep("fc", names(result))]
-df = melt(data.frame(time, yy$fc), id.vars = "time")
-ggplot(data = df, aes(x = time, y = value, colour = variable)) + geom_line() + theme_bw()
-
-
-# plot fP
-parameters <- generate_parameters(theta = 0.5)
-result = run_model(parameters, main_model, time)
-yy <- result[grep("fP", names(result))]
-df = melt(data.frame(time, yy$fP), id.vars = "time")
+yy <- result[grep("c_comm", names(result))]
+df = melt(data.frame(time, yy$c_comm), id.vars = "time")
 ggplot(data = df, aes(x = time, y = value, colour = variable)) + geom_line() + theme_bw()
 
 
 # number of people on PrEP
-parameters <- generate_parameters(theta = 0.5)
+parameters <- lhs_parameters(1)[[1]]
 result = run_model(parameters, main_model, time)
 yy <- result[grep("S1[a-z]", names(result))]
 yy_plot <- melt(
@@ -262,16 +254,9 @@ yy_plot <- melt(
 ggplot(data = yy_plot, aes(x = time, y = value, colour = variable)) + geom_line() + theme_bw()
 
 
-# plot N
-parameters <- generate_parameters()
-result = run_model(parameters, main_model, time = seq(1985, 2016, length.out = 310))
-yy <- result[grep("N_client|N_FSW", names(result))]
-df = melt(data.frame(time = seq(1985, 2016, length.out = 310), FSW = yy$N_FSW, client = yy$N_client), id.vars = "time")
-ggplot(data = df, aes(x = time, y = value, colour = variable)) + geom_line(alpha = 0.5) + theme_bw()
-
 
 # plot prevalence
-parameters <- generate_parameters(theta = 0.5)
+parameters <- lhs_parameters(1)[[1]]
 result = run_model(parameters, main_model, time)
 yy <- result[grep("prev", names(result))]
 df = melt(data.frame(time, FSW = yy$prev_FSW, client = yy$prev_client), id.vars = "time")
@@ -279,7 +264,9 @@ ggplot(data = df, aes(x = time, y = value, colour = variable)) + geom_line() + t
 
 
 # cumulative infections
-parameters <- generate_parameters(theta = 0.5)
+parameters <-lhs_parameters(1)[[1]]
 result = run_model(parameters, main_model, time)
 xx <- result[grep("cumu", names(result))]
 N <- rowSums(do.call(cbind, xx))
+df = melt(data.frame(time, N), id.vars = "time")
+ggplot(data = df, aes(x = time, y = value, colour = variable)) + geom_line() + theme_bw()

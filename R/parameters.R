@@ -57,6 +57,10 @@ fix_parameters <- function(y, Ncat, Nage) {
                         0, 0, 0, 0, 0, 0, 0,
                         0, 0, 0, 0, 0, 0, 0),
                       nrow = 7, ncol = 7, byrow = T)
+    
+    # c_t_comm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016),
+    # y$c_y_comm = 
+    
   }
   
   return(y)
@@ -79,13 +83,15 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1) {
   {
     N_init = matrix(c(672, 672, 757, 757, 146110, 146110, 0.01, 0.01, 27091, 27091, 111483, 111483, 0.01, 0.01), nrow = Ncat, byrow = TRUE, dimnames = list(rep("N_init", Ncat), NULL))
   } else N_init = 300000
+  
+  
   ranges <- rbind(
     
     prev_init_FSW = c(0.01318836, 0.06592892),
     prev_init_rest = c(0.0003134459, 0.0029420363),
     
     mu,
-    
+
     gamma01 = c(0.16, 0.5), # from Mathieu's parameters  IN YEARS
     #     gamma01 = c(2, 6.25), # from Mathieu's parameters
     
@@ -97,7 +103,6 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1) {
     
     ART_RR = c(2, 3), # from Mathieu's parameters  IN YEARS
     
-    # epsilon = c(0.026, 0.028),
     omega,
     
     #below are fixed...
@@ -240,8 +245,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    
                    beta = rep_len(0.193,Ncat),
                    #beta = 0,
-                   c_comm = rep_len(10,Ncat),
-                   c_noncomm = rep_len(2,Ncat),
+                   
                    
                    # c = matrix(2, ncol = Ncat, nrow = Ncat),
                    p_comm = matrix(1, ncol = Ncat, nrow = Ncat),
@@ -261,7 +265,13 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    
                    
                    epsilon = 0.001,
-                   # fc = c(1,1),
+                   
+                   c_t_comm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016),
+                   c_y_comm = matrix(rep(c(1, 2, 3, 1, 3, 4, 2, 1, 2, 4), Ncat), ncol = Ncat),
+                   
+                   c_t_noncomm = c(1985, 1990, 1998, 2016),
+                   c_y_noncomm = matrix(rep(c(0.5, 1, 0.7, 0.9), Ncat), ncol = Ncat),
+                   
                    fc_t_comm = c(1985, 1990, 1998, 2016),
                    fc_y_comm = matrix(
                      rep(c(0, 0, 0.7, 0.9), Ncat), ncol = Ncat),

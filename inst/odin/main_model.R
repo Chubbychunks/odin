@@ -26,7 +26,7 @@
 # Client = 5
 # GPM = 6
 # Form_FSW_OUT = 7
-  
+
 # Age (x)
 # 1. 15 - 24
 # 2. 25 - 34
@@ -358,7 +358,20 @@ fP_comm[] = interpolate(fP_t_comm, fP_y_comm, "linear")
 fc_noncomm[] = interpolate(fc_t_noncomm, fc_y_noncomm, "linear")
 fP_noncomm[] = interpolate(fP_t_noncomm, fP_y_noncomm, "linear")
 
+c_comm[] = interpolate(c_t_comm, c_y_comm, "linear")
+c_noncomm[] = interpolate(c_t_noncomm, c_y_noncomm, "linear")
 
+c_t_comm[] = user()
+c_t_noncomm[] = user()
+
+c_y_comm[,] = user()
+c_y_noncomm[,] = user()
+
+dim(c_t_comm) = user()
+dim(c_t_noncomm) = user()
+
+dim(c_y_comm) = user()
+dim(c_y_noncomm) = user()
 
 # FORCE OF INFECTION
 ##############################################################################
@@ -727,8 +740,8 @@ alpha45[] = user()
 # FOI parameters
 
 beta[] = user()
-c_comm[] = user()
-c_noncomm[] = user()
+# c_comm[] = user()
+# c_noncomm[] = user()
 # p_comm[,] = user()
 # p_noncomm[,] = user()
 
