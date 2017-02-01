@@ -30,10 +30,11 @@ ggplot(out, aes(x = time, y = output)) + geom_line() + theme_bw()
 odin::odin_package(".") # looks for any models inside inst/odin
 devtools::load_all()
 time <- seq(1986, 2016, length.out = 31)
+
 parameters <- lhs_parameters(1,Ncat = 7)[[1]]
 result = run_model(parameters, main_model, time)
 result$prev
-
+result$c_comm
 
 
 parameters <- generate_parameters(Ncat = 7, c_comm=c(1,2,3,4,5,6,7))

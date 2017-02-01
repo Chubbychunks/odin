@@ -89,8 +89,11 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1) {
   I01_init = matrix(rep(c(1000, 1000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("I01_init", Ncat), NULL))
   
   N_init = if(Ncat == 7) matrix(c(672, 672, 757, 757, 146110, 146110, 0.01, 0.01, 27091, 27091, 111483, 111483, 0.01, 0.01), nrow = Ncat, byrow = TRUE, dimnames = list(rep("N_init", Ncat), NULL)) else 300000
-  c_comm = if(Ncat == 7) matrix(c(300, 1400, 40, 64, 0, 0, 0, 0, 18.67, 37.5, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
+  c_comm = if(Ncat == 7) matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL))
+#   c_comm = if(Ncat == 7) matrix(c(3, 4, 40, 64, 0, 0, 0, 0, 18.67, 37.5, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
+#     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL))
+  
   c_noncomm = if(Ncat == 7) matrix(c(0.2729358, 0.4682779, 0.2729358, 0.4682779, 0.90, 1.02, 0.90, 1.02, 1.21, 2.5, 1.28, 1.40, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_noncomm", Ncat), NULL)) else 
     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_noncomm", Ncat), NULL))
   
