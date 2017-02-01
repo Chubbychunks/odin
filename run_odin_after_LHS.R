@@ -34,8 +34,9 @@ time <- seq(1986, 2016, length.out = 31)
 parameters <- lhs_parameters(1,Ncat = 7)[[1]]
 result = run_model(parameters, main_model, time)
 result$prev
-result$c_comm
-
+result$c_comm_balanced
+result$frac_N
+result$omega
 
 parameters <- generate_parameters(Ncat = 7, c_comm=c(1,2,3,4,5,6,7))
 result = run_model(parameters, main_model, time)

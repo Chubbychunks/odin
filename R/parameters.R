@@ -24,7 +24,7 @@ fix_parameters <- function(y, Ncat, Nage) {
   y$gamma04 <- rep_len(y$gamma04, Ncat)
   
   
-  y$omega <- y$omega/sum(y$omega)
+  # y$omega <- y$omega/sum(y$omega)
   
   y$gamma22 <- y$gamma02
   y$gamma23 <- y$gamma03
@@ -64,6 +64,7 @@ fix_parameters <- function(y, Ncat, Nage) {
                         0, 0, 0, 0, 0, 0, 0,
                         0, 0, 0, 0, 0, 0, 0),
                       nrow = 7, ncol = 7, byrow = T)
+    y$omega = c(y$omega[1], y$omega[1]*1.127, 0.5 - 2*y$omega[1] - y$omega[1]*1.127, y$omega[1], y$omega[5], 0.5 - y$omega[5], 0)
     
     # c_t_comm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016),
     # y$c_y_comm = 
@@ -80,7 +81,8 @@ fix_parameters <- function(y, Ncat, Nage) {
 # unless I put something in the args of the function, eg sample = mu
 lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1) {
   mu <- matrix(rep(c(1/50, 1/42), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("mu", Ncat), NULL))
-  omega <- matrix(rep(c(0.4, 0.6), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("omega", Ncat), NULL))
+  omega <- if(Ncat == 7) matrix(c(0.0017, 0.0067, 0, 0, 0, 0, 0, 0, 0.1, 0.2, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("omega", Ncat), NULL)) else 
+    matrix(rep(c(0.4, 0.6), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("omega", Ncat), NULL))
   
   # c_y_comm <- if(Ncat == 7) matrix(c(300, 1400, 40, 64, 0, 0, 0, 0, 18.67, 37.5, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_y_comm", Ncat), NULL)) else c(1, 3)
   
@@ -89,10 +91,10 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1) {
   I01_init = matrix(rep(c(1000, 1000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("I01_init", Ncat), NULL))
   
   N_init = if(Ncat == 7) matrix(c(672, 672, 757, 757, 146110, 146110, 0.01, 0.01, 27091, 27091, 111483, 111483, 0.01, 0.01), nrow = Ncat, byrow = TRUE, dimnames = list(rep("N_init", Ncat), NULL)) else 300000
-  c_comm = if(Ncat == 7) matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
-    matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL))
-#   c_comm = if(Ncat == 7) matrix(c(3, 4, 40, 64, 0, 0, 0, 0, 18.67, 37.5, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
+#   c_comm = if(Ncat == 7) matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
 #     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL))
+  c_comm = if(Ncat == 7) matrix(c(272, 1439, 40, 64, 0, 0, 0, 0, 18.67, 37.5, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
+    matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL))
   
   c_noncomm = if(Ncat == 7) matrix(c(0.2729358, 0.4682779, 0.2729358, 0.4682779, 0.90, 1.02, 0.90, 1.02, 1.21, 2.5, 1.28, 1.40, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_noncomm", Ncat), NULL)) else 
     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_noncomm", Ncat), NULL))

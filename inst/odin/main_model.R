@@ -164,9 +164,12 @@ N[] = S0[i] + S1a[i] + S1b[i] + S1c[i] + S1d[i] + I01[i] + I11[i] + I02[i] + I03
   I22[i] + I23[i] + I24[i] + I25[i] + I32[i] + I33[i] + I34[i] + I35[i] +
   I42[i] + I43[i] + I44[i] + I45[i]
 
+# fraction of group in each category INCLUDING FORMER FSW OUTSIDE BENIN
+frac_N[] = N[i] / Ntot
+frac_F[] = if(Ncat == 7) (N[1] + N[2] + N[3] + N[4] + N[7])/ Ntot else 0
 
-
-
+dim(frac_F) = Ncat
+output(frac_F[]) = frac_F
 # MOVEMENT
 ##############################################################################
 
@@ -481,7 +484,6 @@ lambda_sum_1d[] = sum(lambda_1d[i,])
 Ntot = sum(N)
 
 
-frac_N[] = N[i] / Ntot
 
 # PREVALENCE
 # n.b. prevalence for all ages in each risk group will be useful, so maybe one prev array is too much info in one output
@@ -498,7 +500,7 @@ prev[] = 100 * (I01[i] + I11[i] + I02[i] + I03[i] + I04[i] + I05[i] +
                   I42[i] + I43[i] + I44[i] + I45[i]) / N[i]
 
 output(Ncat) = Ncat
-
+output(omega[]) = omega
 output(Ntot) = Ntot
 output(new_people) = new_people
 output(B_check_comm) = B_check_comm
