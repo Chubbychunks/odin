@@ -563,8 +563,8 @@ output(M_noncomm[,]) = M_noncomm
 
 # = no. disease onsets / sum of "person-time" at risk
 
-
-
+output(mu[]) = mu
+output(gamma01[]) = gamma01
 
 # output(prev[]) = prev
 

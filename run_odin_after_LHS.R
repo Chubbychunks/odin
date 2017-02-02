@@ -38,8 +38,17 @@ result$c_comm_balanced
 result$frac_N
 result$omega
 
-parameters <- generate_parameters(Ncat = 7, c_comm=c(1,2,3,4,5,6,7))
-result = run_model(parameters, main_model, time)
+# showing priors are flat and explore space
+result$c_comm
+
+
+
+
+
+
+
+
+
 
 
 
@@ -212,7 +221,7 @@ ggplot(data = df_all, aes(x = time, y = value, factor = variable, color = group)
 odin::odin_package(".") # looks for any models inside inst/odin
 devtools::load_all()
 
-number_simulations = 1
+number_simulations = 20
 parms = lhs_parameters(number_simulations, Ncat = 7)
 time <- seq(1986, 2016, length.out = 31)
 f <- function(p, gen, time) {
@@ -242,6 +251,19 @@ df_all = rbind(df_melted, df_melted_2, df_melted_3, df_melted_4, df_melted_5, df
 ggplot(data = df_all, aes(x = time, y = value, factor = variable, color = group)) + geom_line(alpha = 0.5) + theme_bw()
 
 
+# show priors are flat and well explored
+number_simulations = 20
+parms = lhs_parameters(number_simulations, Ncat = 7)
+time <- seq(1986, 2016, length.out = 31)
+f <- function(p, gen, time) {
+  mod <- gen(user = p)
+  all_results <- mod$transform_variables(mod$run(time))
+  all_results[c("c_comm", "c_noncomm","mu","gamma01")]
+}
+res = lapply(parms, f, main_model, time)
+
+c_comm_prior = do.call(rbind, lapply(res, function(x) x$c_comm[1,]))
+hist(c_comm_prior[,1])
 
 
 # SINGLE RUN WITH PARAMETERS TO CHECK EVERY OUTPUT
