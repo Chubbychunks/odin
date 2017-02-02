@@ -221,9 +221,18 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    tau4 = rep_len(0.5,Ncat),
                    tau5 = rep_len(0.5,Ncat),
                    
-                   zetaa = c(0.1, rep_len(0,(Ncat-1))),
-                   zetab = c(0.1, rep_len(0,(Ncat-1))),
-                   zetac = c(0.1, rep_len(0,(Ncat-1))),
+                   # PREP
+                   zetaa_a_t = c(1985, 2013, 2015, 2016),
+                   zetaa_a_y = matrix(c(rep(0, Ncat), 1, rep(0, Ncat-1), rep(0, Ncat), rep(0, Ncat)), ncol = Ncat, byrow = T),
+                   zetaa_b_t = c(1985, 2013, 2015, 2016),
+                   zetaa_b_y = matrix(c(rep(0, Ncat), 1, rep(0, Ncat-1), rep(0, Ncat), rep(0, Ncat)), ncol = Ncat, byrow = T),                   
+                   zetaa_c_t = c(1985, 2013, 2015, 2016),
+                   zetaa_c_y = matrix(c(rep(0, Ncat), 1, rep(0, Ncat-1), rep(0, Ncat), rep(0, Ncat)), ncol = Ncat, byrow = T),   
+                   
+                   fc_t_comm = c(1985, 1990, 1998, 2016),
+                   fc_y_comm = matrix(
+                     rep(c(0.5, 0.5, 0.9, 0.99), Ncat), ncol = Ncat),
+                   
                    
                    kappaa = c(0.1, rep_len(0,(Ncat-1))),
                    kappab = c(0.1, rep_len(0,(Ncat-1))),
@@ -255,7 +264,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    alpha45 = rep_len(1,Ncat),
                    
                    
-                   beta = rep_len(0.193,Ncat),
+                   beta = rep_len(0.005,Ncat),
                    #beta = 0,
                    
                    p_comm = matrix(1, ncol = Ncat, nrow = Ncat),

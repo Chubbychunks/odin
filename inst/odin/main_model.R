@@ -356,6 +356,12 @@ p_noncomm[,] = if(M_noncomm[i, j] == 0) 0 else M_noncomm[i, j] * N[j] * c_noncom
 # INTERPOLATING FUNCTIONS
 ##############################################################################
 
+zetaa_t[] = user()
+zetab_t[] = user()
+zetac_t[] = user()
+zetaa_y[,] = user()
+zetab_y[,] = user()
+zetac_y[,] = user()
 
 fc_comm[] = interpolate(fc_t_comm, fc_y_comm, "linear")
 fP_comm[] = interpolate(fP_t_comm, fP_y_comm, "linear")
@@ -364,6 +370,9 @@ fc_noncomm[] = interpolate(fc_t_noncomm, fc_y_noncomm, "linear")
 fP_noncomm[] = interpolate(fP_t_noncomm, fP_y_noncomm, "linear")
 
 
+zetaa[] = interpolate(zetaa_t, zetaa_y, "constant")
+zetab[] = interpolate(zetab_t, zetab_y, "constant")
+zetac[] = interpolate(zetac_t, zetac_y, "constant")
 
 # c_comm[] = interpolate(c_t_comm, c_y_comm, "linear")
 # c_noncomm[] = interpolate(c_t_noncomm, c_y_noncomm, "linear")
@@ -566,6 +575,10 @@ output(M_noncomm[,]) = M_noncomm
 output(mu[]) = mu
 output(gamma01[]) = gamma01
 
+output(kappaa[]) = kappaa
+output(kappab[]) = kappab
+output(kappac[]) = kappac
+
 # output(prev[]) = prev
 
 # in future nb eP eC constants
@@ -707,9 +720,7 @@ tau3[] = user()
 tau4[] = user()
 tau5[] = user()
 
-zetaa[] = user()
-zetab[] = user()
-zetac[] = user()
+
 
 kappaa[] = user()
 kappab[] = user()
@@ -803,7 +814,9 @@ dur_FSW = user()
 
 # DIMMING
 
-
+dim(zetaa) = Ncat
+dim(zetab) = Ncat
+dim(zetac) = Ncat
 
 
 #parameters
@@ -849,9 +862,13 @@ dim(tau3) = Ncat
 dim(tau4) = Ncat
 dim(tau5) = Ncat
 
-dim(zetaa) = Ncat
-dim(zetab) = Ncat
-dim(zetac) = Ncat
+dim(zetaa_t) = user()
+dim(zetab_t) = user()
+dim(zetac_t) = user()
+dim(zetaa_y) = user()
+dim(zetab_y) = user()
+dim(zetac_y) = user()
+
 
 dim(kappaa) = Ncat
 dim(kappab) = Ncat

@@ -250,9 +250,15 @@ df_melted_7 = melt(df_7, id.vars = c("time","group"))
 df_all = rbind(df_melted, df_melted_2, df_melted_3, df_melted_4, df_melted_5, df_melted_6, df_melted_7)
 ggplot(data = df_all, aes(x = time, y = value, factor = variable, color = group)) + geom_line(alpha = 0.5) + theme_bw()
 
+df=do.call(cbind,lapply(res, function(x) x$prev[,7]))
+colnames(df) <- seq(1, number_simulations)
+df <- data.frame(time, df)
+df_melted <- melt(df, id.vars = "time")
+ggplot(data = df_melted, aes(x = time, y = value, factor = variable)) + geom_line() + theme_bw() + labs(x="year",y="prevlance (%) former FSW")
+
 
 # show priors are flat and well explored
-number_simulations = 20
+number_simulations = 200
 parms = lhs_parameters(number_simulations, Ncat = 7)
 time <- seq(1986, 2016, length.out = 31)
 f <- function(p, gen, time) {
@@ -264,6 +270,16 @@ res = lapply(parms, f, main_model, time)
 
 c_comm_prior = do.call(rbind, lapply(res, function(x) x$c_comm[1,]))
 hist(c_comm_prior[,1])
+
+mu_prior = do.call(rbind, lapply(res, function(x) x$mu[1,]))
+hist(mu_prior[,1])
+
+c_noncomm_prior = do.call(rbind, lapply(res, function(x) x$c_noncomm[1,]))
+hist(c_noncomm_prior[,1])
+
+gamma01_prior = do.call(rbind, lapply(res, function(x) x$gamma01[1,]))
+hist(gamma01_prior[,1])
+
 
 
 # SINGLE RUN WITH PARAMETERS TO CHECK EVERY OUTPUT
