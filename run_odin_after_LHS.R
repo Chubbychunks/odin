@@ -44,6 +44,17 @@ result$c_comm
 
 
 
+# test prep
+
+odin::odin_package(".") # looks for any models inside inst/odin
+devtools::load_all()
+
+time <- seq(1986, 2016, length.out = 31)
+parameters <- lhs_parameters(1,Ncat = 7)[[1]]
+result = run_model(parameters, main_model, time)
+
+df=melt(data.frame(time, a = result$S1a[,1], b = result$S1b[,1], c = result$S1c[,1], d = result$S1d[,1]), id.vars = "time")
+ggplot(df, aes(x = time, y = value, color = variable)) + geom_line() + theme_bw()
 
 
 
@@ -250,7 +261,7 @@ df_melted_7 = melt(df_7, id.vars = c("time","group"))
 df_all = rbind(df_melted, df_melted_2, df_melted_3, df_melted_4, df_melted_5, df_melted_6, df_melted_7)
 ggplot(data = df_all, aes(x = time, y = value, factor = variable, color = group)) + geom_line(alpha = 0.5) + theme_bw()
 
-df=do.call(cbind,lapply(res, function(x) x$prev[,7]))
+df=do.call(cbind,lapply(res, function(x) x$prev[,1]))
 colnames(df) <- seq(1, number_simulations)
 df <- data.frame(time, df)
 df_melted <- melt(df, id.vars = "time")

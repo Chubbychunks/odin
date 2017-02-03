@@ -211,8 +211,8 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    phi4 = rep_len(0.04,Ncat),
                    phi5 = rep_len(0.04,Ncat),
                    
-                   psia = rep_len(1,Ncat),
-                   psib = rep_len(1,Ncat),
+                   psia = rep_len(0.1,Ncat),
+                   psib = rep_len(0.1,Ncat),
                    
                    tau01 = rep_len(0.5,Ncat),
                    tau11 = rep_len(0.5,Ncat),
@@ -222,21 +222,31 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    tau5 = rep_len(0.5,Ncat),
                    
                    # PREP
-                   zetaa_a_t = c(1985, 2013, 2015, 2016),
-                   zetaa_a_y = matrix(c(rep(0, Ncat), 1, rep(0, Ncat-1), rep(0, Ncat), rep(0, Ncat)), ncol = Ncat, byrow = T),
-                   zetaa_b_t = c(1985, 2013, 2015, 2016),
-                   zetaa_b_y = matrix(c(rep(0, Ncat), 1, rep(0, Ncat-1), rep(0, Ncat), rep(0, Ncat)), ncol = Ncat, byrow = T),                   
-                   zetaa_c_t = c(1985, 2013, 2015, 2016),
-                   zetaa_c_y = matrix(c(rep(0, Ncat), 1, rep(0, Ncat-1), rep(0, Ncat), rep(0, Ncat)), ncol = Ncat, byrow = T),   
+                   zetaa_t = c(1985, 2013, 2015, 2016),
+                   zetaa_y = matrix(c(rep(0, Ncat), 0.0075, rep(0, Ncat-1), rep(0, Ncat), rep(0, Ncat)), ncol = Ncat, byrow = T),
+                   zetab_t = c(1985, 2013, 2015, 2016),
+                   zetab_y = matrix(c(rep(0, Ncat), 0.0075, rep(0, Ncat-1), rep(0, Ncat), rep(0, Ncat)), ncol = Ncat, byrow = T),                   
+                   zetac_t = c(1985, 2013, 2015, 2016),
+                   zetac_y = matrix(c(rep(0, Ncat), 0.0075, rep(0, Ncat-1), rep(0, Ncat), rep(0, Ncat)), ncol = Ncat, byrow = T),   
+                   
+                   eP = rep_len(0.6,Ncat),
+                   
+                   eP0 = c(0, rep_len(0, (Ncat-1))),
+                   eP1a = c(0.9, rep_len(0, (Ncat-1))),
+                   eP1b = c(0.45, rep_len(0, (Ncat-1))),
+                   eP1c = c(0, rep_len(0, (Ncat-1))),
+                   eP1d = c(0, rep_len(0, (Ncat-1))),
+                   
+                   # condoms 
                    
                    fc_t_comm = c(1985, 1990, 1998, 2016),
                    fc_y_comm = matrix(
                      rep(c(0.5, 0.5, 0.9, 0.99), Ncat), ncol = Ncat),
                    
                    
-                   kappaa = c(0.1, rep_len(0,(Ncat-1))),
-                   kappab = c(0.1, rep_len(0,(Ncat-1))),
-                   kappac = c(0.1, rep_len(0,(Ncat-1))),
+                   kappaa = c(0.2, rep_len(0,(Ncat-1))),
+                   kappab = c(0.2, rep_len(0,(Ncat-1))),
+                   kappac = c(0.2, rep_len(0,(Ncat-1))),
                    
                    
                    alpha01 = rep_len(0.01,Ncat),
@@ -274,13 +284,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    ec = rep_len(0.9,Ncat),
                    # ec = rep_len(1,1),
                    
-                   eP = rep_len(0.6,Ncat),
-                   
-                   eP0 = c(0, rep_len(0, (Ncat-1))),
-                   eP1a = c(0.9, rep_len(0, (Ncat-1))),
-                   eP1b = c(0.45, rep_len(0, (Ncat-1))),
-                   eP1c = c(0, rep_len(0, (Ncat-1))),
-                   eP1d = c(0, rep_len(0, (Ncat-1))),
+
                    
                    
                    epsilon = 0.001,
