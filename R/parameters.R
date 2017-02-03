@@ -41,6 +41,8 @@ fix_parameters <- function(y, Ncat, Nage) {
   y$gamma34 <- (y$gamma04)/y$ART_RR
   
   
+  
+  
   # behavioural
   
   # y$c_y_comm <- matrix(rep(y$c_y_comm, 4), ncol = Ncat)
@@ -107,6 +109,9 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1) {
     c_comm,
     c_noncomm,
     mu,
+    
+    infect_ART = c(0.1, 0.7), # infectiousness RR when on ART
+    infect_acute = c(4, 18), # RR for acute phase
     
     gamma01 = c(0.16, 0.5), # from Mathieu's parameters  IN YEARS
     #     gamma01 = c(2, 6.25), # from Mathieu's parameters
@@ -330,7 +335,11 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    
                    #                    p = matrix(1, NAge, NAge),
                    
-                   ART_RR = 2.5,
+                   ART_RR = 2.5, # survival extension cofactor
+                   
+                   infect_ART = 0.4, # infectiousness RR when on ART
+                   infect_acute = 9, # RR for acute phase
+                   
                    dur_FSW = 30,
                    OnPrEP_init = rep_len(0, Ncat),
                    
