@@ -67,7 +67,9 @@ fix_parameters <- function(y, Ncat, Nage) {
                         0, 0, 0, 0, 0, 0, 0),
                       nrow = 7, ncol = 7, byrow = T)
     y$omega = c(y$omega[1], y$omega[1]*1.127, 0.5 - 2*y$omega[1] - y$omega[1]*1.127, y$omega[1], y$omega[5], 0.5 - y$omega[5], 0)
+    # 1.127 is ratio of low level FSW to pro FSW
     
+    y$rate_move_GPF_pFSW = y$rate_leave_FSW*y$omega[1]/y$omega[3]
     # c_t_comm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016),
     # y$c_y_comm = 
     
@@ -349,7 +351,9 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    # have to include the follow in the function for it to work just using generate_parameters(), and not lhs_parameters()
                    SC_to_200_349 = rep_len(0.3, Ncat),
                    prev_init_FSW = 0.04,
-                   prev_init_rest = 0.0008
+                   prev_init_rest = 0.0008,
+                   rate_leave_FSW = 0.2,
+                   rate_move_GPF_pFSW = 0.2 * 672 / 146110
                    
                    
                    

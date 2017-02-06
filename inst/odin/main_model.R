@@ -51,8 +51,9 @@ config(include) = "FOI.c"
 
 # ORDINARY DIFFERENTIAL EQUATIONS
 ##############################################################################
+
 # births and prep movement
-E0[] = mu[i] * N[i] + alphaItot[i] + new_people * omega[i] - S0[i] * (zetaa[i] + zetab[i] + zetac[i])# + PrEP_0[i]
+E0[] = mu[i] * N[i] + alphaItot[i] + new_people * omega[i] - S0[i] * (zetaa[i] + zetab[i] + zetac[i])
 E1a[] = zetaa[i] * S0[i] - psia[i] * S1a[i] - kappaa[i] * S1a[i]
 E1b[] = zetab[i] * S0[i] + psia[i] * S1a[i] - psib[i] * S1b[i]  - kappab[i] * S1b[i]
 E1c[] = zetac[i] * S0[i] + psib[i] * S1b[i] - kappac[i] * S1c[i]
@@ -91,10 +92,15 @@ deriv(I43[]) = gamma42[i] * I42[i] + phi3[i] * I33[i] - I43[i] * (gamma43[i] + r
 deriv(I44[]) = gamma43[i] * I43[i] + phi4[i] * I34[i] - I44[i] * (gamma44[i] + rho4[i] + alpha44[i] + mu[i])
 deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alpha45[i] + mu[i])
 
+
+
+
+
 # deriv(S0[]) = E0[i] - S0[i] * lambda_sum_0[i] - S0[i] * mu[i] + rate_move_out[i] * S0[i] + sum(in_S0[i, ])
 # deriv(S1a[]) = E1a[i] - S1a[i] * lambda_sum_1a[i] - S1a[i] * mu[i] + rate_move_out[i] * S1a[i] + sum(in_S1a[i, ])
 # deriv(S1b[]) = E1b[i] - S1b[i] * lambda_sum_1b[i] - S1b[i] * mu[i] + rate_move_out[i] * S1b[i] + sum(in_S1b[i, ])
 # deriv(S1c[]) = E1c[i] - S1c[i] * lambda_sum_1c[i] - S1c[i] * mu[i] + rate_move_out[i] * S1c[i] + sum(in_S1c[i, ])
+# deriv(S1d[]) = E1d[i] - S1d[i] * lambda_sum_1d[i] - S1d[i] * mu[i] + rate_move_out[i] * S1d[i] + sum(in_S1d[i, ])
 # 
 # #primary infection
 # deriv(I01[]) = S0[i] * lambda_sum_0[i] - I01[i] * (gamma01[i] + tau01[i] + alpha01[i] + mu[i]) + rate_move_out[i] * I01[i] + sum(in_I01[i, ])
@@ -123,6 +129,35 @@ deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alph
 # deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alpha45[i] + mu[i]) + rate_move_out[i] * I45[i] + sum(in_I45[i, ])
 
 
+
+
+
+
+
+
+
+
+# births due to population growth
+epsilon = interpolate(epsilon_t_comm, epsilon_y_comm, "constant")
+new_people = epsilon * sum(N)
+
+
+
+
+# sum of all compartments
+N[] = S0[i] + S1a[i] + S1b[i] + S1c[i] + S1d[i] + I01[i] + I11[i] + I02[i] + I03[i] + I04[i] + I05[i] +
+  I22[i] + I23[i] + I24[i] + I25[i] + I32[i] + I33[i] + I34[i] + I35[i] +
+  I42[i] + I43[i] + I44[i] + I45[i]
+
+
+
+
+# MOVEMENT
+##############################################################################
+
+# rate_move_in[,] <- 0
+# rate_move_out[] <- 0
+# 
 # #moving in
 # in_S0[,] <- if (i == j) 0 else rate_move_in[i, j] * S0[j]
 # in_S1a[,] <- if (i == j) 0 else rate_move_in[i, j] * S1a[j]
@@ -147,37 +182,23 @@ deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alph
 # in_I43[,] <- if (i == j) 0 else rate_move_in[i, j] * I43[j]
 # in_I44[,] <- if (i == j) 0 else rate_move_in[i, j] * I44[j]
 # in_I45[,] <- if (i == j) 0 else rate_move_in[i, j] * I45[j]
-
+# 
 # sum_in_S0[] = sum(in_S0[i, ])
 
-deriv(cumuInf[]) = S0[i] * lambda_sum_0[i] + S1a[i] * lambda_sum_1a[i] + S1b[i] * lambda_sum_1b[i] + S1c[i] * lambda_sum_1c[i] + S1d[i] * lambda_sum_1d[i]
-
-# births due to population growth
-epsilon = interpolate(epsilon_t_comm, epsilon_y_comm, "constant")
-new_people = epsilon * sum(N)
 
 
-
-
-# sum of all compartments
-N[] = S0[i] + S1a[i] + S1b[i] + S1c[i] + S1d[i] + I01[i] + I11[i] + I02[i] + I03[i] + I04[i] + I05[i] +
-  I22[i] + I23[i] + I24[i] + I25[i] + I32[i] + I33[i] + I34[i] + I35[i] +
-  I42[i] + I43[i] + I44[i] + I45[i]
-
-# fraction of group in each category INCLUDING FORMER FSW OUTSIDE BENIN
-frac_N[] = N[i] / Ntot
-frac_F[] = if(Ncat == 7) (N[1] + N[2] + N[3] + N[4] + N[7])/ Ntot else 0
-
-dim(frac_F) = Ncat
-output(frac_F[]) = frac_F
-# MOVEMENT
-##############################################################################
-
-
-# rate_move_in[,] <- 0
-# rate_move_out[] <- 0
+# new
+# rate_move_out[1] = if(Ncat == 7) rate_leave_FSW
 # 
-# # # calculating turnover rates
+# rate_leave_FSW
+# rate_move_GPF_pFSW
+###
+
+############################################################################################
+############################################################################################
+############################################################################################
+############################################################################################
+# # calculating turnover rates
 # tur_H_FSW <- if(Ncat != 7) 0 else (N[1] / dur_FSW) / N[3] # this is a rate
 # tur_L_FSW <- if(Ncat != 7) 0 else (N[2] / dur_FSW) / N[3]
 # tur_GPF <- if(Ncat != 7) 0 else (tur_H_FSW * N[1] + tur_L_FSW * N[2]) / N[3] # leaving GPF to both H and L FSW
@@ -241,24 +262,12 @@ output(frac_F[]) = frac_F
 #   rate_move_out[] <- 0
 # }
 
-# PrEP?
-# PrEP_0[] <- 0
-# PrEP_1a[] <- 0
-# PrEP_1b[] <- 0
-# PrEP_1c[] <- 0
-#
-# PrEP_0[1] <- if(t > 2013 && t < 2014 && S1a[1] == 0) -250 else 0
-# PrEP_1a[1] <- if(t > 2013 && t < 2014 && S1a[1] == 0) 130 else 0
-# PrEP_1b[1] <- if(t > 2013 && t < 2014 && S1a[1] == 0) 20 else 0
-# PrEP_1c[1] <- if(t > 2013 && t < 2014 && S1a[1] == 0) 100 else 0
 
-deriv(OnPrEP[]) = zetaa[i] * S0[i] + zetab[i] * S0[i] + zetac[i] * S0[i]
-
-# deriv(OnPrEP[]) = S1a[i] + S1b[i] + S1c[i]
-# 
-# zetaa[1] <- if(t > 2012 && t < 2014 && sum(OnPrEP[i]) < 250) 1 else 0
-# zetab[1] <- if(t > 2012 && t < 2014 && sum(OnPrEP[i]) < 250) 0.2 else 0
-# zetac[1] <- if(t > 2012 && t < 2014 && sum(OnPrEP[i]) < 250) 1 else 0
+##############################################################################
+############################################################################################
+############################################################################################
+############################################################################################
+############################################################################################
 
 
 
@@ -274,16 +283,7 @@ alphaItot[] =
 # BALANCING OF PARTNERSHIPS
 ##############################################################################
 c_comm[] = user()
-
 c_noncomm[] = user()
-# Risk group (i)
-# 1. Professional FSW
-# 2. Low-level FSW
-# 3. General population female
-# 4. Former FSW in Cotonou
-# 5. Clients
-# 6. General population male
-# 7. Former FSW in Benin, outside Cotonou (not involved in epidemic, but tracked anyway)
 
 c_comm_balanced[] <- c_comm[i]
 c_noncomm_balanced[] <- c_noncomm[i]
@@ -488,6 +488,15 @@ lambda_sum_1d[] = sum(lambda_1d[i,])
 
 # OUTPUTS
 ##############################################################################
+deriv(cumuInf[]) = S0[i] * lambda_sum_0[i] + S1a[i] * lambda_sum_1a[i] + S1b[i] * lambda_sum_1b[i] + S1c[i] * lambda_sum_1c[i] + S1d[i] * lambda_sum_1d[i]
+deriv(OnPrEP[]) = zetaa[i] * S0[i] + zetab[i] * S0[i] + zetac[i] * S0[i]
+
+# fraction of group in each category INCLUDING FORMER FSW OUTSIDE BENIN
+frac_N[] = N[i] / Ntot
+frac_F[] = if(Ncat == 7) (N[1] + N[2] + N[3] + N[4] + N[7])/ Ntot else 0
+
+dim(frac_F) = Ncat
+output(frac_F[]) = frac_F
 
 # Calculations
 Ntot = sum(N)
@@ -1021,26 +1030,16 @@ dim(lambda_sum_1d) = Ncat
 dim(c_comm_balanced) <- Ncat
 dim(c_noncomm_balanced) <- Ncat
 dim(theta) <- c(Ncat, Ncat)
-
-dim(rate_move_in) <- c(Ncat, Ncat)
-dim(rate_move_out) <- Ncat
-rate_move_in[,] = user()
-rate_move_out[] = user()
-
-# dim(PrEP_0) = Ncat
-# dim(PrEP_1a) = Ncat
-# dim(PrEP_1b) = Ncat
-# dim(PrEP_1c) = Ncat
-
-# output(PrEP_0[]) = PrEP_0
-# output(PrEP_1a[]) = PrEP_1a
-# output(PrEP_1b[]) = PrEP_1b
-# output(PrEP_1c[]) = PrEP_1c
-
 dim(OnPrEP_init) = Ncat
 
 dim(M_comm) = c(Ncat, Ncat)
 dim(M_noncomm) = c(Ncat, Ncat)
+
+
+
+
+
+rate_leave_FSW = user()
 
 # dim(in_S0) <- c(Ncat, Ncat)
 # dim(in_S1a) <- c(Ncat, Ncat)
@@ -1067,6 +1066,7 @@ dim(M_noncomm) = c(Ncat, Ncat)
 # dim(in_I43) <- c(Ncat, Ncat)
 # dim(in_I44) <- c(Ncat, Ncat)
 # dim(in_I45) <- c(Ncat, Ncat)
-
+# 
 # dim(sum_in_S0) <- Ncat
-
+# dim(rate_move_in) <- c(Ncat, Ncat)
+# dim(rate_move_out) <- Ncat
