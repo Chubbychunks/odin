@@ -206,25 +206,25 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    gamma43 = rep_len(0.2, Ncat),
                    gamma44 = rep_len(0.2, Ncat),
                    
-                   rho2 = rep_len(0.1,Ncat),
-                   rho3 = rep_len(0.1,Ncat),
-                   rho4 = rep_len(0.1,Ncat),
-                   rho5 = rep_len(0.1,Ncat),
+                   rho2 = rep_len(1,Ncat),
+                   rho3 = rep_len(1,Ncat),
+                   rho4 = rep_len(1),
+                   rho5 = rep_len(1,Ncat),
                    
-                   phi2 = rep_len(0.04,Ncat), # sort out later
-                   phi3 = rep_len(0.04,Ncat),
-                   phi4 = rep_len(0.04,Ncat),
-                   phi5 = rep_len(0.04,Ncat),
+                   phi2 = rep_len(0.004,Ncat), # sort out later
+                   phi3 = rep_len(0.004,Ncat),
+                   phi4 = rep_len(0.004,Ncat),
+                   phi5 = rep_len(0.004,Ncat),
                    
                    psia = rep_len(0.1,Ncat),
                    psib = rep_len(0.1,Ncat),
                    
-                   tau01 = rep_len(0.5,Ncat),
-                   tau11 = rep_len(0.5,Ncat),
-                   tau2 = rep_len(0.5,Ncat),
-                   tau3 = rep_len(0.5,Ncat),
-                   tau4 = rep_len(0.5,Ncat),
-                   tau5 = rep_len(0.5,Ncat),
+                   tau01 = rep_len(1,Ncat),
+                   tau11 = rep_len(1,Ncat),
+                   tau2 = rep_len(1,Ncat),
+                   tau3 = rep_len(1,Ncat),
+                   tau4 = rep_len(1,Ncat),
+                   tau5 = rep_len(1,Ncat),
                    
                    # PREP
                    zetaa_t = c(1985, 2013, 2015, 2016),
@@ -323,7 +323,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    
                    #n = 0,
                    
-                   R = rep_len(1, Ncat),
+                   R = 1,
                    omega = rep_len(1/Ncat, Ncat),
                    theta = matrix(0.5, ncol = Ncat, nrow = Ncat),
                    
