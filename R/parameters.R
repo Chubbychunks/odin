@@ -83,7 +83,7 @@ fix_parameters <- function(y, Ncat, Nage) {
 #
 # the parameters below will be sampled from an LHS and will replace their respective defaults
 # unless I put something in the args of the function, eg sample = mu
-lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1) {
+lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars = list(...), set_null= list(...)) {
   mu <- matrix(rep(c(1/50, 1/42), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("mu", Ncat), NULL))
   omega <- if(Ncat == 7) matrix(c(0.0017, 0.0067, 0, 0, 0, 0, 0, 0, 0.1, 0.2, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("omega", Ncat), NULL)) else 
     matrix(rep(c(0.4, 0.6), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("omega", Ncat), NULL))
@@ -146,7 +146,9 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1) {
   
   samples_list <- lapply(samples_list, fix_parameters, Ncat = Ncat)
   
-  lapply(samples_list, function(x) generate_parameters(parameters = x, Ncat = Ncat))
+  samples_list <- lapply(samples_list, function(x) modifyList(x, set_pars))
+  
+  lapply(samples_list, function(x) generate_parameters(parameters = x, Ncat = Ncat, set_null = set_null))
 }
 
 generate_parameters <- function(..., parameters = list(...), set_null = list(...), Ncat = 2, Nage = 1) {
@@ -361,9 +363,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    
   )
   
-  if (length(set_null) > 0L) {
-    defaults = modifyList(defaults, lapply(defaults[match(set_null, names(defaults))], function(x) x*0))
-  }
+
   
   if (length(parameters) == 0L) {
     return(defaults)
@@ -380,6 +380,9 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
   # list of parameters that depend on others
   ret <- modifyList(defaults, parameters)
   
+  if (length(set_null) > 0L) {
+    ret = modifyList(ret, lapply(ret[match(set_null, names(ret))], function(x) x*0))
+  }
   
   ret
 }

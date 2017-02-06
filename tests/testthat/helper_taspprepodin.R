@@ -17,4 +17,4 @@ run_model <- function(p, gen, time, output_vars) {
   all_results[output_vars]
 }
 
-parameter_names = names(generate_parameters())
+parameter_names = names(lhs_parameters(1)[[1]])
