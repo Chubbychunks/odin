@@ -208,7 +208,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    
                    rho2 = rep_len(1,Ncat),
                    rho3 = rep_len(1,Ncat),
-                   rho4 = rep_len(1),
+                   rho4 = rep_len(1,Ncat),
                    rho5 = rep_len(1,Ncat),
                    
                    phi2 = rep_len(0.004,Ncat), # sort out later
