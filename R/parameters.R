@@ -73,6 +73,8 @@ fix_parameters <- function(y, Ncat, Nage) {
     # c_t_comm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016),
     # y$c_y_comm = 
     
+  } else {
+    y$omega = y$omega/sum(y$omega)
   }
   
   return(y)
@@ -94,7 +96,7 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
   S0_init = matrix(rep(c(4000, 4000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("S0_init", Ncat), NULL))
   I01_init = matrix(rep(c(1000, 1000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("I01_init", Ncat), NULL))
   
-  N_init = if(Ncat == 7) matrix(c(672, 672, 757, 757, 146110, 146110, 0.01, 0.01, 27091, 27091, 111483, 111483, 0.01, 0.01), nrow = Ncat, byrow = TRUE, dimnames = list(rep("N_init", Ncat), NULL)) else 300000
+  N_init = if(Ncat == 7) matrix(c(672, 672, 757, 757, 146110, 146110, 0.01, 0.01, 27091, 27091, 111483, 111483, 0.01, 0.01), nrow = Ncat, byrow = TRUE, dimnames = list(rep("N_init", Ncat), NULL)) else c(300000, 300000)
 #   c_comm = if(Ncat == 7) matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
 #     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL))
   c_comm = if(Ncat == 7) matrix(c(272, 1439, 40, 64, 0, 0, 0, 0, 18.67, 37.5, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
@@ -159,8 +161,8 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    
                    #                    epsilon_t_comm = c(1985, 1991.99, 1992, 2001.99, 2002, 2012.99, 2013, 2016),
                    #                    epsilon_y_comm = c(0.059346131, 0.059346131, 0.053594832, 0.053594832, 0.026936907, 0.026936907, 0.026936907, 0.026936907),
-                   epsilon_t_comm = c(1985, 1992, 2002, 2013, 2016),
-                   epsilon_y_comm = c(0.059346131, 0.053594832, 0.026936907, 0.026936907, 0.026936907),
+                   epsilon_t = c(1985, 1992, 2002, 2013, 2016),
+                   epsilon_y = c(0.059346131, 0.053594832, 0.026936907, 0.026936907, 0.026936907),
                    
                    S0_init = rep_len(2000, Ncat),
                    S1a_init = rep_len(0, Ncat),
