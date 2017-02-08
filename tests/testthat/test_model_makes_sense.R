@@ -318,19 +318,19 @@ test_that("fP eP 1", {
 #
 # PREP efficacy is NOT 1 and frequency of PREP use is 1 - some infections
 test_that("fP eP 1b", {
-  parameters <- lhs_parameters(1, I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 0.99), eP1a = c(0, 1), eP1b = c(0, 1), eP1c = c(0, 1), fP_y_comm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), fP_y_noncomm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), zetaa = c(0.1, 0.1))[[1]]
+  parameters <- lhs_parameters(1, I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 0.99), eP1a = c(0, 1), eP1b = c(0, 1), eP1c = c(0, 1), fP_y_comm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), fP_y_noncomm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), zetaa_y = matrix(c(0, 0, 0, 0, 1, 1, 0, 0), byrow = T, ncol=2))[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,2], xx$I11[,2]))==0)
-  parameters <- lhs_parameters(1, I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 0.99), eP1b = c(0, 1), eP1c = c(0, 1), fP_y_comm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), fP_y_noncomm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), zetaa = c(0.1, 0.1))[[1]]
+  parameters <- lhs_parameters(1, I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 0.99), eP1b = c(0, 1), eP1c = c(0, 1), fP_y_comm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), fP_y_noncomm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), zetaa_y = matrix(c(0, 0, 0, 0, 1, 1, 0, 0), byrow = T, ncol=2))[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,2], xx$I11[,2]))==0)
-  parameters <- lhs_parameters(1, I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 1), eP1b = c(0, 0.99), eP1c = c(0, 1), fP_y_comm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), fP_y_noncomm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), zetaa = c(0.1, 0.1))[[1]]
+  parameters <- lhs_parameters(1, I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 1), eP1b = c(0, 0.99), eP1c = c(0, 1), fP_y_comm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), fP_y_noncomm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), zetaa_y = matrix(c(0, 0, 0, 0, 1, 1, 0, 0), byrow = T, ncol=2))[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,2], xx$I11[,2]))==0)
-  parameters <- lhs_parameters(1, I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 1), eP1b = c(0, 1), eP1c = c(0, 0.99), fP_y_comm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), fP_y_noncomm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), zetaa = c(0.1, 0.1))[[1]]
+  parameters <- lhs_parameters(1, I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 1), eP1b = c(0, 1), eP1c = c(0, 0.99), fP_y_comm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), fP_y_noncomm = cbind(c(0, 0, 0, 0), c(1, 1, 1, 1)), zetaa_y = matrix(c(0, 0, 0, 0, 1, 1, 0, 0), byrow = T, ncol=2))[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,2], xx$I11[,2]))==0)
@@ -338,7 +338,7 @@ test_that("fP eP 1b", {
 
 # condom efficacy is 1 and frequency of condom use is NOT 1 - some infections
 test_that("fP eP 1c", {
-  parameters <- lhs_parameters(1, I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 1), eP1b = c(0, 1), eP1c = c(0, 1), fP_y_comm = cbind(c(0, 0, 0, 0), c(1, 1, 0.99, 1)), fP_y_noncomm = cbind(c(0, 0, 0, 0), c(1, 1, 0.99, 1)), zetaa = c(0.1, 0.1))[[1]]
+  parameters <- lhs_parameters(1, I11_init = c(1000,0), I01_init = c(1000,0), eP0 = c(0, 1), eP1a = c(0, 1), eP1b = c(0, 1), eP1c = c(0, 1), fP_y_comm = cbind(c(0, 0, 0, 0), c(1, 1, 0.99, 1)), fP_y_noncomm = cbind(c(0, 0, 0, 0), c(1, 1, 0.99, 1)), zetaa_y = matrix(c(0, 0, 0, 0, 1, 1, 0, 0), byrow = T, ncol=2))[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,2], xx$I11[,2]))==0)
@@ -347,33 +347,33 @@ test_that("fP eP 1c", {
 #
 # only group 2 infected, does group 1 get infected?
 test_that("fP eP 2", {
-  parameters <- lhs_parameters(1, Ncat = 2, I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(1, 0), eP1d = c(1, 0), fP_y_comm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), fP_y_noncomm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))[[1]]
+  parameters <- lhs_parameters(1, Ncat = 2, I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(1, 0), eP1d = c(1, 0), fP_y_comm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), fP_y_noncomm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa_y = matrix(c(0, 0, 0, 0, 1, 1, 0, 0), byrow = T, ncol=2))[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_true(sum(c(xx$I01[,1], xx$I11[,1]))==0)
 })
 
 test_that("fP eP 2b", {
-  parameters <- lhs_parameters(1, I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(0.99, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(1, 0), fP_y_comm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), fP_y_noncomm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))[[1]]
+  parameters <- lhs_parameters(1, I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(0.99, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(1, 0), fP_y_comm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), fP_y_noncomm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa_y = matrix(c(0, 0, 0, 0, 1, 1, 0, 0), byrow = T, ncol=2))[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,1], xx$I11[,1]))==0)
-  parameters <- lhs_parameters(1, I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(0.99, 0), eP1b = c(1, 0), eP1c = c(1, 0), fP_y_comm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), fP_y_noncomm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))[[1]]
+  parameters <- lhs_parameters(1, I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(0.99, 0), eP1b = c(1, 0), eP1c = c(1, 0), fP_y_comm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), fP_y_noncomm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa_y = matrix(c(0, 0, 0, 0, 1, 1, 0, 0), byrow = T, ncol=2))[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,1], xx$I11[,1]))==0)
-  parameters <- lhs_parameters(1, I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(1, 0), eP1b = c(0.99, 0), eP1c = c(1, 0), fP_y_comm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), fP_y_noncomm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))[[1]]
+  parameters <- lhs_parameters(1, I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(1, 0), eP1b = c(0.99, 0), eP1c = c(1, 0), fP_y_comm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), fP_y_noncomm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa_y = matrix(c(0, 0, 0, 0, 1, 1, 0, 0), byrow = T, ncol=2))[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,1], xx$I11[,1]))==0)
-  parameters <- lhs_parameters(1, I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(0.99, 0), fP_y_comm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), fP_y_noncomm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))[[1]]
+  parameters <- lhs_parameters(1, I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(1, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(0.99, 0), fP_y_comm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), fP_y_noncomm = cbind(c(1, 1, 1, 1), c(0, 0, 0, 0)), zetaa_y = matrix(c(0, 0, 0, 0, 1, 1, 0, 0), byrow = T, ncol=2))[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,1], xx$I11[,1]))==0)
 })
 
 test_that("fP eP 2c", {
-  parameters <- lhs_parameters(1, I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(0.99, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(1, 0), fP_y_comm = cbind(c(1, 1, 1, 0.99), c(0, 0, 0, 0)), fP_y_noncomm = cbind(c(1, 1, 1, 0.99), c(0, 0, 0, 0)), zetaa = c(0.1, 0.1))[[1]]
+  parameters <- lhs_parameters(1, I11_init = c(0,1000), I01_init = c(0,1000), eP0 = c(0.99, 0), eP1a = c(1, 0), eP1b = c(1, 0), eP1c = c(1, 0), fP_y_comm = cbind(c(1, 1, 1, 0.99), c(0, 0, 0, 0)), fP_y_noncomm = cbind(c(1, 1, 1, 0.99), c(0, 0, 0, 0)), zetaa_y = matrix(c(0, 0, 0, 0, 1, 1, 0, 0), byrow = T, ncol=2))[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_false(sum(c(xx$I01[,1], xx$I11[,1]))==0)
@@ -450,7 +450,7 @@ test_that("no prep", {
 })
 
 test_that("prep increases", {
-  parameters <- lhs_parameters(1, zetaa = c(0.1,0.1), zetab = c(0.1,0.1), zetac = c(0.1,0.1), I11_init = c(0,0))[[1]]
+  parameters <- lhs_parameters(1, zetaa_y = matrix(c(0, 0, 0, 0, 1, 1, 0, 0), byrow = T, ncol=2), zetab_y = matrix(c(0, 0, 0, 0, 1, 1, 0, 0), byrow = T, ncol=2), zetac_y = matrix(c(0, 0, 0, 0, 1, 1, 0, 0), byrow = T, ncol=2), I11_init = c(0,0))[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I11", names(result)), grep("S1", names(result)))]
   N <- rowSums(do.call(cbind, xx))
@@ -498,61 +498,14 @@ test_that("no drop out", {
 
 # DUNNO!
 test_that("B check 0", {
-  parameters <- lhs_parameters(1, theta = matrix(0, ncol = 2, nrow = 2))[[1]]
+  parameters <- lhs_parameters(1)[[1]]
   result = run_model(parameters, main_model, time)
-  expect_equal(as.numeric(result[["B_check"]]), rep(1, length(result$B_check)))
-})
-test_that("B check 0.5", {
-  parameters <- lhs_parameters(1, Ncat = 2)[[1]]
-  result = run_model(parameters, main_model, time)
-  expect_equal(as.numeric(result[["B_check"]]), rep(1, length(result$B_check)))
-})
-test_that("B check 1", {
-  parameters <- lhs_parameters(1, theta = matrix(1, ncol = 2, nrow = 2))[[1]]
-  result = run_model(parameters, main_model, time)
-  expect_equal(as.numeric(result[["B_check"]]), rep(1, length(result$B_check)))
+  expect_equal(result$B_check_comm, result$B_check_noncomm)
+  expect_equal(result$B_check_comm, rep(1, length(time)))
 })
 
-# test_that("cstar", {
-#   # this is to check diagonal of matrix is 0
-#   parameters <- lhs_parameters(1)[[1]]
-#   result = run_model(parameters, main_model, time)
-#   for(i in 1:length(result$cstar[,1,1]))
-#   {
-#     for(j in 1:length(result$cstar[1,1,]))
-#     {
-#       expect_equal(result$cstar[i,,][j,j], 0)
-#     }
-#   }
-# 
-#   # this is to check that sex acts balance with 2 groups
-#   parameters <- lhs_parameters(1, theta = matrix(c(0.5, 0.9, 0.1, 0.5), ncol = 2, nrow = 2, byrow = T),
-#                                     omega = c(0.2, 0.8),
-#                                     S0_init = c(100*0.2, 100*0.8),
-#                                     I01_init = c(100*0.2, 100*0.8))
-#   result = run_model(parameters, main_model, time)
-#   for(i in 1:length(result$cstar[,1,1]))
-#   {
-#     expect_equal(result$cstar[i,,][1,2] * result$N[i,1], result$cstar[i,,][2,1] * result$N[i,2])
-#   }
-# 
-#   # this is to check that sex acts balance with 3 groups
-#   parameters <- lhs_parameters(1, theta = matrix(c(0.5, 0.9, 0.6, 0.1, 0.5, 0.2, 0.4, 0.8, 0.5), ncol = 3, nrow = 3, byrow = T),
-#                                     omega = c(0.1, 0.4, 0.5),
-#                                     S0_init = c(100*0.1, 100*0.4, 100*0.5),
-#                                     I01_init = c(100*0.1, 100*0.4, 100*0.5),
-#                                     Ncat = 3)
-#   result = run_model(parameters, main_model, time)
-#   for(i in 1:length(result$cstar[,1,1]))
-#   {
-#     expect_equal(result$cstar[i,,][1,2] * result$N[i,1], result$cstar[i,,][2,1] * result$N[i,2])
-#     expect_equal(result$cstar[i,,][1,3] * result$N[i,1], result$cstar[i,,][3,1] * result$N[i,3])
-#     expect_equal(result$cstar[i,,][2,3] * result$N[i,2], result$cstar[i,,][3,2] * result$N[i,3])
-#   }
-# 
-# 
-# }
-# )
+# c_comm_balanced? contained in the above test tbh
+
 
 
 # CALCULATING PREVALENCE
