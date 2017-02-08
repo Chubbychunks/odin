@@ -566,7 +566,7 @@ test_that("beta vs prevalence", {
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
   
-  parameters <- lhs_parameters(1, beta = c(0.1, 0.1))[[1]]
+  parameters <- modifyList(parameters, list(beta = c(0.002, 0.002)))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
@@ -577,12 +577,13 @@ test_that("beta vs prevalence", {
 # increase R, increase overall prevalence
 
 test_that("R vs prevalence", {
-  parameters <- lhs_parameters(1, R = c(0.001, 0.001))[[1]]
+  parameters <- lhs_parameters(1, R = 0.001)[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
   
-  parameters <- lhs_parameters(1, R = c(0.1, 0.1))[[1]]
+  parameters <- modifyList(parameters, list(R = 0.1))
+  
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
@@ -597,8 +598,7 @@ test_that("n vs prevalence", {
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
-  
-  parameters <- lhs_parameters(1, n_comm = matrix(10, ncol = 2, nrow = 2))[[1]]
+  parameters <- modifyList(parameters, list(n_comm = matrix(10, ncol = 2, nrow = 2)))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
@@ -611,8 +611,8 @@ test_that("n vs prevalence", {
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
+  parameters <- modifyList(parameters, list(n_noncomm = matrix(10, ncol = 2, nrow = 2)))
   
-  parameters <- lhs_parameters(1, n_noncomm = matrix(10, ncol = 2, nrow = 2))[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
@@ -627,8 +627,7 @@ test_that("c_comm vs prevalence", {
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
-  
-  parameters <- lhs_parameters(1, c_comm = rep_len(23, 2))[[1]]
+  parameters <- modifyList(parameters, list(c_comm = rep_len(23, 2)))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
@@ -642,26 +641,14 @@ test_that("c_noncomm vs prevalence", {
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
   
-  parameters <- lhs_parameters(1, c_noncomm = rep_len(23, 2))[[1]]
+  parameters <- modifyList(parameters, list(c_noncomm = rep_len(23, 2)))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
   
   expect_true(sum(N2) > sum(N1))
 })
-# test_that("c_noncomm vs prevalence", {
-#   parameters <- lhs_parameters(1, c_noncomm = rep_len(2, 2))
-#   result = run_model(parameters, main_model, time)
-#   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
-#   N1 <- rowSums(do.call(cbind, xx))
-#   
-#   parameters <- lhs_parameters(1, c_noncomm = rep_len(23, 2))
-#   result = run_model(parameters, main_model, time)
-#   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
-#   N2 <- rowSums(do.call(cbind, xx))
-#   
-#   expect_true(sum(N2) > sum(N1))
-# })
+
 
 # increase fc, decrease overall prevalence
 
@@ -671,7 +658,9 @@ test_that("fc vs prevalence", {
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
   
-  parameters <- lhs_parameters(1, set_null = "fc_y_comm")[[1]]
+  newpars = lhs_parameters(1, set_null = "fc_y_comm")[[1]]$fc_y_comm
+  parameters <- modifyList(parameters, list(fc_y_comm = newpars))
+  
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
@@ -685,7 +674,10 @@ test_that("fc vs prevalence", {
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
   
-  parameters <- lhs_parameters(1, set_null = "fc_y_noncomm")[[1]]
+  newpars = lhs_parameters(1, set_null = "fc_y_noncomm")[[1]]$fc_y_noncomm
+  parameters <- modifyList(parameters, list(fc_y_noncomm = newpars))
+  
+  
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
@@ -701,7 +693,8 @@ test_that("ec vs prevalence", {
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
   
-  parameters <- lhs_parameters(1, ec = c(0.1, 0.1))[[1]]
+  parameters <- modifyList(parameters, list(ec = c(0.1, 0.1)))
+  
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
@@ -719,7 +712,10 @@ test_that("fP vs prevalence", {
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
   
-  parameters <- lhs_parameters(1, set_null = "fP_y_comm")[[1]]
+  newpars = lhs_parameters(1, set_null = "fP_y_comm")[[1]]$fP_y_comm
+  parameters <- modifyList(parameters, list(fP_y_comm = newpars))
+  
+  
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
@@ -733,7 +729,9 @@ test_that("fP vs prevalence", {
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
   
-  parameters <- lhs_parameters(1, set_null = "fP_y_noncomm")[[1]]
+  newpars = lhs_parameters(1, set_null = "fP_y_noncomm")[[1]]$fP_y_noncomm
+  parameters <- modifyList(parameters, list(fP_y_noncomm = newpars))
+  
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
@@ -748,20 +746,22 @@ test_that("eP vs prevalence", {
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
-  
-  parameters <- lhs_parameters(1, eP0 = c(0.1, 0.1))[[1]]
+
+  parameters <- modifyList(parameters, list(eP0 = c(0.1, 0.1)))
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
   
   expect_true(sum(N2) > sum(N1))
   
+  
   parameters <- lhs_parameters(1, eP1a = c(0.9, 0.9))[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
   
-  parameters <- lhs_parameters(1, eP1a = c(0.1, 0.1))[[1]]
+  parameters <- modifyList(parameters, list(eP1a = c(0.1, 0.1)))
+  
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
@@ -773,7 +773,8 @@ test_that("eP vs prevalence", {
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
   
-  parameters <- lhs_parameters(1, eP1b = c(0.1, 0.1))[[1]]
+  parameters <- modifyList(parameters, list(eP1b = c(0.1, 0.1)))
+  
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
@@ -785,7 +786,8 @@ test_that("eP vs prevalence", {
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
   
-  parameters <- lhs_parameters(1, eP1c = c(0.1, 0.1))[[1]]
+  parameters <- modifyList(parameters, list(eP1c = c(0.1, 0.1)))
+  
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
@@ -802,33 +804,61 @@ test_that("zeta vs prevalence", {
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
   
-  relevant_parameters = parameter_names[c(grep("zeta", parameter_names))]
-  parameters <- lhs_parameters(1, set_null = relevant_parameters)[[1]]
+  
+  newpars = lhs_parameters(1, set_null = list("zetaa_y"))[[1]]$zetaa_y
+  parameters <- modifyList(parameters, list(zetaa_y = newpars, zetab_y = newpars, zetac_y = newpars))
+  
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
   
   expect_true(sum(N2) > sum(N1))
   
-  parameters <- lhs_parameters(1, zetaa = c(0.1, 0.1))[[1]]
+  parameters <- lhs_parameters(1)[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
+  parameters <- modifyList(parameters, list(zetaa_y = parameters$zetaa_y * 0.99))
   
-  parameters <- lhs_parameters(1, zetaa = c(0.09, 0.09))[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
   
   expect_true(sum(N2) > sum(N1))
   
+  parameters <- lhs_parameters(1)[[1]]
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+  parameters <- modifyList(parameters, list(zetab_y = parameters$zetab_y * 0.99))
   
-  # in this test, i made gammas and taus 0 to make sure prep doesn't advtange by going to ART quicker
-  parameters <- lhs_parameters(1, zetaa = c(0.1, 0.1), eP0 = c(0, 0), eP1a = c(0, 0), eP1b = c(0, 0), eP1c = c(0, 0), gamma01 = c(0, 0), gamma11 = c(0, 0), tau01 = c(0, 0), tau11 = c(0, 0))[[1]]
-  result1 = run_model(parameters, main_model, time)
-  parameters <- lhs_parameters(1, zetaa = c(0.09, 0.09), eP0 = c(0, 0), eP1a = c(0, 0), eP1b = c(0, 0), eP1c = c(0, 0), gamma01 = c(0, 0), gamma11 = c(0, 0), tau01 = c(0, 0), tau11 = c(0, 0))[[1]]
-  result2 = run_model(parameters, main_model, time)
-  expect_equal(result1$cumuInf[length(time)], result2$cumuInf[length(time)])
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+  
+  expect_true(sum(N2) > sum(N1))
+  
+  # c is ineffective prep!
+  parameters <- lhs_parameters(1, kappaa = c(0,0), kappab = c(0,0), kappac = c(0,0))[[1]]
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("cumuInf", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+  parameters <- modifyList(parameters, list(zetac_y = parameters$zetac_y * 0.5))
+  
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("cumuInf", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+  
+  expect_true(sum(N2) - sum(N1) < 10^-2)
+  
+  
+  
+#   # in this test, i made gammas and taus 0 to make sure prep doesn't advtange by going to ART quicker
+#   parameters <- lhs_parameters(1, zetaa = c(0.1, 0.1), eP0 = c(0, 0), eP1a = c(0, 0), eP1b = c(0, 0), eP1c = c(0, 0), gamma01 = c(0, 0), gamma11 = c(0, 0), tau01 = c(0, 0), tau11 = c(0, 0))[[1]]
+#   result1 = run_model(parameters, main_model, time)
+#   parameters <- lhs_parameters(1, zetaa = c(0.09, 0.09), eP0 = c(0, 0), eP1a = c(0, 0), eP1b = c(0, 0), eP1c = c(0, 0), gamma01 = c(0, 0), gamma11 = c(0, 0), tau01 = c(0, 0), tau11 = c(0, 0))[[1]]
+#   result2 = run_model(parameters, main_model, time)
+#   expect_equal(result1$cumuInf[length(time)], result2$cumuInf[length(time)])
   
 })
 
@@ -838,36 +868,36 @@ test_that("zeta vs prevalence", {
 
 # increase ART uptake, decrease overall prevalence
 
-# test_that("ART vs prevalence", {
-#   parameters <- lhs_parameters(1)[[1]]
-#   result = run_model(parameters, main_model, time)
-#   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
-#   N1 <- rowSums(do.call(cbind, xx))
-#   
-#   # this test won't work until R is a matrix with r,s (I think)
-# 
-#   relevant_parameters = parameter_names[c(grep("rho", parameter_names))]
-#   parameters <- lhs_parameters(1, set_null = relevant_parameters)
-#   result = run_model(parameters, main_model, time)
-#   xx <- result[c(grep("I[0-9][0-9]", names(result)))]
-#   N2 <- rowSums(do.call(cbind, xx))
-# 
-#   expect_true(sum(N2) > sum(N1))
-# })
+test_that("ART vs prevalence", {
+  parameters <- lhs_parameters(1)[[1]]
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("cumuInf", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+  
+  newpars = lhs_parameters(1, set_null = "rho2")[[1]]$rho2
+  parameters <- modifyList(parameters, list(rho2 = newpars, rho3 = newpars, rho4 = newpars, rho5 = newpars))
+  
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("cumuInf", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+
+  expect_true(sum(N2) > sum(N1))
+})
 
 
-# increase testing, decrease overall prevalence
+# increase testing, decrease overall cumuinf
 
 test_that("testing vs prevalence", {
   parameters <- lhs_parameters(1)[[1]]
   result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  xx <- result[c(grep("cumuInf", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
   
-  relevant_parameters = parameter_names[c(grep("tau", parameter_names))]
-  parameters <- lhs_parameters(1, set_null = relevant_parameters)[[1]]
+  newpars = lhs_parameters(1, set_null = "tau2")[[1]]$tau2
+  parameters <- modifyList(parameters, list(tau2 = newpars, tau3 = newpars, tau4 = newpars, tau5 = newpars))
+  
   result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  xx <- result[c(grep("cumuInf", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
   
   expect_true(sum(N2) > sum(N1))
@@ -876,51 +906,65 @@ test_that("testing vs prevalence", {
 
 
 
-# increase prep adherence, decrease overall prevalence
 
 
-test_that("prep adherence vs prevalence", {
+# increase prep adherence movement, increase overall infections
+
+
+test_that("adherence movements vs infections", {
   parameters <- lhs_parameters(1)[[1]]
   result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  xx <- result[c(grep("cumuInf", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
   
-  relevant_parameters = parameter_names[c(grep("zeta", parameter_names))]
-  parameters <- lhs_parameters(1, set_null = relevant_parameters)[[1]]
-  result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
-  N2 <- rowSums(do.call(cbind, xx))
   
-  expect_true(sum(N2) > sum(N1))
+  newpars = lhs_parameters(1, set_null = "psia")[[1]]$psia
+  parameters <- modifyList(parameters, list(psia = newpars, psib = newpars))
   
-  # on the basis that higher adherence is better
-  parameters <- lhs_parameters(1, zetaa = c(0.1,0.1), zetab = c(0,0), zetac = c(0,0))[[1]]
   result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
-  N1 <- rowSums(do.call(cbind, xx))
-  
-  parameters <- lhs_parameters(1, zetaa = c(0,0), zetab = c(0.1,0.1), zetac = c(0,0))[[1]]
-  result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
-  N2 <- rowSums(do.call(cbind, xx))
-  
-  expect_true(sum(N2) > sum(N1))
-})
-
-# increase dropout, increase overall prevalence
-
-test_that("dropout vs prevalence", {
-  parameters <- lhs_parameters(1)[[1]]
-  result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
-  N1 <- rowSums(do.call(cbind, xx))
-  
-  relevant_parameters = parameter_names[c(grep("psi", parameter_names))]
-  parameters <- lhs_parameters(1, set_null = relevant_parameters)[[1]]
-  result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  xx <- result[c(grep("cumuInf", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
   
   expect_true(sum(N1) > sum(N2))
 })
 
+
+# increase prep drop out, increase overall infections
+
+
+test_that("prep dropout vs infections", {
+  parameters <- lhs_parameters(1)[[1]]
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("cumuInf", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+  
+  
+  newpars = lhs_parameters(1, set_null = "kappaa")[[1]]$kappaa
+  parameters <- modifyList(parameters, list(kappaa = newpars, kappab = newpars, kappac = newpars))
+  
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("cumuInf", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+  
+  expect_true(sum(N1) > sum(N2))
+})
+
+
+# increase ART drop out, increase overall infections
+
+test_that("ART dropout vs prevalence", {
+  parameters <- lhs_parameters(1)[[1]]
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("cumuInf", names(result)))]
+  N1 <- rowSums(do.call(cbind, xx))
+  
+  
+  newpars = lhs_parameters(1, set_null = "phi2")[[1]]$phi2
+  parameters <- modifyList(parameters, list(phi2 = newpars, phi3 = newpars, phi4 = newpars, phi5 = newpars))
+  
+  result = run_model(parameters, main_model, time)
+  xx <- result[c(grep("cumuInf", names(result)))]
+  N2 <- rowSums(do.call(cbind, xx))
+  
+  expect_true(sum(N1) > sum(N2))
+})

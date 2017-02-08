@@ -70,9 +70,11 @@ fix_parameters <- function(y, Ncat, Nage) {
     # 1.127 is ratio of low level FSW to pro FSW
     
     y$rate_move_GPF_pFSW = y$rate_leave_FSW*y$omega[1]/y$omega[3]
-    # c_t_comm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016),
-    # y$c_y_comm = 
     
+    y$beta = c(y$betaMtoF, y$betaMtoF, y$betaMtoF, y$betaMtoF, y$betaFtoM, y$betaFtoM, y$betaMtoF)
+      # c_t_comm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016),
+      # y$c_y_comm = 
+      
   } else {
     y$omega = y$omega/sum(y$omega)
   }
@@ -97,8 +99,8 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
   I01_init = matrix(rep(c(1000, 1000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("I01_init", Ncat), NULL))
   
   N_init = if(Ncat == 7) matrix(c(672, 672, 757, 757, 146110, 146110, 0.01, 0.01, 27091, 27091, 111483, 111483, 0.01, 0.01), nrow = Ncat, byrow = TRUE, dimnames = list(rep("N_init", Ncat), NULL)) else c(300000, 300000)
-#   c_comm = if(Ncat == 7) matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
-#     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL))
+  #   c_comm = if(Ncat == 7) matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
+  #     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL))
   c_comm = if(Ncat == 7) matrix(c(272, 1439, 40, 64, 0, 0, 0, 0, 18.67, 37.5, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL))
   
@@ -108,6 +110,10 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
   
   ranges <- rbind(
     # c_y_comm,
+    
+    betaMtoF = c(0.00086, 0.00433),
+    betaFtoM = c(0.00279, 0.02701),
+    
     prev_init_FSW = c(0.01318836, 0.06592892),
     prev_init_rest = c(0.0003134459, 0.0029420363),
     c_comm,
@@ -212,10 +218,10 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    gamma43 = rep_len(0.2, Ncat),
                    gamma44 = rep_len(0.2, Ncat),
                    
-                   rho2 = rep_len(1,Ncat),
-                   rho3 = rep_len(1,Ncat),
-                   rho4 = rep_len(1,Ncat),
-                   rho5 = rep_len(1,Ncat),
+                   rho2 = rep_len(0.5,Ncat),
+                   rho3 = rep_len(0.5,Ncat),
+                   rho4 = rep_len(0.5,Ncat),
+                   rho5 = rep_len(0.5,Ncat),
                    
                    phi2 = rep_len(0.004,Ncat), # sort out later
                    phi3 = rep_len(0.004,Ncat),
@@ -286,6 +292,8 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    
                    
                    beta = rep_len(0.005,Ncat),
+                   betaMtoF = 0.00193,
+                   betaFtoM = 0.00897,
                    #beta = 0,
                    
                    p_comm = matrix(1, ncol = Ncat, nrow = Ncat),
@@ -295,7 +303,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    ec = rep_len(0.9,Ncat),
                    # ec = rep_len(1,1),
                    
-
+                   
                    
                    
                    epsilon = 0.001,
@@ -365,7 +373,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    
   )
   
-
+  
   
   if (length(parameters) == 0L) {
     return(defaults)
