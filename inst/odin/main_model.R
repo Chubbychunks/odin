@@ -476,7 +476,6 @@ lambda_1d[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p_comm[i,j]
                                                  N[j], beta[i], R, fc_comm[i], fP_comm[i], n_comm[i,j], eP1d[i], ec[i],
                                                  fc_noncomm[i], fP_noncomm[i], n_noncomm[i,j], c_noncomm_balanced[i], p_noncomm[i,j], infect_ART, infect_acute)
 
-lambda_sum[] = sum(lambda[i,])
 lambda_sum_0[] = sum(lambda_0[i,])
 lambda_sum_1a[] = sum(lambda_1a[i,])
 lambda_sum_1b[] = sum(lambda_1b[i,])
@@ -593,6 +592,10 @@ output(gamma01[]) = gamma01
 output(kappaa[]) = kappaa
 output(kappab[]) = kappab
 output(kappac[]) = kappac
+
+output(Nage) = Nage
+output(dur_FSW) = dur_FSW
+output(rate_leave_FSW) = rate_leave_FSW
 
 # output(prev[]) = prev
 
@@ -753,7 +756,6 @@ alpha05[] = user()
 
 alpha11[] = user()
 
-alpha21[] = user()
 alpha22[] = user()
 alpha23[] = user()
 alpha24[] = user()
@@ -898,7 +900,6 @@ dim(alpha03) = Ncat
 dim(alpha04) = Ncat
 dim(alpha05) = Ncat
 dim(alpha11) = Ncat
-dim(alpha21) = Ncat
 dim(alpha22) = Ncat
 dim(alpha23) = Ncat
 dim(alpha24) = Ncat
@@ -1026,7 +1027,6 @@ dim(lambda_1c) = c(Ncat, Ncat)
 dim(lambda_1d) = c(Ncat, Ncat)
 
 
-dim(lambda_sum) = Ncat
 dim(lambda_sum_0) = Ncat
 dim(lambda_sum_1a) = Ncat
 dim(lambda_sum_1b) = Ncat

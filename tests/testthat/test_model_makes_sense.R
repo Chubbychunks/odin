@@ -801,7 +801,7 @@ test_that("eP vs prevalence", {
 test_that("zeta vs prevalence", {
   parameters <- lhs_parameters(1)[[1]]
   result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  xx <- result[c(grep("cumuInf", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
   
   
@@ -809,31 +809,31 @@ test_that("zeta vs prevalence", {
   parameters <- modifyList(parameters, list(zetaa_y = newpars, zetab_y = newpars, zetac_y = newpars))
   
   result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  xx <- result[c(grep("cumuInf", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
   
   expect_true(sum(N2) > sum(N1))
   
   parameters <- lhs_parameters(1)[[1]]
   result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  xx <- result[c(grep("cumuInf", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
   parameters <- modifyList(parameters, list(zetaa_y = parameters$zetaa_y * 0.99))
   
   result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  xx <- result[c(grep("cumuInf", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
   
   expect_true(sum(N2) > sum(N1))
   
   parameters <- lhs_parameters(1)[[1]]
   result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  xx <- result[c(grep("cumuInf", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
   parameters <- modifyList(parameters, list(zetab_y = parameters$zetab_y * 0.99))
   
   result = run_model(parameters, main_model, time)
-  xx <- result[c(grep("I[0-9][0-9]", names(result)))]
+  xx <- result[c(grep("cumuInf", names(result)))]
   N2 <- rowSums(do.call(cbind, xx))
   
   expect_true(sum(N2) > sum(N1))
