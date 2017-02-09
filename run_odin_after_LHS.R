@@ -18,6 +18,8 @@ devtools::test()
 time <- seq(1986, 2016, length.out = 31)
 parameters <- lhs_parameters(1,Ncat = 7)[[1]]
 result = run_model(parameters, main_model, time)
+
+
 out=data.frame(time=result$t,output=result$Ntot)
 out
 
@@ -41,8 +43,9 @@ result$omega
 # showing priors are flat and explore space
 result$c_comm
 
-
-
+parameters <- lhs_parameters(2000, Ncat = 7)
+parm_prior = do.call(rbind, lapply(parameters, function(x) x$mu))
+hist(parm_prior[,1])
 
 # test prep
 

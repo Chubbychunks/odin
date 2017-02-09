@@ -112,7 +112,7 @@ test_that("omega keeps consistent population even with HIV?", {
   xx <- result[grep("frac_N", names(result))] # grepping all the Ss and Is
   
   
-  expect_true(all(abs(diff(xx$frac_N))<10^-12))
+  expect_true(all(abs(diff(xx$frac_N))<10^-4))
   expect_equal(as.numeric(xx$frac_N[1,]), as.numeric(xx$frac_N[2,]))
 })
 
@@ -123,7 +123,7 @@ test_that("growth rate zero", {
   N <- rowSums(do.call(cbind, xx))
   
   # are all increments in N equal to 0?
-  expect_true(all(abs(diff(N)) < 10^-6))
+  expect_true(all(abs(diff(N)) < 10^-4))
 })
 
 test_that("growth rate increases", {
