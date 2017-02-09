@@ -138,7 +138,7 @@ deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alph
 
 # births due to population growth
 epsilon = interpolate(epsilon_t, epsilon_y, "constant")
-new_people = epsilon * sum(N)
+new_people = if(Ncat == 7) epsilon * (N[1] + N[2] + N[3] + N[4] + N[5] + N[6]) else epsilon * sum(N)
 
 
 
