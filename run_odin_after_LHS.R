@@ -26,6 +26,11 @@ out
 ggplot(out, aes(x = time, y = output)) + geom_line() + theme_bw()
 
 
+# no zetas
+parameters <- lhs_parameters(1,Ncat = 7, set_null = list("zetaa_y", "zetab_y", "zetac_y"))[[1]]
+
+
+
 
 
 # test
@@ -35,6 +40,13 @@ time <- seq(1986, 2016, length.out = 31)
 
 parameters <- lhs_parameters(1,Ncat = 7)[[1]]
 result = run_model(parameters, main_model, time)
+
+
+
+
+
+
+
 result$prev
 result$c_comm_balanced
 result$frac_N

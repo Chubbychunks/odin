@@ -161,10 +161,10 @@ rate_move_out[] <- 0
 
 
 
-# rate_move_out[1] = if(Ncat == 7) - rate_leave_FSW else 0
-# rate_move_out[3] = if(Ncat == 7) - rate_leave_FSW * N[1] / N[3] else 0
-# rate_move_in[3,1] = if(Ncat == 7) rate_leave_FSW else 0 # moving from pro-FSW to GPF
-# rate_move_in[1,3] = if(Ncat == 7) rate_leave_FSW * N[1] / N[3] else 0 # moving from GPF to pro-FSW
+rate_move_out[1] = if(Ncat == 7) - rate_leave_FSW else 0
+rate_move_out[3] = if(Ncat == 7) - rate_leave_FSW * N[1] / N[3] else 0
+rate_move_in[3,1] = if(Ncat == 7) rate_leave_FSW else 0 # moving from pro-FSW to GPF
+rate_move_in[1,3] = if(Ncat == 7) rate_leave_FSW * N[1] / N[3] else 0 # moving from GPF to pro-FSW
 
 
 #moving in
@@ -516,6 +516,7 @@ dim (frac_N_sexualpop) = Ncat
 # Calculations
 Ntot = sum(N)
 
+output(alphaItot[]) = alphaItot
 
 
 # PREVALENCE
