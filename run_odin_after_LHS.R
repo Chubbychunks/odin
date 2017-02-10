@@ -43,6 +43,35 @@ result = run_model(parameters, main_model, time)
 
 
 
+# prev of all groups
+#### Ncat = 7
+odin::odin_package(".") # looks for any models inside inst/odin
+devtools::load_all()
+
+number_simulations = 25
+parms = lhs_parameters(number_simulations, Ncat = 7)
+time <- seq(1986, 2016, length.out = 31)
+f <- function(p, gen, time) {
+  mod <- gen(user = p)
+  all_results <- mod$transform_variables(mod$run(time))
+  all_results[c("prev")]
+}
+res = lapply(parms, f, main_model, time)
+
+out = data.frame(time, do.call(rbind, lapply(res, function(x) x$prev)), as.character(sort(rep(seq(1,number_simulations), length(time)))))
+names(out) = c("time", "group 1", "group 2", "group 3", "group 4", "group 5", "group 6", "group 7", "replication")
+out_melted = melt(out, id.vars = c("time", "replication"))
+ggplot(data = out_melted, aes(x = time, y = value, factor = replication, color = variable)) + geom_line() + theme_bw() + facet_wrap(~variable)
+
+
+
+
+
+
+
+
+
+#####
 
 
 
@@ -70,50 +99,6 @@ result = run_model(parameters, main_model, time)
 
 df=melt(data.frame(time, a = result$S1a[,1], b = result$S1b[,1], c = result$S1c[,1], d = result$S1d[,1]), id.vars = "time")
 ggplot(df, aes(x = time, y = value, color = variable)) + geom_line() + theme_bw()
-
-
-
-
-
-# to show effects of increased movement
-
-odin::odin_package(".") # looks for any models inside inst/odin
-devtools::load_all()
-
-number_simulations = 25
-parms = lhs_parameters(number_simulations, Ncat = 7)
-time <- seq(1986, 2016, length.out = 31)
-f <- function(p, gen, time) {
-  mod <- gen(user = p)
-  all_results <- mod$transform_variables(mod$run(time))
-  all_results[c("prev")]
-}
-res = lapply(parms, f, main_model, time)
-
-df=data.frame(time,do.call(cbind, lapply(res, function(x) x <- x$prev[,1])), group = "group 1")
-df_2=data.frame(time,do.call(cbind, lapply(res, function(x) x <- x$prev[,2])), group = "group 2")
-df_3=data.frame(time,do.call(cbind, lapply(res, function(x) x <- x$prev[,3])), group = "group 3")
-df_4=data.frame(time,do.call(cbind, lapply(res, function(x) x <- x$prev[,4])), group = "group 4")
-df_5=data.frame(time,do.call(cbind, lapply(res, function(x) x <- x$prev[,5])), group = "group 5")
-df_6=data.frame(time,do.call(cbind, lapply(res, function(x) x <- x$prev[,6])), group = "group 6")
-df_7=data.frame(time,do.call(cbind, lapply(res, function(x) x <- x$prev[,7])), group = "group 7")
-
-df_melted = melt(df, id.vars = c("time","group"))
-df_melted_2 = melt(df_2, id.vars = c("time","group"))
-df_melted_3 = melt(df_3, id.vars = c("time","group"))
-df_melted_4 = melt(df_4, id.vars = c("time","group"))
-df_melted_5 = melt(df_5, id.vars = c("time","group"))
-df_melted_6 = melt(df_6, id.vars = c("time","group"))
-df_melted_7 = melt(df_7, id.vars = c("time","group"))
-
-df_all = rbind(df_melted, df_melted_2, df_melted_3, df_melted_4, df_melted_5, df_melted_6, df_melted_7)
-ggplot(data = df_all, aes(x = time, y = value, factor = variable, color = group)) + geom_line(alpha = 0.5) + theme_bw()
-
-df=do.call(cbind,lapply(res, function(x) x$prev[,6]))
-colnames(df) <- seq(1, number_simulations)
-df <- data.frame(time, df)
-df_melted <- melt(df, id.vars = "time")
-normal = ggplot(data = df_melted, aes(x = time, y = value, factor = variable)) + geom_line() + theme_bw() + labs(x="year",y="prevlance (%) former FSW")
 
 
 
@@ -314,7 +299,7 @@ df_melted_7 = melt(df_7, id.vars = c("time","group"))
 df_all = rbind(df_melted, df_melted_2, df_melted_3, df_melted_4, df_melted_5, df_melted_6, df_melted_7)
 ggplot(data = df_all, aes(x = time, y = value, factor = variable, color = group)) + geom_line(alpha = 0.5) + theme_bw()
 
-df=do.call(cbind,lapply(res, function(x) x$prev[,6]))
+df=do.call(cbind,lapply(res, function(x) x$prev[,1]))
 colnames(df) <- seq(1, number_simulations)
 df <- data.frame(time, df)
 df_melted <- melt(df, id.vars = "time")

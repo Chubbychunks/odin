@@ -77,6 +77,11 @@ fix_parameters <- function(y, Ncat, Nage) {
     # MOVEMENT
     ############################################### 
     
+    #this is just to show what happens when you increase movement
+#     y$rate_leave_pro_FSW = y$rate_leave_pro_FSW * 10
+#     y$rate_leave_low_FSW = y$rate_leave_low_FSW * 10
+#     y$rate_leave_client = y$rate_leave_client * 10
+    
     y$prop_client_GPM = y$omega[5] / y$omega[6]
     y$prop_pro_FSW_GPF = y$omega[1] / y$omega[3]
     y$prop_low_FSW_GPF = y$omega[2] / y$omega[3]
