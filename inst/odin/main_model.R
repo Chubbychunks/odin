@@ -160,11 +160,17 @@ rate_move_out[] <- 0
 
 
 
+# FEMALE MOVEMENT
+# rate_move_out[1] = if(Ncat == 7) - rate_leave_FSW else 0
+# rate_move_out[3] = if(Ncat == 7) - rate_leave_FSW * N[1] / N[3] else 0
+# rate_move_in[3,1] = if(Ncat == 7) rate_leave_FSW else 0 # moving from pro-FSW to GPF
+# rate_move_in[1,3] = if(Ncat == 7) rate_leave_FSW * N[1] / N[3] else 0 # moving from GPF to pro-FSW
 
-rate_move_out[1] = if(Ncat == 7) - rate_leave_FSW else 0
-rate_move_out[3] = if(Ncat == 7) - rate_leave_FSW * N[1] / N[3] else 0
-rate_move_in[3,1] = if(Ncat == 7) rate_leave_FSW else 0 # moving from pro-FSW to GPF
-rate_move_in[1,3] = if(Ncat == 7) rate_leave_FSW * N[1] / N[3] else 0 # moving from GPF to pro-FSW
+# # MALE MOVEMENT
+# rate_move_out[5] = if(Ncat == 7) - rate_leave_client else 0
+# rate_move_out[6] = if(Ncat == 7) - rate_leave_client * N[5] / N[6] else 0
+# rate_move_in[6,5] = if(Ncat == 7) rate_leave_client else 0 # moving from client to GPM
+# rate_move_in[5,6] = if(Ncat == 7) rate_leave_client * N[5] / N[6] else 0 # moving from GPM to client
 
 
 #moving in
@@ -196,74 +202,6 @@ sum_in_S0[] = sum(in_S0[i, ])
 output(sum_in_S0[]) = sum_in_S0
 
 ##
-
-############################################################################################
-############################################################################################
-############################################################################################
-############################################################################################
-# # calculating turnover rates
-# tur_H_FSW <- if(Ncat != 7) 0 else (N[1] / dur_FSW) / N[3] # this is a rate
-# tur_L_FSW <- if(Ncat != 7) 0 else (N[2] / dur_FSW) / N[3]
-# tur_GPF <- if(Ncat != 7) 0 else (tur_H_FSW * N[1] + tur_L_FSW * N[2]) / N[3] # leaving GPF to both H and L FSW
-# 
-# output(tur_H_FSW) = tur_H_FSW
-# output(tur_L_FSW) = tur_L_FSW
-# output(tur_GPF) = tur_GPF
-# 
-# # i'm not sure how to get the migration to work...
-# 
-# rate_move_in[,] <- 
-#   
-# 
-# rate_move_out[1] <- if(Ncat != 7) 0 else -tur_H_FSW
-# rate_move_out[2] <- if(Ncat != 7) 0 else -tur_L_FSW
-# rate_move_out[3] <- if(Ncat != 7) 0 else -tur_GPF
-
-
-
-
-
-# 
-# # going in
-# 
-# # moving in from j to i
-# rate_move_in[3, 1] <- if(Ncat != 7) 0 else tur_H_FSW
-# rate_move_in[3, 2] <- if(Ncat != 7) 0 else tur_L_FSW
-# rate_move_in[1, 3] <- if(Ncat != 7) 0 else (tur_H_FSW * N[1]) / N[3]
-# rate_move_in[2, 3] <- if(Ncat != 7) 0 else (tur_H_FSW * N[2]) / N[3]
-
-
-# if(Ncat == 7)
-# {
-#   rate_move_in[,] <- 0
-#   rate_move_out[] <- 0
-#
-#   # calculating turnover rates
-#   tur_H_FSW = (N[1] / dur_FSW) / N[3] # this is a rate
-#   tur_L_FSW = (N[2] / dur_FSW) / N[3]
-#   tur_GPF = (tur_H_FSW * N[1] + tur_L_FSW * N[2]) / N[3] # leaving GPF to both H and L FSW
-#
-#
-#   rate_move_out[1] = - tur_H_FSW
-#   rate_move_out[2] = - tur_L_FSW
-#   rate_move_out[3] = - tur_GPF
-#   rate_move_out[4] = 0
-#   rate_move_out[5] = 0
-#   rate_move_out[6] = 0
-#   rate_move_out[7] = 0
-#
-#   # going in
-#
-#   # moving in from j to i
-#   rate_move_in[3, 1] = tur_H_FSW
-#   rate_move_in[3, 2] = tur_L_FSW
-#   rate_move_in[1, 3] = (tur_H_FSW * N[1]) / N[3]
-#   rate_move_in[2, 3] = (tur_H_FSW * N[2]) / N[3]
-#
-# } else {
-#   rate_move_in[,] <- 0
-#   rate_move_out[] <- 0
-# }
 
 
 ##############################################################################
@@ -607,8 +545,8 @@ output(kappac[]) = kappac
 output(Nage) = Nage
 output(dur_FSW) = dur_FSW
 output(rate_leave_FSW) = rate_leave_FSW
-output(rate_move_GPF_pFSW) = rate_move_GPF_pFSW
-
+# output(rate_move_GPF_pFSW) = rate_move_GPF_pFSW
+output(rate_leave_client) = rate_leave_client
 # output(prev[]) = prev
 
 # in future nb eP eC constants
@@ -1058,8 +996,8 @@ dim(M_noncomm) = c(Ncat, Ncat)
 
 
 rate_leave_FSW = user()
-rate_move_GPF_pFSW = user()
-
+# rate_move_GPF_pFSW = user()
+rate_leave_client = user()
 
 
 

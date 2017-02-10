@@ -366,8 +366,8 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    prev_init_FSW = 0.04,
                    prev_init_rest = 0.0008,
                    rate_leave_FSW = 0.2,
-                   rate_move_GPF_pFSW = 0.0009198549 
-                   #(0.2 * 672 / 146110)
+                   # rate_move_GPF_pFSW = 0.0009198549,  #(0.2 * 672 / 146110)
+                   rate_leave_client = 0.05
                    
                    
                    
