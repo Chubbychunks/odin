@@ -154,23 +154,48 @@ N[] = S0[i] + S1a[i] + S1b[i] + S1c[i] + S1d[i] + I01[i] + I11[i] + I02[i] + I03
 # MOVEMENT
 ##############################################################################
 
-rate_move_in[,] <- 0
-rate_move_out[] <- 0
+# rate_move_in[,] <- 0
+# rate_move_out[] <- 0
 
 
 
+# BASED ON FIXED PARAMETERS DECIDED AT INITIALISATION
 
 # FEMALE MOVEMENT
+# rate_move_out[1] = if(Ncat == 7) - rate_leave_FSW else 0
+# rate_move_out[3] = if(Ncat == 7) - rate_leave_FSW * prop_pro_FSW_GPF else 0
+# rate_move_in[3,1] = if(Ncat == 7) rate_leave_FSW else 0 # moving from pro-FSW to GPF
+# rate_move_in[1,3] = if(Ncat == 7) rate_leave_FSW * prop_pro_FSW_GPF else 0 # moving from GPF to pro-FSW
+# 
+# # MALE MOVEMENT
+# rate_move_out[5] = if(Ncat == 7) - rate_leave_client else 0
+# rate_move_out[6] = if(Ncat == 7) - rate_leave_client * prop_client_GPM else 0
+# rate_move_in[6,5] = if(Ncat == 7) rate_leave_client else 0 # moving from client to GPM
+# rate_move_in[5,6] = if(Ncat == 7) rate_leave_client * prop_client_GPM else 0 # moving from GPM to client
+
+
+# prop_pro_FSW_GPF = user()
+# prop_client_GPM = user()
+# output(prop_pro_FSW_GPF) = prop_pro_FSW_GPF
+# output(prop_client_GPM) = prop_client_GPM
+
+# # BASED ON ACTUAL POPULATION SIZES
+# 
+# # FEMALE MOVEMENT
 # rate_move_out[1] = if(Ncat == 7) - rate_leave_FSW else 0
 # rate_move_out[3] = if(Ncat == 7) - rate_leave_FSW * N[1] / N[3] else 0
 # rate_move_in[3,1] = if(Ncat == 7) rate_leave_FSW else 0 # moving from pro-FSW to GPF
 # rate_move_in[1,3] = if(Ncat == 7) rate_leave_FSW * N[1] / N[3] else 0 # moving from GPF to pro-FSW
-
+# 
 # # MALE MOVEMENT
 # rate_move_out[5] = if(Ncat == 7) - rate_leave_client else 0
 # rate_move_out[6] = if(Ncat == 7) - rate_leave_client * N[5] / N[6] else 0
 # rate_move_in[6,5] = if(Ncat == 7) rate_leave_client else 0 # moving from client to GPM
 # rate_move_in[5,6] = if(Ncat == 7) rate_leave_client * N[5] / N[6] else 0 # moving from GPM to client
+
+rate_move_in[,] = user()
+rate_move_out[] = user()
+
 
 
 #moving in
@@ -204,7 +229,7 @@ output(sum_in_S0[]) = sum_in_S0
 ##
 
 
-##############################################################################
+############################################################################################
 ############################################################################################
 ############################################################################################
 ############################################################################################
@@ -544,9 +569,9 @@ output(kappac[]) = kappac
 
 output(Nage) = Nage
 output(dur_FSW) = dur_FSW
-output(rate_leave_FSW) = rate_leave_FSW
+# output(rate_leave_FSW) = rate_leave_FSW
 # output(rate_move_GPF_pFSW) = rate_move_GPF_pFSW
-output(rate_leave_client) = rate_leave_client
+# output(rate_leave_client) = rate_leave_client
 # output(prev[]) = prev
 
 # in future nb eP eC constants
@@ -995,9 +1020,9 @@ dim(M_noncomm) = c(Ncat, Ncat)
 
 
 
-rate_leave_FSW = user()
+# rate_leave_FSW = user()
 # rate_move_GPF_pFSW = user()
-rate_leave_client = user()
+# rate_leave_client = user()
 
 
 

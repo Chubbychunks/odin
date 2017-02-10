@@ -1,10 +1,11 @@
-# parameteres which depend on others, etc
+# parameters which depend on others, etc
 fix_parameters <- function(y, Ncat, Nage) {
   
-  # N = y$S0_init + y$I01_init
   init_prev = c(y$prev_init_FSW, rep_len(y$prev_init_rest, Ncat-1))
   y$S0_init = (1-init_prev) * y$N_init
   y$I01_init = init_prev * y$N_init
+  
+  N = y$S0_init + y$I01_init
   
   
   # BIOLOGICAL
@@ -47,9 +48,15 @@ fix_parameters <- function(y, Ncat, Nage) {
   
   # y$c_y_comm <- matrix(rep(y$c_y_comm, 4), ncol = Ncat)
   
+  y$omega = N/sum(N)
   
+
   
   if (Ncat == 7) {
+    
+    # MIXING
+    ###############################################
+    
     y$M_noncomm = matrix(c(0, 0, 0, 0, 1, 0, 0,
                            0, 0, 0, 0, 1, 0, 0,
                            0, 0, 0, 0, 1, 1, 0,
@@ -66,10 +73,39 @@ fix_parameters <- function(y, Ncat, Nage) {
                         0, 0, 0, 0, 0, 0, 0,
                         0, 0, 0, 0, 0, 0, 0),
                       nrow = 7, ncol = 7, byrow = T)
-    y$omega = c(y$omega[1], y$omega[1]*1.127, 0.5 - 2*y$omega[1] - y$omega[1]*1.127, y$omega[1], y$omega[5], 0.5 - y$omega[5], 0)
+    
+    # MOVEMENT
+    ############################################### 
+    
+    y$prop_client_GPM = y$omega[5] / y$omega[6]
+    y$prop_pro_FSW_GPF = y$omega[1] / y$omega[3]
+    y$prop_low_FSW_GPF = y$omega[2] / y$omega[3]
+    
+    # FEMALE MOVEMENT
+    y$rate_move_out[1] = - y$rate_leave_pro_FSW
+    y$rate_move_out[2] = - y$rate_leave_low_FSW
+    y$rate_move_out[3] = - y$rate_leave_pro_FSW * y$prop_pro_FSW_GPF - y$rate_leave_low_FSW * y$prop_low_FSW_GPF
+    
+    y$rate_move_in[3,1] = y$rate_leave_pro_FSW # moving from pro-FSW to GPF
+    y$rate_move_in[3,2] = y$rate_leave_low_FSW # moving from low-FSW to GPF
+    y$rate_move_in[1,3] = y$rate_leave_pro_FSW * y$prop_pro_FSW_GPF # moving from GPF to pro-FSW
+    y$rate_move_in[2,3] = y$rate_leave_low_FSW * y$prop_low_FSW_GPF # moving from GPF to low-FSW
+    
+    # MALE MOVEMENT
+    y$rate_move_out[5] = - y$rate_leave_client 
+    y$rate_move_out[6] = - y$rate_leave_client * y$prop_client_GPM 
+    
+    y$rate_move_in[6,5] = y$rate_leave_client # moving from client to GPM
+    y$rate_move_in[5,6] = y$rate_leave_client * y$prop_client_GPM # moving from GPM to client
+    
+    # y$rate_move_out = c(- y$rate_leave_pro_FSW, 0, - y$rate_leave_pro_FSW * y$prop_pro_FSW_GPF, 0, - y$rate_leave_client, - y$rate_leave_client * y$prop_client_GPM , 0)
+    
+
+    # y$omega = c(y$omega[1], y$omega[1]*1.127, 0.5 - 2*y$omega[1] - y$omega[1]*1.127, y$omega[1], y$omega[5], 0.5 - y$omega[5], 0)
     # 1.127 is ratio of low level FSW to pro FSW
     
-    # y$rate_move_GPF_pFSW = (y$rate_leave_FSW * y$omega[1]) / y$omega[3]
+    
+    # y$rate_move_GPF_pFSW = (y$rate_leave_pro_FSW * y$omega[1]) / y$omega[3]
     
     y$beta = c(y$betaMtoF, y$betaMtoF, y$betaMtoF, y$betaMtoF, y$betaFtoM, y$betaFtoM, y$betaMtoF)
       # c_t_comm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016),
@@ -77,8 +113,10 @@ fix_parameters <- function(y, Ncat, Nage) {
     y$mu = rep(y$mu[1], 7)
       
   } else {
-    y$omega = y$omega/sum(y$omega)
+    # y$omega = y$omega/sum(y$omega)
   }
+  
+
   
   return(y)
 }
@@ -89,6 +127,13 @@ fix_parameters <- function(y, Ncat, Nage) {
 # the parameters below will be sampled from an LHS and will replace their respective defaults
 # unless I put something in the args of the function, eg sample = mu
 lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars = list(...), set_null= list(...)) {
+  
+  #fixed pars list
+  fixed_pars = list(
+    rate_move_in = matrix(0, nrow = Ncat, ncol = Ncat),
+    rate_move_out = rep_len(0, Ncat)
+  )
+  
   mu <- matrix(rep(c(1/50, 1/42), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("mu", Ncat), NULL))
   omega <- if(Ncat == 7) matrix(c(0.0017, 0.0067, 0, 0, 0, 0, 0, 0, 0.1, 0.2, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("omega", Ncat), NULL)) else 
     matrix(rep(c(0.4, 0.6), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("omega", Ncat), NULL))
@@ -98,6 +143,8 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
   #these parameters need to be here so fix_parameters works? below are fixed...
   S0_init = matrix(rep(c(4000, 4000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("S0_init", Ncat), NULL))
   I01_init = matrix(rep(c(1000, 1000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("I01_init", Ncat), NULL))
+  
+
   
   N_init = if(Ncat == 7) matrix(c(672, 672, 757, 757, 145439, 145439, 672, 672, 27091, 27091, 111483, 111483, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("N_init", Ncat), NULL)) else c(300000, 300000)
   #   c_comm = if(Ncat == 7) matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
@@ -111,6 +158,11 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
   
   ranges <- rbind(
     # c_y_comm,
+    
+    rate_leave_pro_FSW = c(0.2, 0.2),
+    rate_leave_low_FSW = c(0.1, 0.1),
+    rate_leave_client = c(0.05, 0.05),
+    
     
     betaMtoF = c(0.00086, 0.00433),
     betaFtoM = c(0.00279, 0.02701),
@@ -141,9 +193,10 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     S0_init,
     I01_init,
     N_init
+ 
   )
   if (!is.null(sample)) {
-    ranges <- ranges[rownames(ranges) %in% sample, , drop=FALSE]
+    ranges <- ranges[rownames(ranges) %in% sample,  drop=FALSE]
   }
   samples <- tgp::lhs(n, ranges)
   nms <- rownames(ranges)
@@ -152,6 +205,8 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     lapply(i, function(j) x[j])
   }
   samples_list <- apply(samples, 1, f)
+  
+  samples_list <- lapply(samples_list, function(x) modifyList(x, fixed_pars))
   
   samples_list <- lapply(samples_list, fix_parameters, Ncat = Ncat)
   
@@ -358,18 +413,19 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    dur_FSW = 30,
                    OnPrEP_init = rep_len(0, Ncat),
                    
-                   rate_move_in = matrix(0, ncol = Ncat, nrow = Ncat),
-                   rate_move_out = rep_len(0, Ncat),
                    
                    # have to include the follow in the function for it to work just using generate_parameters(), and not lhs_parameters()
                    SC_to_200_349 = rep_len(0.3, Ncat),
                    prev_init_FSW = 0.04,
                    prev_init_rest = 0.0008,
-                   rate_leave_FSW = 0.2,
-                   # rate_move_GPF_pFSW = 0.0009198549,  #(0.2 * 672 / 146110)
-                   rate_leave_client = 0.05
-                   
-                   
+                   rate_leave_pro_FSW = 0.2,
+                   rate_leave_client = 0.05,
+                   rate_leave_low_FSW = 0.1,
+                   prop_client_GPM = 0.2430057, # 27091/111483
+                   prop_pro_FSW_GPF = 0.004620494, # 672 / 145439
+                   prop_low_FSW_GPF = 0.005204931, # 757 / 145439
+                   rate_move_in = matrix(0, ncol = Ncat, nrow = Ncat),
+                   rate_move_out = rep_len(0, Ncat)
                    
                    
                    
