@@ -87,14 +87,19 @@ fix_parameters <- function(y, Ncat, Nage) {
     y$prop_low_FSW_GPF = y$omega[2] / y$omega[3]
     
     # FEMALE MOVEMENT
+    
+    
     y$rate_move_out[1] = - y$rate_leave_pro_FSW
     y$rate_move_out[2] = - y$rate_leave_low_FSW
     y$rate_move_out[3] = - y$rate_leave_pro_FSW * y$prop_pro_FSW_GPF - y$rate_leave_low_FSW * y$prop_low_FSW_GPF
     
-    y$rate_move_in[3,1] = y$rate_leave_pro_FSW # moving from pro-FSW to GPF
-    y$rate_move_in[3,2] = y$rate_leave_low_FSW # moving from low-FSW to GPF
     y$rate_move_in[1,3] = y$rate_leave_pro_FSW * y$prop_pro_FSW_GPF # moving from GPF to pro-FSW
     y$rate_move_in[2,3] = y$rate_leave_low_FSW * y$prop_low_FSW_GPF # moving from GPF to low-FSW
+    y$rate_move_in[4,1] = y$rate_leave_pro_FSW * (1 - y$FSW_leave_Cotonou_fraction) # moving from pro-FSW to former FSW in Cot
+    y$rate_move_in[4,2] = y$rate_leave_low_FSW * (1 - y$FSW_leave_Cotonou_fraction) # moving from low-FSW to former FSW in Cot
+    y$rate_move_in[7,1] = y$rate_leave_pro_FSW * y$FSW_leave_Cotonou_fraction # moving from low-FSW to former FSW NOT in Cot
+    y$rate_move_in[7,2] = y$rate_leave_low_FSW * y$FSW_leave_Cotonou_fraction # moving from low-FSW to former FSW NOT in Cot
+    
     
     # MALE MOVEMENT
     y$rate_move_out[5] = - y$rate_leave_client 
@@ -103,15 +108,7 @@ fix_parameters <- function(y, Ncat, Nage) {
     y$rate_move_in[6,5] = y$rate_leave_client # moving from client to GPM
     y$rate_move_in[5,6] = y$rate_leave_client * y$prop_client_GPM # moving from GPM to client
     
-    # y$rate_move_out = c(- y$rate_leave_pro_FSW, 0, - y$rate_leave_pro_FSW * y$prop_pro_FSW_GPF, 0, - y$rate_leave_client, - y$rate_leave_client * y$prop_client_GPM , 0)
-    
 
-    # y$omega = c(y$omega[1], y$omega[1]*1.127, 0.5 - 2*y$omega[1] - y$omega[1]*1.127, y$omega[1], y$omega[5], 0.5 - y$omega[5], 0)
-    # 1.127 is ratio of low level FSW to pro FSW
-    
-    
-    # y$rate_move_GPF_pFSW = (y$rate_leave_pro_FSW * y$omega[1]) / y$omega[3]
-    
     y$beta = c(y$betaMtoF, y$betaMtoF, y$betaMtoF, y$betaMtoF, y$betaFtoM, y$betaFtoM, y$betaMtoF)
       # c_t_comm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016),
       # y$c_y_comm = 
@@ -165,6 +162,7 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     # c_y_comm,
     
     rate_leave_pro_FSW = c(0.2, 0.2),
+    FSW_leave_Cotonou_fraction = c(0.05, 0.15),
     rate_leave_low_FSW = c(0.1, 0.1),
     rate_leave_client = c(0.05, 0.05),
     
@@ -424,6 +422,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    prev_init_FSW = 0.04,
                    prev_init_rest = 0.0008,
                    rate_leave_pro_FSW = 0.2,
+                   FSW_leave_Cotonou_fraction = 0.1,
                    rate_leave_client = 0.05,
                    rate_leave_low_FSW = 0.1,
                    prop_client_GPM = 0.2430057, # 27091/111483

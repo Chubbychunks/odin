@@ -130,68 +130,25 @@ deriv(I45[]) = gamma44[i] * I44[i] + phi5[i] * I35[i] - I45[i] * (rho5[i] + alph
 
 
 
-
-
-
-
-
-
-# births due to population growth
-epsilon = interpolate(epsilon_t, epsilon_y, "constant")
-new_people = if(Ncat == 7) epsilon * (N[1] + N[2] + N[3] + N[4] + N[5] + N[6]) else epsilon * sum(N)
-
-
-
-
 # sum of all compartments
 N[] = S0[i] + S1a[i] + S1b[i] + S1c[i] + S1d[i] + I01[i] + I11[i] + I02[i] + I03[i] + I04[i] + I05[i] +
   I22[i] + I23[i] + I24[i] + I25[i] + I32[i] + I33[i] + I34[i] + I35[i] +
   I42[i] + I43[i] + I44[i] + I45[i]
 
+Ntot = if (Ncat == 7) (N[1] + N[2] + N[3] + N[4] + N[5] + N[6]) else sum(N)
+Ntot_inc_former_FSW_nonCot = sum(N)
+
+output(Ntot_inc_former_FSW_nonCot) = Ntot_inc_former_FSW_nonCot
+
+# births due to population growth
+epsilon = interpolate(epsilon_t, epsilon_y, "constant")
+# new_people = if(Ncat == 7) epsilon * (N[1] + N[2] + N[3] + N[4] + N[5] + N[6] + N[7]) else epsilon * sum(N)
+new_people = epsilon * Ntot_inc_former_FSW_nonCot
 
 
 
 # MOVEMENT
 ##############################################################################
-
-# rate_move_in[,] <- 0
-# rate_move_out[] <- 0
-
-
-
-# BASED ON FIXED PARAMETERS DECIDED AT INITIALISATION
-
-# FEMALE MOVEMENT
-# rate_move_out[1] = if(Ncat == 7) - rate_leave_FSW else 0
-# rate_move_out[3] = if(Ncat == 7) - rate_leave_FSW * prop_pro_FSW_GPF else 0
-# rate_move_in[3,1] = if(Ncat == 7) rate_leave_FSW else 0 # moving from pro-FSW to GPF
-# rate_move_in[1,3] = if(Ncat == 7) rate_leave_FSW * prop_pro_FSW_GPF else 0 # moving from GPF to pro-FSW
-# 
-# # MALE MOVEMENT
-# rate_move_out[5] = if(Ncat == 7) - rate_leave_client else 0
-# rate_move_out[6] = if(Ncat == 7) - rate_leave_client * prop_client_GPM else 0
-# rate_move_in[6,5] = if(Ncat == 7) rate_leave_client else 0 # moving from client to GPM
-# rate_move_in[5,6] = if(Ncat == 7) rate_leave_client * prop_client_GPM else 0 # moving from GPM to client
-
-
-# prop_pro_FSW_GPF = user()
-# prop_client_GPM = user()
-# output(prop_pro_FSW_GPF) = prop_pro_FSW_GPF
-# output(prop_client_GPM) = prop_client_GPM
-
-# # BASED ON ACTUAL POPULATION SIZES
-# 
-# # FEMALE MOVEMENT
-# rate_move_out[1] = if(Ncat == 7) - rate_leave_FSW else 0
-# rate_move_out[3] = if(Ncat == 7) - rate_leave_FSW * N[1] / N[3] else 0
-# rate_move_in[3,1] = if(Ncat == 7) rate_leave_FSW else 0 # moving from pro-FSW to GPF
-# rate_move_in[1,3] = if(Ncat == 7) rate_leave_FSW * N[1] / N[3] else 0 # moving from GPF to pro-FSW
-# 
-# # MALE MOVEMENT
-# rate_move_out[5] = if(Ncat == 7) - rate_leave_client else 0
-# rate_move_out[6] = if(Ncat == 7) - rate_leave_client * N[5] / N[6] else 0
-# rate_move_in[6,5] = if(Ncat == 7) rate_leave_client else 0 # moving from client to GPM
-# rate_move_in[5,6] = if(Ncat == 7) rate_leave_client * N[5] / N[6] else 0 # moving from GPM to client
 
 rate_move_in[,] = user()
 rate_move_out[] = user()
@@ -477,7 +434,6 @@ output(frac_F[]) = frac_F
 output(frac_N_sexualpop[]) = frac_N_sexualpop
 dim (frac_N_sexualpop) = Ncat
 # Calculations
-Ntot = sum(N)
 
 output(alphaItot[]) = alphaItot
 

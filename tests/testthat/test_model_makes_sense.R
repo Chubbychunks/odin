@@ -968,3 +968,11 @@ test_that("ART dropout vs prevalence", {
   
   expect_true(sum(N1) > sum(N2))
 })
+
+
+test_that("movement in = out", {
+  parameters <- lhs_parameters(1, Ncat = 7)[[1]]
+  result = run_model(parameters, main_model, time)
+  for (i in 1:result$Ncat[1])
+    expect_equal(sum(result$rate_move_in[1,,i]), -result$rate_move_out[1,i])
+})
