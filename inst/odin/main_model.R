@@ -53,7 +53,7 @@ config(include) = "FOI.c"
 ##############################################################################
 
 # births and prep movement
-E0[] = mu[i] * N[i] + alphaItot[i] + new_people * omega[i] - S0[i] * (zetaa[i] + zetab[i] + zetac[i])
+E0[] = new_people * omega[i] - S0[i] * (zetaa[i] + zetab[i] + zetac[i])
 E1a[] = zetaa[i] * S0[i] - psia[i] * S1a[i] - kappaa[i] * S1a[i]
 E1b[] = zetab[i] * S0[i] + psia[i] * S1a[i] - psib[i] * S1b[i]  - kappab[i] * S1b[i]
 E1c[] = zetac[i] * S0[i] + psib[i] * S1b[i] - kappac[i] * S1c[i]
