@@ -1,6 +1,9 @@
 # parameters which depend on others, etc
 fix_parameters <- function(y, Ncat, Nage) {
   
+  y$epsilon_y = c(y$epsilon_1985, y$epsilon_1992, y$epsilon_2002, y$epsilon_2013, y$epsilon_2016)
+  
+  
   init_prev = c(y$prev_init_FSW, rep_len(y$prev_init_rest, Ncat-1))
   y$S0_init = (1-init_prev) * y$N_init
   y$I01_init = init_prev * y$N_init
@@ -133,7 +136,8 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
   #fixed pars list
   fixed_pars = list(
     rate_move_in = matrix(0, nrow = Ncat, ncol = Ncat),
-    rate_move_out = rep_len(0, Ncat)
+    rate_move_out = rep_len(0, Ncat),
+    epsilon_y = 0
   )
   
   mu <- matrix(rep(c(1/50, 1/42), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("mu", Ncat), NULL))
@@ -160,6 +164,13 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
   
   ranges <- rbind(
     # c_y_comm,
+    
+    epsilon_1985 = c(0.059346131, 0.059346131*2),
+    epsilon_1992 = c(0.053594832, 0.053594832*2),
+    epsilon_2002 = c(0.026936907, 0.026936907*2),
+    epsilon_2013 = c(0.026936907, 0.026936907*2),
+    epsilon_2016 = c(0.026936907, 0.026936907*2),
+    
     
     rate_leave_pro_FSW = c(0.2, 0.2),
     FSW_leave_Cotonou_fraction = c(0.05, 0.15),
@@ -228,6 +239,11 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    #                    epsilon_y_comm = c(0.059346131, 0.059346131, 0.053594832, 0.053594832, 0.026936907, 0.026936907, 0.026936907, 0.026936907),
                    epsilon_t = c(1985, 1992, 2002, 2013, 2016),
                    epsilon_y = c(0.059346131, 0.053594832, 0.026936907, 0.026936907, 0.026936907),
+                   epsilon_1985 = 0.059346131,
+                   epsilon_1992 = 0.053594832,
+                   epsilon_2002 = 0.026936907,
+                   epsilon_2013 = 0.026936907,
+                   epsilon_2016 = 0.026936907,
                    
                    S0_init = rep_len(2000, Ncat),
                    S1a_init = rep_len(0, Ncat),
