@@ -18,6 +18,8 @@
 # 5. Clients
 # 6. General population male
 # 7. Former FSW in Benin, outside Cotonou (not involved in epidemic, but tracked anyway)
+# 8. Virgin Female
+# 9. Virgin Male
 
 # Pro_FSW = 1
 # Low_FSW = 2
@@ -423,6 +425,9 @@ output(E1d[]) = E1d
 
 deriv(cumuInf[]) = S0[i] * lambda_sum_0[i] + S1a[i] * lambda_sum_1a[i] + S1b[i] * lambda_sum_1b[i] + S1c[i] * lambda_sum_1c[i] + S1d[i] * lambda_sum_1d[i]
 deriv(OnPrEP[]) = zetaa[i] * S0[i] + zetab[i] * S0[i] + zetac[i] * S0[i]
+
+cumuInftot = sum(cumuInf)
+output(cumuInftot) = cumuInftot
 
 # fraction of group in each category INCLUDING FORMER FSW OUTSIDE BENIN
 frac_N[] = N[i] / Ntot

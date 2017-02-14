@@ -59,9 +59,9 @@ f <- function(p, gen, time) {
 res = lapply(parms, f, main_model, time)
 
 out = data.frame(time, do.call(rbind, lapply(res, function(x) x$prev)), as.character(sort(rep(seq(1,number_simulations), length(time)))))
-names(out) = c("time", "group 1", "group 2", "group 3", "group 4", "group 5", "group 6", "group 7", "replication")
+names(out) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Former FSW outside Cotonou", "replication")
 out_melted = melt(out, id.vars = c("time", "replication"))
-ggplot(data = out_melted, aes(x = time, y = value, factor = replication, color = variable)) + geom_line() + theme_bw() + facet_wrap(~variable)
+ggplot(data = out_melted, aes(x = time, y = value, factor = replication, color = variable)) + geom_line() + theme_bw() + facet_wrap(~variable)+ theme(legend.position="none")
 
 
 
@@ -85,8 +85,11 @@ result$omega
 result$c_comm
 
 parameters <- lhs_parameters(2000, Ncat = 7)
-parm_prior = do.call(rbind, lapply(parameters, function(x) x$mu))
-hist(parm_prior[,1])
+parm_prior1 = do.call(rbind, lapply(parameters, function(x) x$mu))
+parm_prior2 = do.call(rbind, lapply(parameters, function(x) x$betaMtoF))
+
+hist(parm_prior1[,1])
+ggplot(data= data.frame(parm_prior1, parm_prior2), aes (x= parm_prior1[,1], y= parm_prior2)) + geom_point() + theme_bw()
 
 # test prep
 
@@ -212,25 +215,29 @@ result$lambda_sum_1c[2,]
 
 # RUNNING MULTIPLE SIMULATIONS
 
-number_simulations = 3
+number_simulations = 2000
 
 parms = lhs_parameters(number_simulations)
 
 time <- seq(1986, 2016, length.out = 31)
-
-groups <- c("FSW", "Clients")
 
 # parameter ranges
 
 f <- function(p, gen, time) {
   mod <- gen(user = p)
   all_results <- mod$transform_variables(mod$run(time))
-  all_results[c("prev_client", "prev_FSW","fc_comm","prev_1","prev")]
+  all_results[c("mu","fc_comm","betaMtoF","prev", "cumuInftot")]
 }
 res = lapply(parms, f, main_model, time)
 mu_input <- t(sapply(parms, "[[", "mu"))
 fc_y_input <- t(sapply(parms, "[[", "fc_y_comm"))
 prev_client_output <- t(sapply(res, "[[", "prev_client"))
+betaMtoF_input <- t(sapply(parms, "[[", "betaMtoF"))[1,]
+cumuInf_output <- t(sapply(res, "[[", "cumuInftot"))[,31]
+
+ggplot(data = data.frame(betaMtoF_input, cumuInf_output), aes(x = betaMtoF_input, y = cumuInf_output)) + geom_point() + theme_bw()
+
+
 
 # fc over time
 df = melt(data.frame(time, res[[1]]$fc_comm), id.vars = "time")
@@ -270,7 +277,7 @@ ggplot(data = df_all, aes(x = time, y = value, factor = variable, color = group)
 odin::odin_package(".") # looks for any models inside inst/odin
 devtools::load_all()
 
-number_simulations = 25
+number_simulations = 50
 parms = lhs_parameters(number_simulations, Ncat = 7)
 time <- seq(1986, 2016, length.out = 31)
 f <- function(p, gen, time) {
@@ -299,11 +306,11 @@ df_melted_7 = melt(df_7, id.vars = c("time","group"))
 df_all = rbind(df_melted, df_melted_2, df_melted_3, df_melted_4, df_melted_5, df_melted_6, df_melted_7)
 ggplot(data = df_all, aes(x = time, y = value, factor = variable, color = group)) + geom_line(alpha = 0.5) + theme_bw()
 
-df=do.call(cbind,lapply(res, function(x) x$prev[,1]))
+df=do.call(cbind,lapply(res, function(x) x$prev[,7]))
 colnames(df) <- seq(1, number_simulations)
 df <- data.frame(time, df)
 df_melted <- melt(df, id.vars = "time")
-ggplot(data = df_melted, aes(x = time, y = value, factor = variable)) + geom_line() + theme_bw() + labs(x="year",y="prevlance (%) former FSW")
+ggplot(data = df_melted, aes(x = time, y = value, factor = variable)) + geom_line() + theme_bw() + labs(x="year",y="prevalance (%) former FSW outside Cotonou")
 
 
 # show priors are flat and well explored
