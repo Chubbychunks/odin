@@ -10,7 +10,6 @@ fix_parameters <- function(y, Ncat, Nage) {
   
   N = y$S0_init + y$I01_init
   
-  
   # BIOLOGICAL
   
   # parameters dependent on others
@@ -52,10 +51,22 @@ fix_parameters <- function(y, Ncat, Nage) {
   # y$c_y_comm <- matrix(rep(y$c_y_comm, 4), ncol = Ncat)
   
   y$omega = N/sum(N)
-  
+
 
   
   if (Ncat == 9) {
+    
+    # BIRTHS
+    y$omega = c(
+       y$fraction_F * (y$N_init[1]/y$N_init[3]) * y$fraction_FSW_foreign, # some FSW come from outside Cotonou
+       y$fraction_F * (y$N_init[2]/y$N_init[3]) * y$fraction_FSW_foreign,
+       0,
+       0,
+       0,
+       0,
+       y$fraction_F * (1 - (y$N_init[2]/y$N_init[3]) * y$fraction_FSW_foreign - (y$N_init[1]/y$N_init[3]) * y$fraction_FSW_foreign),
+       1 - y$fraction_F,
+       0)
     
     # MIXING
     ###############################################
@@ -84,18 +95,22 @@ fix_parameters <- function(y, Ncat, Nage) {
     # MOVEMENT
     ############################################### 
     
+    # virgin movement
+    y$rate_move_out[7] = - y$rate_enter_sexual_pop
+    y$rate_move_out[8] = - y$rate_enter_sexual_pop
+    y$rate_move_in[3,7] = y$rate_enter_sexual_pop
+    y$rate_move_in[6,8] = y$rate_enter_sexual_pop
+    
     #this is just to show what happens when you increase movement
 #     y$rate_leave_pro_FSW = y$rate_leave_pro_FSW * 10
 #     y$rate_leave_low_FSW = y$rate_leave_low_FSW * 10
 #     y$rate_leave_client = y$rate_leave_client * 10
     
-    y$prop_client_GPM = y$omega[5] / y$omega[6]
-    y$prop_pro_FSW_GPF = y$omega[1] / y$omega[3]
-    y$prop_low_FSW_GPF = y$omega[2] / y$omega[3]
+    y$prop_client_GPM = y$N_init[5] / y$N_init[6]
+    y$prop_pro_FSW_GPF = y$N_init[1] / y$N_init[3]
+    y$prop_low_FSW_GPF = y$N_init[2] / y$N_init[3]
     
     # FEMALE MOVEMENT
-    
-    # virgin movement
     
     y$rate_move_out[1] = - y$rate_leave_pro_FSW
     y$rate_move_out[2] = - y$rate_leave_low_FSW
@@ -105,8 +120,8 @@ fix_parameters <- function(y, Ncat, Nage) {
     y$rate_move_in[2,3] = y$rate_leave_low_FSW * y$prop_low_FSW_GPF # moving from GPF to low-FSW
     y$rate_move_in[4,1] = y$rate_leave_pro_FSW * (1 - y$FSW_leave_Cotonou_fraction) # moving from pro-FSW to former FSW in Cot
     y$rate_move_in[4,2] = y$rate_leave_low_FSW * (1 - y$FSW_leave_Cotonou_fraction) # moving from low-FSW to former FSW in Cot
-    y$rate_move_in[7,1] = y$rate_leave_pro_FSW * y$FSW_leave_Cotonou_fraction # moving from low-FSW to former FSW NOT in Cot
-    y$rate_move_in[7,2] = y$rate_leave_low_FSW * y$FSW_leave_Cotonou_fraction # moving from low-FSW to former FSW NOT in Cot
+    y$rate_move_in[9,1] = y$rate_leave_pro_FSW * y$FSW_leave_Cotonou_fraction # moving from low-FSW to former FSW NOT in Cot
+    y$rate_move_in[9,2] = y$rate_leave_low_FSW * y$FSW_leave_Cotonou_fraction # moving from low-FSW to former FSW NOT in Cot
     
     
     # MALE MOVEMENT
@@ -145,7 +160,10 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
   fixed_pars = list(
     rate_move_in = matrix(0, nrow = Ncat, ncol = Ncat),
     rate_move_out = rep_len(0, Ncat),
-    epsilon_y = 0
+    epsilon_y = 0,
+    rate_enter_sexual_pop = 1,
+    fraction_F = 0.51,
+    fraction_FSW_foreign = 0.5
   )
   
   mu <- matrix(rep(c(1/50, 1/42), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("mu", Ncat), NULL))
@@ -160,7 +178,7 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
   
 
   
-  N_init = if(Ncat == 9) matrix(c(672, 672, 757, 757, 145439, 145439, 672, 672, 27091, 27091, 111483, 111483, 0, 0, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("N_init", Ncat), NULL)) else c(300000, 300000)
+  N_init = if(Ncat == 9) matrix(c(672, 672, 757, 757, 130895, 130895, 672, 672, 27091, 27091, 100335, 100335, 14544, 14544, 11148, 11148, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("N_init", Ncat), NULL)) else c(300000, 300000)
   #   c_comm = if(Ncat == 9) matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
   #     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL))
   c_comm = if(Ncat == 9) matrix(c(272, 1439, 40, 64, 0, 0, 0, 0, 18.67, 37.5, 0, 0, 0, 0, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
@@ -453,7 +471,10 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    prop_pro_FSW_GPF = 0.004620494, # 672 / 145439
                    prop_low_FSW_GPF = 0.005204931, # 757 / 145439
                    rate_move_in = matrix(0, ncol = Ncat, nrow = Ncat),
-                   rate_move_out = rep_len(0, Ncat)
+                   rate_move_out = rep_len(0, Ncat),
+                   rate_enter_sexual_pop = 1,
+                   fraction_F = 0.51,
+                   fraction_FSW_foreign = 0.5
                    
                    
                    
