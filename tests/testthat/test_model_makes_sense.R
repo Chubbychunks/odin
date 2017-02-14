@@ -92,7 +92,7 @@ test_that("omega adds to 1", {
 })
 
 test_that("omega keeps consistent population?", {
-  parameters <- lhs_parameters(1, omega = c(0.01, 0.02, 0.5, 0.1, 0.12, 0.03, 0.22), Ncat = 7, beta = c(0,0,0,0,0,0,0),
+  parameters <- lhs_parameters(1, omega = c(0.01, 0.02, 0.5, 0.1, 0.12, 0.03, 0.22), Ncat = 9, beta = c(0,0,0,0,0,0,0),
                                S0_init = c(100*0.01, 100*0.02, 100*0.5, 100*0.1, 100*0.12, 100*0.03, 100*0.22),
                                I01_init = c(100*0.01, 100*0.02, 100*0.5, 100*0.1, 100*0.12, 100*0.03, 100*0.22))[[1]]
   result = run_model(parameters, main_model, time)
@@ -105,7 +105,7 @@ test_that("omega keeps consistent population?", {
 
 
 test_that("omega keeps consistent population even with HIV?", {
-  parameters <- lhs_parameters(1, omega = c(0.01, 0.02, 0.5, 0.1, 0.12, 0.03, 0.22), Ncat = 7,
+  parameters <- lhs_parameters(1, omega = c(0.01, 0.02, 0.5, 0.1, 0.12, 0.03, 0.22), Ncat = 9,
                                S0_init = c(100*0.01, 100*0.02, 100*0.5, 100*0.1, 100*0.12, 100*0.03, 100*0.22),
                                I01_init = c(100*0.01, 100*0.02, 100*0.5, 100*0.1, 100*0.12, 100*0.03, 100*0.22))[[1]]
   result = run_model(parameters, main_model, time)
@@ -518,8 +518,8 @@ test_that("prevalence", {
     all_infected = result[c(grep("I[0-9]", names(result)))]
     all = result[c(grep("I[0-9]", names(result)), grep("^S[0-9]", names(result)))]
     
-    expect_equal(result$prev_FSW, 100 * rowSums(do.call(cbind, lapply(all_infected, function(x) x <- x[,1]))) / rowSums(do.call(cbind, lapply(all, function(x) x <- x[,1]))), tolerance = 1e-6)
-    expect_equal(result$prev_client, 100 * rowSums(do.call(cbind, lapply(all_infected, function(x) x <- x[,2]))) / rowSums(do.call(cbind, lapply(all, function(x) x <- x[,2]))), tolerance = 1e-6)
+    expect_equal(result$prev[,1], 100 * rowSums(do.call(cbind, lapply(all_infected, function(x) x <- x[,1]))) / rowSums(do.call(cbind, lapply(all, function(x) x <- x[,1]))), tolerance = 1e-6)
+    expect_equal(result$prev[,2], 100 * rowSums(do.call(cbind, lapply(all_infected, function(x) x <- x[,2]))) / rowSums(do.call(cbind, lapply(all, function(x) x <- x[,2]))), tolerance = 1e-6)
     
     # this will need to be tested against overall prevalence
     #over_prevalence = rowSums(do.call(cbind, all_infected)) / rowSums(do.call(cbind, all))
@@ -971,7 +971,7 @@ test_that("ART dropout vs prevalence", {
 
 
 test_that("movement in = out", {
-  parameters <- lhs_parameters(1, Ncat = 7)[[1]]
+  parameters <- lhs_parameters(1, Ncat = 9)[[1]]
   result = run_model(parameters, main_model, time)
   for (i in 1:result$Ncat[1])
     expect_equal(sum(result$rate_move_in[1,,i]), -result$rate_move_out[1,i])

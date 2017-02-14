@@ -16,7 +16,7 @@ devtools::load_all()
 devtools::test()
 
 time <- seq(1986, 2016, length.out = 31)
-parameters <- lhs_parameters(1,Ncat = 7)[[1]]
+parameters <- lhs_parameters(1,Ncat = 9)[[1]]
 result = run_model(parameters, main_model, time)
 
 
@@ -27,7 +27,7 @@ ggplot(out, aes(x = time, y = output)) + geom_line() + theme_bw()
 
 
 # no zetas
-parameters <- lhs_parameters(1,Ncat = 7, set_null = list("zetaa_y", "zetab_y", "zetac_y"))[[1]]
+parameters <- lhs_parameters(1,Ncat = 9, set_null = list("zetaa_y", "zetab_y", "zetac_y"))[[1]]
 
 
 
@@ -38,18 +38,18 @@ odin::odin_package(".") # looks for any models inside inst/odin
 devtools::load_all()
 time <- seq(1986, 2016, length.out = 31)
 
-parameters <- lhs_parameters(1,Ncat = 7)[[1]]
+parameters <- lhs_parameters(1,Ncat = 9)[[1]]
 result = run_model(parameters, main_model, time)
 
 
 
 # prev of all groups
-#### Ncat = 7
+#### Ncat = 9
 odin::odin_package(".") # looks for any models inside inst/odin
 devtools::load_all()
 
 number_simulations = 25
-parms = lhs_parameters(number_simulations, Ncat = 7)
+parms = lhs_parameters(number_simulations, Ncat = 9)
 time <- seq(1986, 2016, length.out = 31)
 f <- function(p, gen, time) {
   mod <- gen(user = p)
@@ -84,7 +84,7 @@ result$omega
 # showing priors are flat and explore space
 result$c_comm
 
-parameters <- lhs_parameters(2000, Ncat = 7)
+parameters <- lhs_parameters(2000, Ncat = 9)
 parm_prior1 = do.call(rbind, lapply(parameters, function(x) x$mu))
 parm_prior2 = do.call(rbind, lapply(parameters, function(x) x$betaMtoF))
 
@@ -97,7 +97,7 @@ odin::odin_package(".") # looks for any models inside inst/odin
 devtools::load_all()
 
 time <- seq(1986, 2016, length.out = 31)
-parameters <- lhs_parameters(1,Ncat = 7)[[1]]
+parameters <- lhs_parameters(1,Ncat = 9)[[1]]
 result = run_model(parameters, main_model, time)
 
 df=melt(data.frame(time, a = result$S1a[,1], b = result$S1b[,1], c = result$S1c[,1], d = result$S1d[,1]), id.vars = "time")
@@ -108,7 +108,7 @@ ggplot(df, aes(x = time, y = value, color = variable)) + geom_line() + theme_bw(
 
 
 # balancing
-parameters <- generate_parameters(Ncat = 7, c_comm=c(1244,52,0,0,24,0,0), c_noncomm=c(0.377,0.96,0.96,0.96,2.03,1.34,0),
+parameters <- generate_parameters(Ncat = 9, c_comm=c(1244,52,0,0,24,0,0), c_noncomm=c(0.377,0.96,0.96,0.96,2.03,1.34,0),
                                   omega = c(1000, 1127, 143728, 500, 27323, 112436, 10)/(1000+1127+143728+500+27323+112436),
                                   S0_init = c(1000, 1127, 143728, 500, 27323, 112436, 10)*0.99,
                                   I01_init = c(1000, 1127, 143728, 500, 27323, 112436, 10)*0.01)
@@ -147,7 +147,7 @@ result$B_check_noncomm
 odin::odin_package(".") # looks for any models inside inst/odin
 devtools::load_all()
 
-parameters <- lhs_parameters(1,Ncat = 7)[[1]]
+parameters <- lhs_parameters(1,Ncat = 9)[[1]]
 time <- seq(1986, 2016, length.out = 31)
 result = run_model(parameters, main_model, time)
 result$M_comm[2,,]
@@ -273,12 +273,12 @@ df_all = rbind(df_melted, df_melted_2)
 ggplot(data = df_all, aes(x = time, y = value, factor = variable, color = group)) + geom_line(alpha = 0.5) + theme_bw()
 
 
-#### Ncat = 7
+#### Ncat = 9
 odin::odin_package(".") # looks for any models inside inst/odin
 devtools::load_all()
 
 number_simulations = 50
-parms = lhs_parameters(number_simulations, Ncat = 7)
+parms = lhs_parameters(number_simulations, Ncat = 9)
 time <- seq(1986, 2016, length.out = 31)
 f <- function(p, gen, time) {
   mod <- gen(user = p)
@@ -315,7 +315,7 @@ ggplot(data = df_melted, aes(x = time, y = value, factor = variable)) + geom_lin
 
 # show priors are flat and well explored
 number_simulations = 200
-parms = lhs_parameters(number_simulations, Ncat = 7)
+parms = lhs_parameters(number_simulations, Ncat = 9)
 time <- seq(1986, 2016, length.out = 31)
 f <- function(p, gen, time) {
   mod <- gen(user = p)

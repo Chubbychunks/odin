@@ -17,17 +17,9 @@
 # 4. Former FSW in Cotonou
 # 5. Clients
 # 6. General population male
-# 7. Former FSW in Benin, outside Cotonou (not involved in epidemic, but tracked anyway)
-# 8. Virgin Female
-# 9. Virgin Male
-
-# Pro_FSW = 1
-# Low_FSW = 2
-# GPF = 3
-# Form_FSW = 4
-# Client = 5
-# GPM = 6
-# Form_FSW_OUT = 7
+# 7. Virgin Female
+# 8. Virgin Male
+# 9. Former FSW in Benin, outside Cotonou (not involved in epidemic, but tracked anyway)
 
 # Age (x)
 # 1. 15 - 24
@@ -137,14 +129,14 @@ N[] = S0[i] + S1a[i] + S1b[i] + S1c[i] + S1d[i] + I01[i] + I11[i] + I02[i] + I03
   I22[i] + I23[i] + I24[i] + I25[i] + I32[i] + I33[i] + I34[i] + I35[i] +
   I42[i] + I43[i] + I44[i] + I45[i]
 
-Ntot = if (Ncat == 7) (N[1] + N[2] + N[3] + N[4] + N[5] + N[6]) else sum(N)
+Ntot = if (Ncat == 9) (N[1] + N[2] + N[3] + N[4] + N[5] + N[6] + N[7] + N[8]) else sum(N)
 Ntot_inc_former_FSW_nonCot = sum(N)
 
 output(Ntot_inc_former_FSW_nonCot) = Ntot_inc_former_FSW_nonCot
 
 # births due to population growth
 epsilon = interpolate(epsilon_t, epsilon_y, "constant")
-# new_people = if(Ncat == 7) epsilon * (N[1] + N[2] + N[3] + N[4] + N[5] + N[6] + N[7]) else epsilon * sum(N)
+# new_people = if(Ncat == 9) epsilon * (N[1] + N[2] + N[3] + N[4] + N[5] + N[6] + N[7] + N[8] + N[9]) else epsilon * sum(N)
 new_people = epsilon * Ntot_inc_former_FSW_nonCot
 
 
@@ -221,19 +213,19 @@ c_noncomm_balanced[] <- c_noncomm[i]
 # BALANCING BY CHANGING THE NUMBER OF CLIENTS : DO I WANT TO DO THIS ?
 # not the code below won't work: need to change the inits before passing parameters
 # this needs to be only at t=0
-# N[5] = if(Ncat == 7 && t == 1986) (c_comm[1] * N[1] + c_comm[2] * N[2]) / c_comm[5] else N[5]
-# S0_init[5] = if(Ncat == 7 && t == 1986) (S0[5]/N[5])*(c_comm[1] * N[1] + c_comm[2] * N[2]) / c_comm[5] else S0_init[5]
-# I0_init[5] = if(Ncat == 7 && t == 1986) (I0[5]/N[5])*(c_comm[1] * N[1] + c_comm[2] * N[2]) / c_comm[5] else I0_init[5]
+# N[5] = if(Ncat == 9 && t == 1986) (c_comm[1] * N[1] + c_comm[2] * N[2]) / c_comm[5] else N[5]
+# S0_init[5] = if(Ncat == 9 && t == 1986) (S0[5]/N[5])*(c_comm[1] * N[1] + c_comm[2] * N[2]) / c_comm[5] else S0_init[5]
+# I0_init[5] = if(Ncat == 9 && t == 1986) (I0[5]/N[5])*(c_comm[1] * N[1] + c_comm[2] * N[2]) / c_comm[5] else I0_init[5]
 ##############
 
 ##############
 # BALANCING BY CHANGING THE PARTNER CHANGE RATE OF CLIENTS
-# c_comm_balanced[5] = if(Ncat == 7) (c_comm[1] * N[1] + c_comm[2] * N[2])/N[5] else c_comm_balanced[5]
+# c_comm_balanced[5] = if(Ncat == 9) (c_comm[1] * N[1] + c_comm[2] * N[2])/N[5] else c_comm_balanced[5]
 ##############
 
 ##############
 # BALANCING BY CHANGING THE PARTNER CHANGE RATE OF PRO FSW
-c_comm_balanced[1] = if(Ncat == 7) (c_comm[5] * N[5] - c_comm[2] * N[2])/N[1] else c_comm_balanced[1]
+c_comm_balanced[1] = if(Ncat == 9) (c_comm[5] * N[5] - c_comm[2] * N[2])/N[1] else c_comm_balanced[1]
 ##############
 
 
@@ -243,14 +235,14 @@ c_comm_balanced[1] = if(Ncat == 7) (c_comm[5] * N[5] - c_comm[2] * N[2])/N[1] el
 
 ##############
 # BALANCING BY CHANGING THE PARTNER CHANGE RATE OF GPF (AND FORMER FSW)
-c_noncomm_balanced[3] = if(Ncat == 7) (N[5] * c_noncomm[5] + N[6] * c_noncomm[6] - N[1] * c_noncomm[1] - N[2] * c_noncomm[2]) / (N[3] + N[4]) else c_noncomm_balanced[3]
-c_noncomm_balanced[4] = if(Ncat == 7) c_noncomm_balanced[3] else c_noncomm_balanced[4]
+c_noncomm_balanced[3] = if(Ncat == 9) (N[5] * c_noncomm[5] + N[6] * c_noncomm[6] - N[1] * c_noncomm[1] - N[2] * c_noncomm[2]) / (N[3] + N[4]) else c_noncomm_balanced[3]
+c_noncomm_balanced[4] = if(Ncat == 9) c_noncomm_balanced[3] else c_noncomm_balanced[4]
 ##############
 
 # CHECKING THE BALANCING IS CORRECT
 ##############################################################################
-B_check_comm = if(Ncat == 7) c_comm_balanced[1]*N[1] + c_comm_balanced[2]*N[2] + c_comm_balanced[3]*N[3] + c_comm_balanced[4]*N[4] - c_comm_balanced[5]*N[5] - c_comm_balanced[6]*N[6] else 1
-B_check_noncomm = if(Ncat == 7) c_noncomm_balanced[1]*N[1] + c_noncomm_balanced[2]*N[2] + c_noncomm_balanced[3]*N[3] + c_noncomm_balanced[4]*N[4] - c_noncomm_balanced[5]*N[5] - c_noncomm_balanced[6]*N[6] else 1
+B_check_comm = if(Ncat == 9) c_comm_balanced[1]*N[1] + c_comm_balanced[2]*N[2] + c_comm_balanced[3]*N[3] + c_comm_balanced[4]*N[4] - c_comm_balanced[5]*N[5] - c_comm_balanced[6]*N[6] else 1
+B_check_noncomm = if(Ncat == 9) c_noncomm_balanced[1]*N[1] + c_noncomm_balanced[2]*N[2] + c_noncomm_balanced[3]*N[3] + c_noncomm_balanced[4]*N[4] - c_noncomm_balanced[5]*N[5] - c_noncomm_balanced[6]*N[6] else 1
 
 
 
@@ -431,8 +423,8 @@ output(cumuInftot) = cumuInftot
 
 # fraction of group in each category INCLUDING FORMER FSW OUTSIDE BENIN
 frac_N[] = N[i] / Ntot
-frac_F[] = if(Ncat == 7) (N[1] + N[2] + N[3] + N[4] + N[7])/ Ntot else 0
-frac_N_sexualpop[] = if(Ncat == 7) N[i] / (N[1] + N[2] + N[3] + N[4] + N[5] + N[6]) else 0
+frac_F[] = if(Ncat == 9) (N[1] + N[2] + N[3] + N[4] + N[7] + N[9])/ Ntot else 0
+frac_N_sexualpop[] = if(Ncat == 9) N[i] / (N[1] + N[2] + N[3] + N[4] + N[5] + N[6]) else 0
 
 dim(frac_F) = Ncat
 output(frac_F[]) = frac_F
@@ -449,9 +441,9 @@ prev_FSW = 100 * (I01[1] + I11[1] + I02[1] + I03[1] + I04[1] + I05[1] +
                     I22[1] + I23[1] + I24[1] + I25[1] + I32[1] + I33[1] + I34[1] + I35[1] +
                     I42[1] + I43[1] + I44[1] + I45[1]) / N[1]
 
-prev_client = 100 * (I01[2] + I11[2] + I02[2] + I03[2] + I04[2] + I05[2] +
-                       I22[2] + I23[2] + I24[2] + I25[2] + I32[2] + I33[2] + I34[2] + I35[2] +
-                       I42[2] + I43[2] + I44[2] + I45[2]) / N[2]
+prev_client = 100 * (I01[5] + I11[5] + I02[5] + I03[5] + I04[5] + I05[5] +
+                       I22[5] + I23[5] + I24[5] + I25[5] + I32[5] + I33[5] + I34[5] + I35[5] +
+                       I42[5] + I43[5] + I44[5] + I45[5]) / N[5]
 
 prev[] = 100 * (I01[i] + I11[i] + I02[i] + I03[i] + I04[i] + I05[i] +
                   I22[i] + I23[i] + I24[i] + I25[i] + I32[i] + I33[i] + I34[i] + I35[i] +
