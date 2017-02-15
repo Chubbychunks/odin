@@ -474,7 +474,8 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    rate_move_out = rep_len(0, Ncat),
                    rate_enter_sexual_pop = 1,
                    fraction_F = 0.51,
-                   fraction_FSW_foreign = 0.5
+                   fraction_FSW_foreign = 0.5,
+                   replaceDeaths = 0
                    
                    
                    
