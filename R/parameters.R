@@ -163,7 +163,10 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     epsilon_y = 0,
     rate_enter_sexual_pop = 1,
     fraction_F = 0.51,
-    fraction_FSW_foreign = 0.5
+    fraction_FSW_foreign = 0.5,
+    S0_init = matrix(rep(c(4000, 4000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("S0_init", Ncat), NULL)),
+    I01_init = matrix(rep(c(1000, 1000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("I01_init", Ncat), NULL)),
+    N_init = if(Ncat == 9) matrix(c(672, 672, 757, 757, 130895, 130895, 672, 672, 27091, 27091, 100335, 100335, 14544, 14544, 11148, 11148, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("N_init", Ncat), NULL)) else c(300000, 300000)
   )
   
   mu <- matrix(rep(c(1/50, 1/42), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("mu", Ncat), NULL))
@@ -173,13 +176,7 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
   # c_y_comm <- if(Ncat == 9) matrix(c(300, 1400, 40, 64, 0, 0, 0, 0, 18.67, 37.5, 0, 0, 0, 0, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_y_comm", Ncat), NULL)) else c(1, 3)
   
   #these parameters need to be here so fix_parameters works? below are fixed...
-  S0_init = matrix(rep(c(4000, 4000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("S0_init", Ncat), NULL))
-  I01_init = matrix(rep(c(1000, 1000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("I01_init", Ncat), NULL))
-  
-
-  
-  N_init = if(Ncat == 9) matrix(c(672, 672, 757, 757, 130895, 130895, 672, 672, 27091, 27091, 100335, 100335, 14544, 14544, 11148, 11148, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("N_init", Ncat), NULL)) else c(300000, 300000)
-  #   c_comm = if(Ncat == 9) matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
+ #   c_comm = if(Ncat == 9) matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
   #     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL))
   c_comm = if(Ncat == 9) matrix(c(272, 1439, 40, 64, 0, 0, 0, 0, 18.67, 37.5, 0, 0, 0, 0, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL))
@@ -227,12 +224,7 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     
     ART_RR = c(2, 3), # from Mathieu's parameters  IN YEARS
     
-    omega,
-    
-    #below are fixed...
-    S0_init,
-    I01_init,
-    N_init
+    omega
  
   )
   if (!is.null(sample)) {
