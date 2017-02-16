@@ -51,22 +51,22 @@ fix_parameters <- function(y, Ncat, Nage) {
   # y$c_y_comm <- matrix(rep(y$c_y_comm, 4), ncol = Ncat)
   
   y$omega = N/sum(N)
-
-
+  
+  
   
   if (Ncat == 9) {
     
     # BIRTHS
     y$omega = c(
-       y$fraction_F * (y$N_init[1]/y$N_init[3]) * y$fraction_FSW_foreign, # some FSW come from outside Cotonou
-       y$fraction_F * (y$N_init[2]/y$N_init[3]) * y$fraction_FSW_foreign, # BUT THIS IS SET TO 0 FOR NOW: ALL NEW PEOPLE ARE ALL BORN VIRGINS
-       0,
-       0,
-       0,
-       0,
-       y$fraction_F * (1 - (y$N_init[2]/y$N_init[3]) * y$fraction_FSW_foreign - (y$N_init[1]/y$N_init[3]) * y$fraction_FSW_foreign),
-       1 - y$fraction_F,
-       0)
+      y$fraction_F * (y$N_init[1]/y$N_init[3]) * y$fraction_FSW_foreign, # some FSW come from outside Cotonou
+      y$fraction_F * (y$N_init[2]/y$N_init[3]) * y$fraction_FSW_foreign, # BUT THIS IS SET TO 0 FOR NOW: ALL NEW PEOPLE ARE ALL BORN VIRGINS
+      0,
+      0,
+      0,
+      0,
+      y$fraction_F * (1 - (y$N_init[2]/y$N_init[3]) * y$fraction_FSW_foreign - (y$N_init[1]/y$N_init[3]) * y$fraction_FSW_foreign),
+      1 - y$fraction_F,
+      0)
     
     # MIXING
     ###############################################
@@ -102,9 +102,9 @@ fix_parameters <- function(y, Ncat, Nage) {
     y$rate_move_in[6,8] = y$rate_enter_sexual_pop
     
     #this is just to show what happens when you increase movement
-#     y$rate_leave_pro_FSW = y$rate_leave_pro_FSW * 10
-#     y$rate_leave_low_FSW = y$rate_leave_low_FSW * 10
-#     y$rate_leave_client = y$rate_leave_client * 10
+    #     y$rate_leave_pro_FSW = y$rate_leave_pro_FSW * 10
+    #     y$rate_leave_low_FSW = y$rate_leave_low_FSW * 10
+    #     y$rate_leave_client = y$rate_leave_client * 10
     
     y$prop_client_GPM = y$N_init[5] / y$N_init[6]
     y$prop_pro_FSW_GPF = y$N_init[1] / y$N_init[3]
@@ -134,17 +134,20 @@ fix_parameters <- function(y, Ncat, Nage) {
     y$rate_move_in[6,5] = y$rate_leave_client # moving from client to GPM
     y$rate_move_in[5,6] = y$rate_leave_client * y$prop_client_GPM # moving from GPM to client
     
-
+    
+    
     y$beta = c(y$betaMtoF, y$betaMtoF, y$betaMtoF, y$betaMtoF, y$betaFtoM, y$betaFtoM, y$betaMtoF, 0, 0)
-      # c_t_comm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016),
-      # y$c_y_comm = 
+    # c_t_comm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016),
+    # y$c_y_comm = 
     y$mu = rep(y$mu[1], 9)
-      
+    
   } else {
     # y$omega = y$omega/sum(y$omega)
   }
   
-
+  if(y$movement == 0) {
+    y$rate_move_in = y$rate_move_in * 0
+    y$rate_move_out = y$rate_move_out * 0}
   
   return(y)
 }
@@ -163,7 +166,8 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     epsilon_y = 0,
     rate_enter_sexual_pop = 0.4,
     fraction_F = 0.516,
-    fraction_FSW_foreign = 0
+    fraction_FSW_foreign = 0,
+    movement = 1
   )
   
   mu <- matrix(rep(c(1/50, 1/42), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("mu", Ncat), NULL))
@@ -176,7 +180,7 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
   S0_init = matrix(rep(c(4000, 4000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("S0_init", Ncat), NULL))
   I01_init = matrix(rep(c(1000, 1000), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("I01_init", Ncat), NULL))
   
-
+  
   
   N_init = if(Ncat == 9) matrix(c(672, 672, 757, 757, 130895, 130895, 672, 672, 27091, 27091, 100335, 100335, 14544, 14544, 11148, 11148, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("N_init", Ncat), NULL)) else c(300000, 300000)
   #   c_comm = if(Ncat == 9) matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
@@ -233,7 +237,7 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     S0_init,
     I01_init,
     N_init
- 
+    
   )
   if (!is.null(sample)) {
     ranges <- ranges[rownames(ranges) %in% sample,  drop=FALSE]
@@ -475,7 +479,8 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    rate_enter_sexual_pop = 1,
                    fraction_F = 0.51,
                    fraction_FSW_foreign = 0.5,
-                   replaceDeaths = 0
+                   replaceDeaths = 0,
+                   movement = 1
                    
                    
                    

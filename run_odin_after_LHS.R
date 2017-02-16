@@ -38,7 +38,7 @@ odin::odin_package(".") # looks for any models inside inst/odin
 devtools::load_all()
 time <- seq(1986, 2016, length.out = 31)
 
-parameters <- lhs_parameters(1,Ncat = 9)[[1]]
+parameters <- lhs_parameters(1,Ncat = 9, movement = 0)[[1]]
 result = run_model(parameters, main_model, time)
 
 

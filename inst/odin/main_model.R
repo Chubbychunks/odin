@@ -146,8 +146,9 @@ new_people = epsilon * Ntot_inc_former_FSW_nonCot
 # MOVEMENT
 ##############################################################################
 
-rate_move_in[,] = user()
-rate_move_out[] = user()
+
+rate_move_in[,] = user() 
+rate_move_out[] = user() 
 
 
 
