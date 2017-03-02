@@ -425,8 +425,8 @@ cumuInftot = sum(cumuInf)
 output(cumuInftot) = cumuInftot
 
 # fraction of group in each category INCLUDING FORMER FSW OUTSIDE BENIN
-frac_N[] = N[i] / Ntot
-frac_F[] = if(Ncat == 9) (N[1] + N[2] + N[3] + N[4] + N[7] + N[9])/ Ntot else 0
+frac_N[] = N[i] / Ntot_inc_former_FSW_nonCot
+frac_F[] = if(Ncat == 9) (N[1] + N[2] + N[3] + N[4] + N[7] + N[9])/ Ntot_inc_former_FSW_nonCot else 0
 frac_N_sexualpop[] = if(Ncat == 9) N[i] / (N[1] + N[2] + N[3] + N[4] + N[5] + N[6]) else 0
 
 dim(frac_F) = Ncat

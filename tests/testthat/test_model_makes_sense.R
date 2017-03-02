@@ -92,10 +92,13 @@ test_that("omega adds to 1", {
 })
 
 test_that("omega keeps consistent population?", {
-  parameters <- lhs_parameters(1, omega = c(0.01, 0.02, 0.5, 0.1, 0.12, 0.03, 0.22), Ncat = 9, beta = c(0,0,0,0,0,0,0),
-                               S0_init = c(100*0.01, 100*0.02, 100*0.5, 100*0.1, 100*0.12, 100*0.03, 100*0.22),
-                               I01_init = c(100*0.01, 100*0.02, 100*0.5, 100*0.1, 100*0.12, 100*0.03, 100*0.22))[[1]]
+  parameters <- lhs_parameters(1, replaceDeaths = 1, omega = c(0.01, 0.02, 0.3, 0.1, 0.12, 0.25, 0.1, 0.1, 0), Ncat = 9, beta = c(0,0,0,0,0,0,0,0,0),
+                               S0_init = c(100*0.01, 100*0.02, 100*0.3, 100*0.1, 100*0.12, 100*0.25, 100*0.1, 100*0.1, 100*0),
+                               I01_init = c(100*0.01, 100*0.02, 100*0.3, 100*0.1, 100*0.12, 100*0.25, 100*0.1, 100*0.1, 100*0))[[1]]
   result = run_model(parameters, main_model, time)
+  
+  sum(result$frac_N[3,])
+  
   xx <- result[grep("frac_N", names(result))] # grepping all the Ss and Is
   
   
