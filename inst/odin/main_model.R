@@ -294,70 +294,7 @@ zetaa[] = interpolate(zetaa_t, zetaa_y, "constant")
 zetab[] = interpolate(zetab_t, zetab_y, "constant")
 zetac[] = interpolate(zetac_t, zetac_y, "constant")
 
-# c_comm[] = interpolate(c_t_comm, c_y_comm, "linear")
-# c_noncomm[] = interpolate(c_t_noncomm, c_y_noncomm, "linear")
-# 
-# c_t_comm[] = user()
-# c_t_noncomm[] = user()
-# 
-# c_y_comm[,] = user()
-# c_y_noncomm[,] = user()
-# 
-# dim(c_t_comm) = user()
-# dim(c_t_noncomm) = user()
-# 
-# dim(c_y_comm) = user()
-# dim(c_y_noncomm) = user()
 
-# FORCE OF INFECTION
-##############################################################################
-
-# as there are only 2 groups so far, we can leave all of the parameters here as vectors, but they will be matrices!
-# lambda[2,1] is the force of infection of 1 on 2
-# lambda[2,1] = compute_lambda(c1_new, S0[1], S1a[1], S1b[1], S1c[1], I01[1], I11[1], I02[1], I03[1], I04[1], I05[1],
-#                           I22[1], I23[1], I24[1], I25[1], I32[1], I33[1], I34[1], I35[1],
-#                           I42[1], I43[1], I44[1], I45[1],
-#                         N[1], beta[1], R[1], fc[1], fP[1], n[1], eP[1], ec[1])
-#
-# lambda[1,2] = compute_lambda(c2_new, S0[2], S1a[2], S1b[2], S1c[2], I01[2], I11[2], I02[2], I03[2], I04[2], I05[2],
-#                              I22[2], I23[2], I24[2], I25[2], I32[2], I33[2], I34[2], I35[2],
-#                              I42[2], I43[2], I44[2], I45[2],
-#                              N[2], beta[2], R[2], fc[2], fP[2], n[2], eP[2], ec[2])
-#
-
-# k = group of S; i = age of S; j = group of I; l = age of I;
-
-# going into compute_lambda:
-# SPECIFIC TO k, i, j, l
-
-# partner change rate (c) of the suseptible k, i and infected j, l (matrix 21x21; doesn't vary by s, a; updates every timestep; FUNCTION?!)
-# probability of sexual contact (p) of the suseptible k, i and infected j, l (matrix 21x21; doesn't vary by s, a; fixed at beginning of simulation)
-# all care/disease states (s, a) of the infected j, l
-# efficacy of PrEP (eP), which depends on PrEP adherence category (vector of length 4)
-# transmission rate (beta) of the susceptible k, i (matrix 7x3; doesn't depend on s, a)
-# relative risk factors (R) of care state (a) and stage of infection (s) of INFECTED CLASS (matrix 5 x 5)
-# number of sex acts per partnership (n) of the suseptible k, i and infected j, l (matrix 21x21; doesn't vary by s, a; fixed at beginning of simulation)
-# fraction condom protected (fc) of the suseptible k, i and infected j, l (matrix 21x21; doesn't vary by s, a; updates every timestep with interpolating function)
-# fraction PrEP protected (fP) of the susceptible k, i (matrix 7x3; doesn't depend on s, a; set all to 1 for now)
-
-# lambda_0[,] requires kijl... but at the moment only inputs ki?
-# lambda_0 will have to be a matrix of size 21x21, and each cell is the sum of all of the FOIs from all the care states
-
-# lambda_0[,] = compute_lambda(c_new, p, S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
-#                            I22[j], I23[j], I24[j], I25[j], I32[j], I33[j], I34[j], I35[j],
-#                            I42[j], I43[j], I44[j], I45[j],
-#                            N[j], beta[j], R[j], fc[j], fP[j], n[j], eP[j], ec[j])
-
-# 1. H-FSW; 2. L-FSW; 3. GPF; 4. H-Clients; 5. L-Clients; 6. Boyfriends; 7. GPM
-# 1. 15-24; 2. 25-34; 3. 35-59
-
-# R is a matrix, because it varies with s and a (which is being summed over in the function)
-# first element of vector eP, because lambda 0...
-
-# could expand the lambda function to sum also over j,l... THIS ACTUALLY SEEMS BETTER...
-
-
-#
 
 #FOI of j on i
 lambda[,] = if (i == j) 0 else compute_lambda(c_comm_balanced[i], p_comm[i,j], S0[j], S1a[j], S1b[j], S1c[j], I01[j], I11[j], I02[j], I03[j], I04[j], I05[j],
