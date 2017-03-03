@@ -99,20 +99,20 @@ deriv(S1c[]) = E1c[i] - S1c[i] * lambda_sum_1c[i] - S1c[i] * mu[i] + rate_move_o
 deriv(S1d[]) = E1d[i] - S1d[i] * lambda_sum_1d[i] - S1d[i] * mu[i] + rate_move_out[i] * S1d[i] + sum(in_S1d[i, ])
 
 #primary infection
-deriv(I01[]) = S0[i] * lambda_sum_0[i] - I01[i] * (gamma01[i] + tau01[i] + alpha01[i] + mu[i]) + rate_move_out[i] * I01[i] + sum(in_I01[i, ])
+deriv(I01[]) = S0[i] * lambda_sum_0[i] - I01[i] * (gamma01[i] + tau[i] + alpha01[i] + mu[i]) + rate_move_out[i] * I01[i] + sum(in_I01[i, ])
 deriv(I11[]) = S1a[i] * lambda_sum_1a[i] + S1b[i] * lambda_sum_1b[i] + S1c[i] * lambda_sum_1c[i] -
-  I11[i] * (gamma11[i] + tau11[i] + alpha11[i] + mu[i]) + rate_move_out[i] * I11[i] + sum(in_I11[i, ])
+  I11[i] * (gamma11[i] + RR_test_onPrEP*tau[i] + alpha11[i] + mu[i]) + rate_move_out[i] * I11[i] + sum(in_I11[i, ])
 
 #chronic
-deriv(I02[]) = gamma01[i] * I01[i] + gamma11[i] * I11[i] - I02[i] * (gamma02[i] + tau2[i] + alpha02[i] + mu[i]) + rate_move_out[i] * I02[i] + sum(in_I02[i, ])
-deriv(I03[]) = gamma02[i] * I02[i] - I03[i] * (gamma03[i] + tau3[i] + alpha03[i] + mu[i]) + rate_move_out[i] * I03[i] + sum(in_I03[i, ])
-deriv(I04[]) = gamma03[i] * I03[i] - I04[i] * (gamma04[i] + tau4[i] + alpha04[i] + mu[i]) + rate_move_out[i] * I04[i] + sum(in_I04[i, ])
-deriv(I05[]) = gamma04[i] * I04[i] - I05[i] * (tau5[i] + alpha05[i] + mu[i]) + rate_move_out[i] * I05[i] + sum(in_I05[i, ])
+deriv(I02[]) = gamma01[i] * I01[i] + gamma11[i] * I11[i] - I02[i] * (gamma02[i] + tau[i] + alpha02[i] + mu[i]) + rate_move_out[i] * I02[i] + sum(in_I02[i, ])
+deriv(I03[]) = gamma02[i] * I02[i] - I03[i] * (gamma03[i] + tau[i] + alpha03[i] + mu[i]) + rate_move_out[i] * I03[i] + sum(in_I03[i, ])
+deriv(I04[]) = gamma03[i] * I03[i] - I04[i] * (gamma04[i] + tau[i] + alpha04[i] + mu[i]) + rate_move_out[i] * I04[i] + sum(in_I04[i, ])
+deriv(I05[]) = gamma04[i] * I04[i] - I05[i] * (RR_test_CD4200*tau[i] + alpha05[i] + mu[i]) + rate_move_out[i] * I05[i] + sum(in_I05[i, ])
 
-deriv(I22[]) = tau01[i] * I01[i] + tau11[i] * I11[i] + tau2[i] * I02[i] - I22[i] * (gamma22[i] + rho2[i] + alpha22[i] + mu[i]) + rate_move_out[i] * I22[i] + sum(in_I22[i, ])
-deriv(I23[]) = gamma22[i] * I22[i] + tau3[i] * I03[i] - I23[i] * (gamma23[i] + rho3[i] + alpha23[i] + mu[i]) + rate_move_out[i] * I23[i] + sum(in_I23[i, ])
-deriv(I24[]) = gamma23[i] * I23[i] + tau4[i] * I04[i] - I24[i] * (gamma24[i] + rho4[i] + alpha24[i] + mu[i]) + rate_move_out[i] * I24[i] + sum(in_I24[i, ])
-deriv(I25[]) = gamma24[i] * I24[i] + tau5[i] * I05[i] - I25[i] * (rho5[i] + alpha25[i] + mu[i]) + rate_move_out[i] * I25[i] + sum(in_I25[i, ])
+deriv(I22[]) = tau[i] * I01[i] + RR_test_onPrEP*tau[i] * I11[i] + tau[i] * I02[i] - I22[i] * (gamma22[i] + rho2[i] + alpha22[i] + mu[i]) + rate_move_out[i] * I22[i] + sum(in_I22[i, ])
+deriv(I23[]) = gamma22[i] * I22[i] + tau[i] * I03[i] - I23[i] * (gamma23[i] + rho3[i] + alpha23[i] + mu[i]) + rate_move_out[i] * I23[i] + sum(in_I23[i, ])
+deriv(I24[]) = gamma23[i] * I23[i] + tau[i] * I04[i] - I24[i] * (gamma24[i] + rho4[i] + alpha24[i] + mu[i]) + rate_move_out[i] * I24[i] + sum(in_I24[i, ])
+deriv(I25[]) = gamma24[i] * I24[i] + RR_test_CD4200*tau[i] * I05[i] - I25[i] * (rho5[i] + alpha25[i] + mu[i]) + rate_move_out[i] * I25[i] + sum(in_I25[i, ])
 
 deriv(I32[]) = rho2[i] * (I22[i] + I42[i]) - I32[i] * (gamma32[i] + phi2[i] + alpha32[i] + mu[i]) + rate_move_out[i] * I32[i] + sum(in_I32[i, ])
 deriv(I33[]) = gamma32[i] * I32[i] + rho3[i] * (I23[i] + I43[i]) - I33[i] * (gamma33[i] + phi3[i] + alpha33[i] + mu[i]) + rate_move_out[i] * I33[i] + sum(in_I33[i, ])
