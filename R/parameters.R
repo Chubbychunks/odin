@@ -341,6 +341,10 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    rho4 = rep_len(0.5,Ncat),
                    rho5 = rep_len(0.5,Ncat),
                    
+                   ART_prob_t = c(1985, 2002, 2005, 2016),
+                   ART_prob_y = matrix(
+                     rep(c(0, 0, 0.2, 0.4), Ncat), ncol = Ncat),
+                   
                    phi2 = rep_len(0.004,Ncat), # sort out later
                    phi3 = rep_len(0.004,Ncat),
                    phi4 = rep_len(0.004,Ncat),
@@ -355,6 +359,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    
                    RR_test_onPrEP = 2,
                    RR_test_CD4200 = 2,
+                   RR_ART_CD4200 = 2,
                    
                    tau01 = rep_len(1,Ncat),
                    tau11 = rep_len(1,Ncat),

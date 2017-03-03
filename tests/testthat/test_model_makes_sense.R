@@ -92,13 +92,12 @@ test_that("omega adds to 1", {
 })
 
 test_that("omega keeps consistent population?", {
-  parameters <- lhs_parameters(1, replaceDeaths = 1, movement = 0, forced_pars = list(omega = c(0.01, 0.02, 0.3, 0.1, 0.12, 0.25, 0.1, 0.1, 0), Ncat = 9, beta = c(0,0,0,0,0,0,0,0,0),
+  parameters <- lhs_parameters(1, replaceDeaths = 1, Ncat = 9, movement = 0, forced_pars = list(omega = c(0.01, 0.02, 0.3, 0.1, 0.12, 0.25, 0.1, 0.1, 0), beta = c(0,0,0,0,0,0,0,0,0),
                                S0_init = c(100*0.01, 100*0.02, 100*0.3, 100*0.1, 100*0.12, 100*0.25, 100*0.1, 100*0.1, 100*0),
                                I01_init = c(100*0.01, 100*0.02, 100*0.3, 100*0.1, 100*0.12, 100*0.25, 100*0.1, 100*0.1, 100*0)))[[1]]
   result = run_model(parameters, main_model, time)
   
-  sum(result$frac_N[3,])
-  
+
   xx <- result[grep("frac_N", names(result))] # grepping all the Ss and Is
   
   
@@ -108,9 +107,9 @@ test_that("omega keeps consistent population?", {
 
 
 test_that("omega keeps consistent population even with HIV?", {
-  parameters <- lhs_parameters(1, omega = c(0.01, 0.02, 0.5, 0.1, 0.12, 0.03, 0.22), Ncat = 9,
-                               S0_init = c(100*0.01, 100*0.02, 100*0.5, 100*0.1, 100*0.12, 100*0.03, 100*0.22),
-                               I01_init = c(100*0.01, 100*0.02, 100*0.5, 100*0.1, 100*0.12, 100*0.03, 100*0.22))[[1]]
+  parameters <- lhs_parameters(1, Ncat = 9, movement = 0, replaceDeaths = 1, forced_pars = list(omega = c(0.01, 0.02, 0.5, 0.1, 0.12, 0.03, 0.22, 0, 0),
+                               S0_init = c(100*0.01, 100*0.02, 100*0.5, 100*0.1, 100*0.12, 100*0.03, 100*0.22, 0, 0),
+                               I01_init = c(100*0.01, 100*0.02, 100*0.5, 100*0.1, 100*0.12, 100*0.03, 100*0.22,0 , 0)))[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[grep("frac_N", names(result))] # grepping all the Ss and Is
   
@@ -120,13 +119,13 @@ test_that("omega keeps consistent population even with HIV?", {
 })
 
 test_that("growth rate zero", {
-  parameters <- lhs_parameters(1, epsilon_y = c(0,0,0,0,0))[[1]]
+  parameters <- lhs_parameters(1, replaceDeaths = 1, movement = 0, epsilon_y = c(0,0,0,0,0))[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[grep("^[SI]", names(result))] # grepping all the Ss and Is
   N <- rowSums(do.call(cbind, xx))
   
   # are all increments in N equal to 0?
-  expect_true(all(abs(diff(N)) < 10^-4))
+  expect_true(all(abs(diff(N)) < 10^-2))
 })
 
 test_that("growth rate increases", {
@@ -227,7 +226,7 @@ test_that("beta 2", {
 # R
 # if R is 0, no infections
 test_that("R 1", {
-  parameters <- lhs_parameters(1, I11_init = c(1000,0), I01_init = c(1000,0), R = 0, infect_ART = 0, infect_acute = 0)[[1]]
+  parameters <- lhs_parameters(1, I11_init = c(1000,0), I01_init = c(1000,0), R = 0, infect_ART = 0, infect_acute = 0, infect_AIDS = 0)[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I01", names(result)), grep("I11", names(result)))]
   expect_true(sum(c(xx$I01[,2], xx$I11[,2]))==0)
@@ -395,7 +394,7 @@ test_that("fP eP 2c", {
 # done by setting tau[0-9]1 and gamma[0-9]1 to 0
 
 test_that("acute to CD4>500 zero", {
-  relevant_parameters = parameter_names[c(grep("gamma[0-9]1", parameter_names), grep("tau[0-9]1", parameter_names))]
+  relevant_parameters = parameter_names[c(grep("gamma[0-9]1", parameter_names), grep("testing_prob_y", parameter_names))]
   parameters <- lhs_parameters(1, I11_init = c(100,100), set_null = relevant_parameters)[[1]]
   result = run_model(parameters, main_model, time)
   all_infected = result[c(grep("I[0-9]2|I[0-9]3|I[0-9]4|I[0-9]5", names(result)))]
@@ -463,7 +462,7 @@ test_that("prep increases", {
 # NO TESTING
 
 test_that("no testing", {
-  relevant_parameters = parameter_names[c(grep("tau", parameter_names))]
+  relevant_parameters = parameter_names[c(grep("testing_prob_y", parameter_names))]
   parameters <- lhs_parameters(1, set_null = relevant_parameters)[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I2[0-9]|I3[0-9]|I4[0-9]", names(result)))]
@@ -896,8 +895,8 @@ test_that("testing vs prevalence", {
   xx <- result[c(grep("cumuInf", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
   
-  newpars = lhs_parameters(1, set_null = "tau2")[[1]]$tau2
-  parameters <- modifyList(parameters, list(tau2 = newpars, tau3 = newpars, tau4 = newpars, tau5 = newpars))
+  newpars = lhs_parameters(1, set_null = "testing_prob_y")[[1]]$testing_prob_y
+  parameters <- modifyList(parameters, list(testing_prob_y = newpars))
   
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("cumuInf", names(result)))]

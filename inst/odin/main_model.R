@@ -281,10 +281,18 @@ testing_prob_y[,] = user()
 dim(testing_prob_t) = user()
 dim(testing_prob_y) = user()
 dim(testing_prob) = Ncat
-
 testing_prob[] = interpolate(testing_prob_t, testing_prob_y, "linear")
-
 output(testing_prob[]) = testing_prob
+
+ART_prob_t[] = user()
+ART_prob_y[,] = user()
+dim(ART_prob_t) = user()
+dim(ART_prob_y) = user()
+dim(ART_prob) = Ncat
+
+ART_prob[] = interpolate(ART_prob_t, ART_prob_y, "linear")
+
+output(ART_prob[]) = ART_prob
 
 zetaa_t[] = user()
 zetab_t[] = user()
@@ -359,6 +367,15 @@ RR_test_onPrEP = user()
 RR_test_CD4200 = user()
 
 tau[] = -log(1-testing_prob[i])
+
+# ART
+##############################################################################
+dim(rho) = Ncat
+output(rho[]) = rho
+
+RR_ART_CD4200 = user()
+
+rho[] = -log(1-ART_prob[i])
 
 
 # OUTPUTS
