@@ -627,12 +627,7 @@ phi5[] = user()
 psia[] = user()
 psib[] = user()
 
-tau01[] = user()
-tau11[] = user()
-tau2[] = user()
-tau3[] = user()
-tau4[] = user()
-tau5[] = user()
+
 
 
 
@@ -767,13 +762,6 @@ dim(phi5) = Ncat
 
 dim(psia) = Ncat
 dim(psib) = Ncat
-
-dim(tau01) = Ncat
-dim(tau11) = Ncat
-dim(tau2) = Ncat
-dim(tau3) = Ncat
-dim(tau4) = Ncat
-dim(tau5) = Ncat
 
 dim(zetaa_t) = user()
 dim(zetab_t) = user()
