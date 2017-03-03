@@ -276,15 +276,15 @@ p_noncomm[,] = if(M_noncomm[i, j] == 0) 0 else M_noncomm[i, j] * N[j] * c_noncom
 # INTERPOLATING FUNCTIONS
 ##############################################################################
 
-tau01_t_comm[] = user()
-tau01_y_comm[,] = user()
-dim(tau01_t_comm) = Ncat
-dim(tau01_y_comm) = c(Ncat, Ncat)
-dim(tau) = Ncat
+testing_prob_t[] = user()
+testing_prob_y[,] = user()
+dim(testing_prob_t) = Ncat
+dim(testing_prob_y) = c(Ncat, Ncat)
+dim(testing_prob) = Ncat
 
-tau[] = interpolate(tau01_t_comm, tau01_y_comm, "linear")
+testing_prob[] = interpolate(testing_prob_t, testing_prob_y, "linear")
 
-output(tau[]) = tau
+output(testing_prob[]) = testing_prob
 
 zetaa_t[] = user()
 zetab_t[] = user()
@@ -350,6 +350,15 @@ lambda_sum_1b[] = sum(lambda_1b[i,])
 lambda_sum_1c[] = sum(lambda_1c[i,])
 lambda_sum_1d[] = sum(lambda_1d[i,])
 
+# TESTING
+##############################################################################
+dim(tau) = Ncat
+output(tau[]) = tau
+
+RR_test_onPrEP = user()
+RR_test_CD4200 = user()
+
+tau[] = -log(1-testing_prob[i])
 
 
 # OUTPUTS

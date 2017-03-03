@@ -12,18 +12,18 @@ fix_parameters <- function(y, Ncat, Nage) {
   
   # BIOLOGICAL
   
-  #gamma01, gamma04 input as a rate
+  #gamma01, gamma04 input as a DURATION
   #SC_to_200_349 input as a duration
   
   # parameters dependent on others
-  prog_rate = 2/(y$SC_to_200_349 - 1/y$gamma01)
+  prog_rate = 2/(y$SC_to_200_349 - y$gamma01)
   y$gamma02 = rep_len(prog_rate, Ncat)
   y$gamma03 = rep_len(prog_rate, Ncat)
   
   # converting durations into rates
-  # y$gamma01 = 1/y$gamma01
+  y$gamma01 = 1/y$gamma01
   y$SC_to_200_349 = 1/y$SC_to_200_349
-  # y$gamma04 = 1/y$gamma04
+  y$gamma04 = 1/y$gamma04
   
   # filling in other parameters
   y$gamma01 <- rep_len(y$gamma01, Ncat)
@@ -228,6 +228,7 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     infect_ART = c(0.1, 0.7), # infectiousness RR when on ART
     infect_acute = c(4, 18), # RR for acute phase
     
+    # gamma01 = c(1/0.5, 1/0.16), # rate
     gamma01 = c(0.16, 0.5), # from Mathieu's parameters  IN YEARS
     #     gamma01 = c(2, 6.25), # from Mathieu's parameters
     
@@ -346,8 +347,8 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    psia = rep_len(0.1,Ncat),
                    psib = rep_len(0.1,Ncat),
                    
-                   tau01_t_comm = c(1985, 2001, 2005, 2006, 2008, 2012, 2013, 2015, 2016),
-                   tau01_y_comm = matrix(
+                   testing_prob_t = c(1985, 2001, 2005, 2006, 2008, 2012, 2013, 2015, 2016),
+                   testing_prob_y = matrix(
                      rep(c(0, 0.1, 0.2, 0.4, 0.5, 0.7, 0.5, 0.8, 0.7), Ncat), ncol = Ncat),
                    
                    RR_test_onPrEP = 2,
@@ -392,7 +393,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    alpha02 = rep_len(0.01,Ncat),
                    alpha03 = rep_len(0.01,Ncat),
                    alpha04 = rep_len(0.01,Ncat),
-                   alpha05 = rep_len(0.6, Ncat),
+                   alpha05 = rep_len(0.3, Ncat),
                    
                    alpha11 = rep_len(0.01,Ncat),
                    
@@ -400,17 +401,17 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    alpha22 = rep_len(0.01,Ncat),
                    alpha23 = rep_len(0.01,Ncat),
                    alpha24 = rep_len(0.01,Ncat),
-                   alpha25 = rep_len(1,Ncat),
+                   alpha25 = rep_len(0.3,Ncat),
                    
                    alpha32 = rep_len(0.01,Ncat),
                    alpha33 = rep_len(0.01,Ncat),
                    alpha34 = rep_len(0.01,Ncat),
-                   alpha35 = rep_len(1,Ncat),
+                   alpha35 = rep_len(0.3,Ncat),
                    
                    alpha42 = rep_len(0.01,Ncat),
                    alpha43 = rep_len(0.01,Ncat),
                    alpha44 = rep_len(0.01,Ncat),
-                   alpha45 = rep_len(1,Ncat),
+                   alpha45 = rep_len(0.3,Ncat),
                    
                    
                    beta = rep_len(0.005,Ncat),
