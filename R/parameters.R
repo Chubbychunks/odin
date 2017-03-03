@@ -162,7 +162,7 @@ fix_parameters <- function(y, Ncat, Nage) {
 #
 # the parameters below will be sampled from an LHS and will replace their respective defaults
 # unless I put something in the args of the function, eg sample = mu
-lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars = list(...), set_null= list(...)) {
+lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars = list(...), forced_pars = list(...), set_null= list(...)) {
   
   #fixed pars list
   fixed_pars = list(
@@ -266,6 +266,8 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
   samples_list <- lapply(samples_list, fix_parameters, Ncat = Ncat)
   
   # samples_list <- lapply(samples_list, function(x) modifyList(x, set_pars)) # set pars after fixed pars in order to get right set pars
+  samples_list <- lapply(samples_list, function(x) modifyList(x, forced_pars)) # set pars after fixed pars in order to get right set pars
+  
   
   lapply(samples_list, function(x) generate_parameters(parameters = x, Ncat = Ncat, set_null = set_null))
 }

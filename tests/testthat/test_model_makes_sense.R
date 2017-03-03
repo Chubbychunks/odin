@@ -52,7 +52,7 @@ test_that("cumulative infections", {
 test_that("no incidence", {
   for (Ncat in c(2, 10))
   {
-    parameters <- lhs_parameters(1, Ncat = Ncat, I11_init = rep(0, Ncat), I01_init = rep(0,Ncat), S1a_init = rep(100,Ncat), S1b_init = rep(100,Ncat), S1c_init = rep(100,Ncat))[[1]]
+    parameters <- lhs_parameters(1, Ncat = Ncat, prev_init_FSW = 0, prev_init_rest = 0, S1a_init = rep(100,Ncat), S1b_init = rep(100,Ncat), S1c_init = rep(100,Ncat))[[1]]
     result = run_model(parameters, main_model, time)
     xx <- result[c(grep("I[0-9]", names(result)))]
     expect_true(all(unlist(xx) == 0))
@@ -62,7 +62,7 @@ test_that("no incidence", {
 
 # no infected, then 0 cumulative infections
 test_that("cumulative infections", {
-  parameters <- lhs_parameters(1, I11_init = c(0,0), I01_init = c(0,0), S1a_init = c(100,100), S1b_init = c(100,100), S1c_init = c(100,100))[[1]]
+  parameters <- lhs_parameters(1, prev_init_FSW = 0, prev_init_rest = 0, S1a_init = c(100,100), S1b_init = c(100,100), S1c_init = c(100,100))[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("cumuInf", names(result)))]
   expect_true(all(unlist(xx) == 0))
@@ -92,9 +92,9 @@ test_that("omega adds to 1", {
 })
 
 test_that("omega keeps consistent population?", {
-  parameters <- lhs_parameters(1, replaceDeaths = 1, omega = c(0.01, 0.02, 0.3, 0.1, 0.12, 0.25, 0.1, 0.1, 0), Ncat = 9, beta = c(0,0,0,0,0,0,0,0,0),
+  parameters <- lhs_parameters(1, replaceDeaths = 1, movement = 0, forced_pars = list(omega = c(0.01, 0.02, 0.3, 0.1, 0.12, 0.25, 0.1, 0.1, 0), Ncat = 9, beta = c(0,0,0,0,0,0,0,0,0),
                                S0_init = c(100*0.01, 100*0.02, 100*0.3, 100*0.1, 100*0.12, 100*0.25, 100*0.1, 100*0.1, 100*0),
-                               I01_init = c(100*0.01, 100*0.02, 100*0.3, 100*0.1, 100*0.12, 100*0.25, 100*0.1, 100*0.1, 100*0))[[1]]
+                               I01_init = c(100*0.01, 100*0.02, 100*0.3, 100*0.1, 100*0.12, 100*0.25, 100*0.1, 100*0.1, 100*0)))[[1]]
   result = run_model(parameters, main_model, time)
   
   sum(result$frac_N[3,])

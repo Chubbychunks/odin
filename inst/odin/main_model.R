@@ -278,8 +278,8 @@ p_noncomm[,] = if(M_noncomm[i, j] == 0) 0 else M_noncomm[i, j] * N[j] * c_noncom
 
 testing_prob_t[] = user()
 testing_prob_y[,] = user()
-dim(testing_prob_t) = Ncat
-dim(testing_prob_y) = c(Ncat, Ncat)
+dim(testing_prob_t) = user()
+dim(testing_prob_y) = user()
 dim(testing_prob) = Ncat
 
 testing_prob[] = interpolate(testing_prob_t, testing_prob_y, "linear")
