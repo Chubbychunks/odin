@@ -12,15 +12,18 @@ fix_parameters <- function(y, Ncat, Nage) {
   
   # BIOLOGICAL
   
+  #gamma01, gamma04 input as a rate
+  #SC_to_200_349 input as a duration
+  
   # parameters dependent on others
-  prog_rate = 2/(y$SC_to_200_349 - y$gamma01)
+  prog_rate = 2/(y$SC_to_200_349 - 1/y$gamma01)
   y$gamma02 = rep_len(prog_rate, Ncat)
   y$gamma03 = rep_len(prog_rate, Ncat)
   
   # converting durations into rates
-  y$gamma01 = 1/y$gamma01
+  # y$gamma01 = 1/y$gamma01
   y$SC_to_200_349 = 1/y$SC_to_200_349
-  y$gamma04 = 1/y$gamma04
+  # y$gamma04 = 1/y$gamma04
   
   # filling in other parameters
   y$gamma01 <- rep_len(y$gamma01, Ncat)
@@ -42,6 +45,8 @@ fix_parameters <- function(y, Ncat, Nage) {
   y$gamma32 <- (y$gamma02)/y$ART_RR
   y$gamma33 <- (y$gamma03)/y$ART_RR
   y$gamma34 <- (y$gamma04)/y$ART_RR
+  y$alpha35 <- (y$alpha05)/y$ART_RR
+  
   
   
   
@@ -167,7 +172,10 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     rate_enter_sexual_pop = 0.4,
     fraction_F = 0.516,
     fraction_FSW_foreign = 0,
-    movement = 1
+    movement = 1,
+    alpha05 = rep_len(1,Ncat)
+
+    
   )
   
   mu <- matrix(rep(c(1/50, 1/42), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("mu", Ncat), NULL))
@@ -252,9 +260,11 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
   
   samples_list <- lapply(samples_list, function(x) modifyList(x, fixed_pars))
   
+  samples_list <- lapply(samples_list, function(x) modifyList(x, set_pars)) # set pars before fixed pars in order to get right fixed
+  
   samples_list <- lapply(samples_list, fix_parameters, Ncat = Ncat)
   
-  samples_list <- lapply(samples_list, function(x) modifyList(x, set_pars))
+  # samples_list <- lapply(samples_list, function(x) modifyList(x, set_pars)) # set pars after fixed pars in order to get right set pars
   
   lapply(samples_list, function(x) generate_parameters(parameters = x, Ncat = Ncat, set_null = set_null))
 }
@@ -336,6 +346,13 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    psia = rep_len(0.1,Ncat),
                    psib = rep_len(0.1,Ncat),
                    
+                   tau01_t_comm = c(1985, 2001, 2005, 2006, 2008, 2012, 2013, 2015, 2016),
+                   tau01_y_comm = matrix(
+                     rep(c(0, 0.1, 0.2, 0.4, 0.5, 0.7, 0.5, 0.8, 0.7), Ncat), ncol = Ncat),
+                   
+                   RR_test_onPrEP = 2,
+                   RR_test_CD4200 = 2,
+                   
                    tau01 = rep_len(1,Ncat),
                    tau11 = rep_len(1,Ncat),
                    tau2 = rep_len(1,Ncat),
@@ -375,7 +392,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    alpha02 = rep_len(0.01,Ncat),
                    alpha03 = rep_len(0.01,Ncat),
                    alpha04 = rep_len(0.01,Ncat),
-                   alpha05 = rep_len(1, Ncat),
+                   alpha05 = rep_len(0.6, Ncat),
                    
                    alpha11 = rep_len(0.01,Ncat),
                    
@@ -398,14 +415,14 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    
                    beta = rep_len(0.005,Ncat),
                    betaMtoF = 0.00193,
-                   betaFtoM = 0.00897,
+                   betaFtoM = 0.00867,
                    #beta = 0,
                    
                    p_comm = matrix(1, ncol = Ncat, nrow = Ncat),
                    p_noncomm = matrix(1, ncol = Ncat, nrow = Ncat),
                    
                    
-                   ec = rep_len(0.9,Ncat),
+                   ec = rep_len(0.8,Ncat),
                    # ec = rep_len(1,1),
                    
                    
@@ -458,6 +475,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    
                    infect_ART = 0.4, # infectiousness RR when on ART
                    infect_acute = 9, # RR for acute phase
+                   infect_AIDS = 7.27, # RR for AIDS phase
                    
                    dur_FSW = 30,
                    OnPrEP_init = rep_len(0, Ncat),
