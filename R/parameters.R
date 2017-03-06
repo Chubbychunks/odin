@@ -173,7 +173,7 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     fraction_F = 0.516,
     fraction_FSW_foreign = 0,
     movement = 1,
-    alpha05 = rep_len(1,Ncat)
+    alpha05 = rep_len(0.3,Ncat)
 
     
   )

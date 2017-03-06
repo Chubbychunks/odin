@@ -77,6 +77,8 @@ best_set = list(
   gamma01 = 0.4166667, #years
   SC_to_200_349 = 3.4,
   gamma04 = 4.45, #years
+  
+
   alpha01 = rep_len(0,9),
   alpha02 = rep_len(0,9),
   alpha03 = rep_len(0,9),
@@ -96,6 +98,7 @@ best_set = list(
   alpha43 = rep_len(0,9),
   alpha44 = rep_len(0,9),
   alpha45 = rep_len(0.3448276,9),
+  
   
   #PREP
   zetaa_t = c(1985, 2013, 2015, 2016),
@@ -118,7 +121,41 @@ best_set = list(
                             0.653, 0.331, 0.331, 0.331, 0.0582, 0.0582, 0, 0, 0, # 2013
                             0.68, 0.331, 0.331, 0.331, 0.0582, 0.0582, 0, 0, 0, # 2015
                             0.68, 0.331, 0.331, 0.331, 0.0582, 0.0582, 0, 0, 0), # 2016
-                          nrow = 9, ncol = 9, byrow = T)
+                          nrow = 9, ncol = 9, byrow = T),
+  #ART
+  ART_prob_t = c(1985, 2002, 2005, 2016),
+  ART_prob_y = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 0, # 1985
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, # 2002
+                        0, 0.1448571, 0.1448571, 0.1448571, 0.1448571, 0.1448571, 0, 0, 0, # 2005 0.676/14 * 3
+                        0.6739, 0.676, 0.676, 0.676, 0.676, 0.676, 0, 0, 0),
+                      nrow = 4, ncol = 9, byrow = T), # 2016 GP: (0.8+0.552)/2
+  RR_ART_CD4200 = 5.39,
+  phi2 = c(0.105360516, rep_len(0.025,8)), # former sex workers drop out rate??!
+  phi3 = c(0.105360516, rep_len(0.025,8)),
+  phi4 = c(0.105360516, rep_len(0.025,8)),
+  phi5 = c(0.105360516, rep_len(0.025,8)),
+  ART_RR = (1.3+3.45)/2,
+  
+  #CONDOM
+  fc_t_comm = c(1985, 1993, 2002, 2016),
+  fc_y_comm = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 0, # 1985
+                       0.6, 0.6, 0, 0, 0.6, 0, 0, 0, 0, # 1993
+                       0.87, 0.87, 0, 0, 0.87, 0, 0, 0, 0, # 2002
+                       0.87, 0.87, 0, 0, 0.87, 0, 0, 0, 0), # 2016
+                     nrow = 4, ncol = 9, byrow = T),
+  
+  fc_t_noncomm = c(1985, 1993, 2016),
+  fc_y_noncomm = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 0, # 1985
+                          0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0, 0, 0, # 1993 
+                          0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0, 0, 0), # 2016
+                        nrow = 3, ncol = 9, byrow = T),
+  
+  rate_leave_pro_FSW = 0.2,
+  FSW_leave_Cotonou_fraction = 0.1,
+  rate_leave_low_FSW = 0.1,
+  rate_leave_client = 0.05
+  
+  #condoms incomplete!!
 )
 
 parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
@@ -127,13 +164,17 @@ parameters$prev_init_FSW
 parameters$prev_init_rest
 
 result = run_model(parameters, main_model, time)
-
+result$cumuInf
 
 result$alpha05
 result$alpha35
 parameters$ART_RR
 0.3448276 / 0.1669226
 result$N[1,]
+
+parameters1 = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
+
+parameters[!(parameters %in% parameters1)]
 ########################################################################################################################
 ########################################################################################################################
 ########################################################################################################################

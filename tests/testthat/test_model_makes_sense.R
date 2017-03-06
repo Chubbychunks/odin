@@ -474,7 +474,7 @@ test_that("no testing", {
 # NO ART
 
 test_that("no ART", {
-  relevant_parameters = parameter_names[c(grep("rho", parameter_names))]
+  relevant_parameters = parameter_names[c(grep("ART_prob_y", parameter_names))]
   parameters <- lhs_parameters(1, set_null = relevant_parameters)[[1]]
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("I3[0-9]|I4[0-9]", names(result)))]
@@ -876,8 +876,8 @@ test_that("ART vs prevalence", {
   xx <- result[c(grep("cumuInf", names(result)))]
   N1 <- rowSums(do.call(cbind, xx))
   
-  newpars = lhs_parameters(1, set_null = "rho2")[[1]]$rho2
-  parameters <- modifyList(parameters, list(rho2 = newpars, rho3 = newpars, rho4 = newpars, rho5 = newpars))
+  newpars = lhs_parameters(1, set_null = "ART_prob_y")[[1]]$ART_prob_y
+  parameters <- modifyList(parameters, list(ART_prob_y = newpars))
   
   result = run_model(parameters, main_model, time)
   xx <- result[c(grep("cumuInf", names(result)))]
