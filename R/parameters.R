@@ -164,6 +164,9 @@ fix_parameters <- function(y, Ncat, Nage) {
 # unless I put something in the args of the function, eg sample = mu
 lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars = list(...), forced_pars = list(...), set_null= list(...)) {
   
+  
+  set_pars <- modifyList(set_pars, forced_pars)
+  
   #fixed pars list
   fixed_pars = list(
     rate_move_in = matrix(0, nrow = Ncat, ncol = Ncat),

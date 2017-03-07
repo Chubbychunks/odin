@@ -74,7 +74,7 @@ test_that("cumulative infections", {
 #   result = run_model(parameters, main_model, time)
 #   expect_equal(result$N[,1], result$N[,2], tolerance = 1e-6)
 # })
-# 
+
 
 
 
@@ -977,4 +977,24 @@ test_that("movement in = out", {
   result = run_model(parameters, main_model, time)
   for (i in 1:result$Ncat[1])
     expect_equal(sum(result$rate_move_in[1,,i]), -result$rate_move_out[1,i])
+})
+
+
+# MODEL TESTS NCAT = 9 WITH BEST SET PARS
+##################################################################################################################################
+##################################################################################################################################
+##################################################################################################################################
+##################################################################################################################################
+##################################################################################################################################
+##################################################################################################################################
+##################################################################################################################################
+
+test_that("omega keeps consistent population even with HIV?", {
+  parameters <- lhs_parameters(1, Ncat = 9, set_pars = best_set, forced_pars = list(movement = 0, replaceDeaths = 1))[[1]]
+  result = run_model(parameters, main_model, time)
+  xx <- result[grep("frac_N", names(result))] # grepping all the Ss and Is
+  
+  
+  expect_true(all(abs(diff(xx$frac_N))<10^-4))
+  expect_equal(as.numeric(xx$frac_N[1,]), as.numeric(xx$frac_N[2,]))
 })
