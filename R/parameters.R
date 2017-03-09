@@ -1,6 +1,8 @@
 
+# non commercial!
+condom_years = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015)
 
-
+condom_prob_1_1993 =  0.321
 
 
 
