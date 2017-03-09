@@ -1,10 +1,16 @@
+
+
+
+
+
+
 # parameters which depend on others, etc
 fix_parameters <- function(y, Ncat, Nage) {
   
   y$epsilon_y = c(y$epsilon_1985, y$epsilon_1992, y$epsilon_2002, y$epsilon_2013, y$epsilon_2016)
   
   
-  init_prev = c(y$prev_init_FSW, rep_len(y$prev_init_rest, Ncat-1))
+  init_prev = if(Ncat == 9) c(y$prev_init_FSW, rep_len(y$prev_init_rest, 5), 0, 0, 0) else c(y$prev_init_FSW, rep_len(y$prev_init_rest, Ncat-1))
   y$S0_init = (1-init_prev) * y$N_init
   y$I01_init = init_prev * y$N_init
   

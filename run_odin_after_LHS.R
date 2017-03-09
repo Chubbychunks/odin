@@ -158,23 +158,86 @@ best_set = list(
   #condoms incomplete!!
 )
 
+#single run
 parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
-
-parameters$prev_init_FSW
-parameters$prev_init_rest
-
 result = run_model(parameters, main_model, time)
-result$cumuInf
+yy <- result["prev"][[1]]
+df = data.frame(time, yy)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "Prevalence (%)") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
 
-result$alpha05
-result$alpha35
-parameters$ART_RR
-0.3448276 / 0.1669226
-result$N[1,]
+### variations of beta
+betaseq = c("point estimates", "lower bounds", "upper bounds")
+betaMtoFseq = c(0.00193, 0.00086, 0.00433)
+betaFtoMseq = c(0.00867, 0.00279, 0.0279)
 
-parameters1 = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
+yy = data.frame()
+for(i in 1:3)
+{
+  run = betaseq[i]
+  parameters = lhs_parameters(1, set_pars = best_set, forced_pars = list(betaMtoF = betaMtoFseq[i], betaFtoM = betaFtoMseq[i]), Ncat = 9)[[1]]
+  result = run_model(parameters, main_model, time)
+  yy <- rbind(yy, data.frame(time = time, result["prev"][[1]], replication = betaseq[i]))
+}
+colnames(yy) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou", "replication")
+yy_melted = melt(yy, id.vars = c("time", "replication"))
 
-parameters[!(parameters %in% parameters1)]
+ggplot(data = yy_melted, aes(x = time, y = value, color = replication)) + facet_wrap(~variable, scales = "free") + geom_line() + theme_bw() + labs(x="year",y="prevalance (%)")
+
+
+prev_points = data.frame(time = c(1986, 1987, 1988, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015,
+                             1998, 2012, 2015,
+                             1998, 2008, 
+                             1998, 2008,
+                             2012, 2015),
+                    variable = c(rep("Pro FSW", 11), rep("Clients", 3), rep("GPF", 2), rep("GPM", 2), rep("Low-level FSW", 2)),
+                    value = c(3.3, 8.2, 19.2, 53.3, 48.7, 40.6, 38.9, 34.8, 29.3, 27.4, 18.7,
+                              100*0.084, 100*0.028, 100*0.016,
+                              100*0.035, 100*0.04,
+                              100*0.033, 100*0.02,
+                              100*0.167, 100*0.065),
+                    upper = c(3.3, 8.2, 19.2, 58.48, 54.42, 44.67, 46.27, 39.38, 33.88, 32.23, 22.01,
+                              100*0.11561791, 100*0.051602442, 100*0.035338436,
+                              100*0.047726245, 100*0.052817187,
+                              100*0.047183668, 100*0.029774338,
+                              100*0.268127672, 100*0.130153465),
+                    lower = c(3.3, 8.2, 19.2, 48.02, 43.02, 36.58, 31.97, 30.42, 24.93, 23.01, 15.71,
+                              100*0.05898524, 100*0.012660836, 100*0.006039259,
+                              100*0.024181624, 100*0.030073668,
+                              100*0.022857312, 100*0.012427931,
+                              100*0.091838441, 100*0.026704897))
+
+ggplot()  + geom_line(data = yy_melted, aes(x = time, y = value, color = replication)) + theme_bw() + labs(x="year",y="prevalance (%)") +
+  geom_point(data = prev_points, aes(x = time, y = value))+ geom_errorbar(data = prev_points, aes(x = time, ymin = lower, ymax = upper))+ 
+  facet_wrap(~variable, scales = "free") 
+
+
+#c_comm
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9, forced_pars = list(c_comm = c(750, 52, 0, 0, 5, 0, 0, 0, 0)))[[1]]
+result = run_model(parameters, main_model, time)
+yy <- result["prev"][[1]]
+df = data.frame(time, yy)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+ggplot(data = df, aes(x = time, y = value)) + labs(y = "Prevalence (%)") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")+
+  geom_point(data = points, aes(x = time, y = value))+ geom_errorbar(data = points, aes(x = time, ymin = lower, ymax = upper))
+
+
+
+
+
+#beta 0
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9, forced_pars = list(betaMtoF = 0, betaFtoM = 0))[[1]]
+result = run_model(parameters, main_model, time)
+yy <- result["prev"][[1]]
+df = data.frame(time, yy)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "Prevalence (%)") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+
+
+# parameters[!(parameters %in% parameters1)]
 ########################################################################################################################
 ########################################################################################################################
 ########################################################################################################################
