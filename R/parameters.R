@@ -1,9 +1,4 @@
 
-# non commercial!
-condom_years = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015)
-
-condom_prob_1_1993 =  0.321
-
 
 
 # parameters which depend on others, etc
@@ -55,14 +50,29 @@ fix_parameters <- function(y, Ncat, Nage) {
   y$gamma34 <- (y$gamma04)/y$ART_RR
   y$alpha35 <- (y$alpha05)/y$ART_RR
   
+
+  # print(y$fc_y_comm_1993)
+#   fc_y_comm = array(c(c(y$fc_y_comm_1985), c(y$fc_y_comm_1993), 
+#                       c(y$fc_y_comm_1995), c(y$fc_y_comm_1998),
+#                       c(y$fc_y_comm_2002), c(y$fc_y_comm_2005),
+#                       c(y$fc_y_comm_2008), c(y$fc_y_comm_2012),
+#                       c(y$fc_y_comm_2015)), c(Ncat, Ncat, 9))
   
+  y$fc_y_comm = array(data = c(y$fc_y_comm_1985, y$fc_y_comm_1993, 
+        y$fc_y_comm_1995, y$fc_y_comm_1998,
+        y$fc_y_comm_2002, y$fc_y_comm_2005,
+        y$fc_y_comm_2008, y$fc_y_comm_2012,
+        y$fc_y_comm_2015, y$fc_y_comm_2015), dim=c(Ncat, Ncat, 10))
   
+  y$fc_y_comm = aperm(y$fc_y_comm, c(3, 1, 2))
   
+  y$fc_y_noncomm = array(data = c(y$fc_y_noncomm_1985, y$fc_y_noncomm_1998, 
+                               y$fc_y_noncomm_2008, y$fc_y_noncomm_2015,
+                               y$fc_y_noncomm_2015), dim=c(Ncat, Ncat, 5))
   
-  # behavioural
-  
-  # y$c_y_comm <- matrix(rep(y$c_y_comm, 4), ncol = Ncat)
-  
+  y$fc_y_noncomm = aperm(y$fc_y_noncomm, c(3, 1, 2))
+
+
   y$omega = N/sum(N)
   
   
@@ -184,8 +194,23 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     fraction_F = 0.516,
     fraction_FSW_foreign = 0,
     movement = 1,
-    alpha05 = rep_len(0.3,Ncat)
-
+    alpha05 = rep_len(0.3,Ncat),
+    fc_y_comm_1985 = matrix(0.2, Ncat, Ncat),
+    fc_y_comm_1993 = matrix(0.5, Ncat, Ncat),
+    fc_y_comm_1995 = matrix(0.7, Ncat, Ncat),
+    fc_y_comm_1998 = matrix(0.3, Ncat, Ncat),
+    fc_y_comm_2002 = matrix(0.4, Ncat, Ncat),
+    fc_y_comm_2005 = matrix(0.1, Ncat, Ncat),
+    fc_y_comm_2008 = matrix(0.1, Ncat, Ncat),
+    fc_y_comm_2012 = matrix(0.6, Ncat, Ncat),
+    fc_y_comm_2015 = matrix(0.4, Ncat, Ncat),
+    fc_y_noncomm_1985 = matrix(0.2, Ncat, Ncat),
+    fc_y_noncomm_1998 = matrix(0.4, Ncat, Ncat),
+    fc_y_noncomm_2008 = matrix(0.3, Ncat, Ncat),
+    fc_y_noncomm_2015 = matrix(0.5, Ncat, Ncat),
+    fc_y_noncomm_2015 = matrix(0.5, Ncat, Ncat)
+    
+    
     
   )
   
@@ -396,11 +421,37 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    eP1d = c(0, rep_len(0, (Ncat-1))),
                    
                    # condoms 
+                   #                    fc_t_noncomm = c(1985, 1990, 1998, 2016),
+                   #                    fc_y_noncomm = matrix(
+                   #                      rep(c(0, 0, 0.3, 0.5), Ncat), ncol = Ncat),
                    
-                   fc_t_comm = c(1985, 1990, 1998, 2016),
-                   fc_y_comm = matrix(
-                     rep(c(0.5, 0.5, 0.9, 0.99), Ncat), ncol = Ncat),
+                   fc_y_comm_1985 = matrix(0.2, Ncat, Ncat),
+                   fc_y_comm_1993 = matrix(0.5, Ncat, Ncat),
+                   fc_y_comm_1995 = matrix(0.7, Ncat, Ncat),
+                   fc_y_comm_1998 = matrix(0.3, Ncat, Ncat),
+                   fc_y_comm_2002 = matrix(0.4, Ncat, Ncat),
+                   fc_y_comm_2005 = matrix(0.1, Ncat, Ncat),
+                   fc_y_comm_2008 = matrix(0.1, Ncat, Ncat),
+                   fc_y_comm_2012 = matrix(0.6, Ncat, Ncat),
+                   fc_y_comm_2015 = matrix(0.4, Ncat, Ncat),
                    
+                   fc_y_noncomm_1985 = matrix(0.2, Ncat, Ncat),
+                   fc_y_noncomm_1998 = matrix(0.4, Ncat, Ncat),
+                   fc_y_noncomm_2008 = matrix(0.3, Ncat, Ncat),
+                   fc_y_noncomm_2015 = matrix(0.5, Ncat, Ncat),
+                   fc_y_noncomm_2016 = matrix(0.5, Ncat, Ncat),
+                   
+                   
+                   
+                   fc_y_comm = array(0.5,dim=c(9,Ncat,Ncat)),
+                   fc_y_noncomm = array(0.5,dim=c(4,Ncat,Ncat)),
+                   
+                   fc_t_comm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016),
+                   #                    fc_y_comm = matrix(
+                   #                      rep(c(0.5, 0.5, 0.9, 0.99), Ncat), ncol = Ncat),
+                   fc_t_noncomm = c(1985, 1998, 2008, 2015, 2016),
+                   #                    fc_y_comm = matrix(
+                   #                      rep(c(0.5, 0.5, 0.9, 0.99), Ncat), ncol = Ncat),
                    
                    kappaa = c(0.2, rep_len(0,(Ncat-1))),
                    kappab = c(0.2, rep_len(0,(Ncat-1))),
@@ -457,17 +508,13 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    #                    c_t_noncomm = c(1985, 1990, 1998, 2016),
                    #                    c_y_noncomm = matrix(rep(c(0.5, 1, 0.7, 0.9), Ncat), ncol = Ncat),
                    
-                   fc_t_comm = c(1985, 1990, 1998, 2016),
-                   fc_y_comm = matrix(
-                     rep(c(0.5, 0.5, 0.9, 0.99), Ncat), ncol = Ncat),
+                   
                    
                    fP_t_comm = c(1985, 2014, 2015, 2016),
                    fP_y_comm = matrix(
                      rep(c(1, 1, 1, 1), Ncat), ncol = Ncat),
                    
-                   fc_t_noncomm = c(1985, 1990, 1998, 2016),
-                   fc_y_noncomm = matrix(
-                     rep(c(0, 0, 0.3, 0.5), Ncat), ncol = Ncat),
+                   
                    
                    fP_t_noncomm = c(1985, 2014, 2015, 2016),
                    fP_y_noncomm = matrix(

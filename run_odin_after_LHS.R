@@ -137,26 +137,197 @@ best_set = list(
   ART_RR = (1.3+3.45)/2,
   
   #CONDOM
-  fc_t_comm = c(1985, 1993, 2002, 2016),
-  fc_y_comm = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 0, # 1985
-                       0.6, 0.6, 0, 0, 0.6, 0, 0, 0, 0, # 1993
-                       0.87, 0.87, 0, 0, 0.87, 0, 0, 0, 0, # 2002
-                       0.87, 0.87, 0, 0, 0.87, 0, 0, 0, 0), # 2016
-                     nrow = 4, ncol = 9, byrow = T),
   
-  fc_t_noncomm = c(1985, 1993, 2016),
-  fc_y_noncomm = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 0, # 1985
-                          0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0, 0, 0, # 1993 
-                          0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0, 0, 0), # 2016
-                        nrow = 3, ncol = 9, byrow = T),
+  fc_y_comm_1985 = matrix(
+    c(0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0), nrow = 9),
+  
+  fc_y_comm_1993 = matrix(
+    c(0, 0, 0, 0, 0.536, 0, 0, 0, 0,
+      0, 0, 0, 0, 0.536, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0.536, 0.536, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0), nrow = 9),
+  
+  fc_y_comm_1995 = matrix(
+    c(0, 0, 0, 0, 0.536, 0, 0, 0, 0,
+      0, 0, 0, 0, 0.536, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0.536, 0.536, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0), nrow = 9),
+  
+  fc_y_comm_1998 = matrix(
+    c(0, 0, 0, 0, 0.536, 0, 0, 0, 0,
+      0, 0, 0, 0, 0.536, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0.536, 0.536, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0), nrow = 9),
+  
+  fc_y_comm_2002 = matrix(
+    c(0, 0, 0, 0, 0.8, 0, 0, 0, 0,
+      0, 0, 0, 0, 0.8, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0.8, 0.8, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0), nrow = 9),
+  
+  fc_y_comm_2005 = matrix(
+    c(0, 0, 0, 0, 0.8, 0, 0, 0, 0,
+      0, 0, 0, 0, 0.8, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0.8, 0.8, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0), nrow = 9),
+  
+  fc_y_comm_2008 = matrix(
+    c(0, 0, 0, 0, 0.8, 0, 0, 0, 0,
+      0, 0, 0, 0, 0.8, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0.8, 0.8, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0), nrow = 9),
+  
+  fc_y_comm_2012 = matrix(
+    c(0, 0, 0, 0, 0.8, 0, 0, 0, 0,
+      0, 0, 0, 0, 0.8, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0.8, 0.8, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0), nrow = 9),
+  
+  fc_y_comm_2015 = matrix(
+    c(0, 0, 0, 0, 0.8, 0, 0, 0, 0,
+      0, 0, 0, 0, 0.8, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0.8, 0.8, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0), nrow = 9),
+  
+  fc_y_noncomm_1985 = matrix(
+    c(0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0), nrow = 9),
+  
+  # 1998
+  # (0.33 + 0.2705314)/ 2 # average FSW client
+  # (0.0326087 + 0.2705314)/ 2 # average client GPF
+  # (0.0326087 + 0.04989035) / 2 # average gpm gpf
+  
+  fc_y_noncomm_1998 = matrix(
+    c(0, 0, 0, 0, 0.3002657, 0, 0, 0, 0,
+      0, 0, 0, 0, 0.3002657, 0, 0, 0, 0,
+      0, 0, 0, 0, 0.15157, 0.04124952, 0, 0, 0,
+      0, 0, 0, 0, 0.15157, 0.04124952, 0, 0, 0,
+      0.3002657, 0.3002657, 0.15157, 0.15157, 0, 0, 0, 0, 0,
+      0, 0, 0.04124952, 0.04124952, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0), nrow = 9),
+  
+  # 2008
+  # (0.33 + 0.4)/ 2 # average FSW client (both approx)
+  # ((0.05042017+0.241404781)/2 + 0.4)/ 2 # average client GPF (gpf averaged from 2 estimtes)
+  # ((0.05042017+0.241404781)/2 + (0.07103825+0.34838295)/2) / 2 # average gpm gpf
+  
+  fc_y_noncomm_2008 = matrix(
+    c(0, 0, 0, 0, 0.365, 0, 0, 0, 0,
+      0, 0, 0, 0, 0.365, 0, 0, 0, 0,
+      0, 0, 0, 0, 0.2729562, 0.1778115, 0, 0, 0,
+      0, 0, 0, 0, 0.2729562, 0.1778115, 0, 0, 0,
+      0.365, 0.365, 0.2729562, 0.2729562, 0, 0, 0, 0, 0,
+      0, 0, 0.1778115, 0.1778115, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0), nrow = 9),
+  
+  fc_y_noncomm_2015 = matrix(
+    c(0, 0, 0, 0, 0.365, 0, 0, 0, 0,
+      0, 0, 0, 0, 0.365, 0, 0, 0, 0,
+      0, 0, 0, 0, 0.2729562, 0.1778115, 0, 0, 0,
+      0, 0, 0, 0, 0.2729562, 0.1778115, 0, 0, 0,
+      0.365, 0.365, 0.2729562, 0.2729562, 0, 0, 0, 0, 0,
+      0, 0, 0.1778115, 0.1778115, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0), nrow = 9),
+  
+  fc_y_noncomm_2016 = matrix(
+    c(0, 0, 0, 0, 0.365, 0, 0, 0, 0,
+      0, 0, 0, 0, 0.365, 0, 0, 0, 0,
+      0, 0, 0, 0, 0.2729562, 0.1778115, 0, 0, 0,
+      0, 0, 0, 0, 0.2729562, 0.1778115, 0, 0, 0,
+      0.365, 0.365, 0.2729562, 0.2729562, 0, 0, 0, 0, 0,
+      0, 0, 0.1778115, 0.1778115, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0), nrow = 9),
+  
+  
+
+  fc_t_comm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016),
+
+  fc_t_noncomm = c(1985, 1990, 1998, 2015, 2016),
+
   
   rate_leave_pro_FSW = 0.2,
   FSW_leave_Cotonou_fraction = 0.1,
   rate_leave_low_FSW = 0.1,
   rate_leave_client = 0.05
   
-  #condoms incomplete!!
 )
+
+#check par with 1 run
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
+result = run_model(parameters, main_model, time)
+yy <- result["fc_noncomm"][[1]][,1,5]
+df = data.frame(time, yy)
+plot(df)
+
+
+
+
+
+
 
 #single run
 parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
@@ -166,6 +337,20 @@ df = data.frame(time, yy)
 names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
 df = melt(df, id.vars = "time")
 ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "Prevalence (%)") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+
+
+
+# c_noncomm
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9, forced_pars = list(c_noncomm = c(0.38, 0.38, 0.88, 0.88, 1, 1.065, 0, 0, 0)))[[1]]
+result = run_model(parameters, main_model, time)
+yy <- result["prev"][[1]]
+df = data.frame(time, yy)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "Prevalence (%)") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+
+
+
 
 ### variations of beta
 betaseq = c("point estimates", "lower bounds", "upper bounds")
@@ -229,6 +414,36 @@ ggplot(data = df, aes(x = time, y = value)) + labs(y = "Prevalence (%)") + geom_
 
 #beta 0
 parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9, forced_pars = list(betaMtoF = 0, betaFtoM = 0))[[1]]
+result = run_model(parameters, main_model, time)
+yy <- result["prev"][[1]]
+df = data.frame(time, yy)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "Prevalence (%)") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+
+
+
+
+#more condoms run
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
+result = run_model(parameters, main_model, time)
+yy <- result["prev"][[1]]
+df = data.frame(time, yy)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "Prevalence (%)") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+
+best_set_2 = best_set
+
+best_set_2$fc_y_comm_1993 = best_set$fc_y_comm_1993*1.8
+best_set_2$fc_y_comm_1995 = best_set$fc_y_comm_1995*1.8
+best_set_2$fc_y_comm_1998 = best_set$fc_y_comm_1998*1.8
+
+best_set_2$fc_y_noncomm_1998 = best_set$fc_y_noncomm_1998*1.8
+best_set_2$fc_y_noncomm_2008 = best_set$fc_y_noncomm_2008*1.8
+best_set_2$fc_y_noncomm_2015 = best_set$fc_y_noncomm_2015*1.8
+
+parameters = lhs_parameters(1, set_pars = best_set_2, Ncat = 9)[[1]]
 result = run_model(parameters, main_model, time)
 yy <- result["prev"][[1]]
 df = data.frame(time, yy)
