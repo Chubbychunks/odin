@@ -106,6 +106,10 @@ epsilon = interpolate(epsilon_t, epsilon_y, "constant")
 new_people = epsilon * Ntot_inc_former_FSW_nonCot
 
 
+# new entrants into each group
+new_people_in_group[] = new_people * omega[i]
+dim(new_people_in_group) = Ncat
+output(new_people_in_group[]) = new_people_in_group
 
 # MOVEMENT
 ##############################################################################

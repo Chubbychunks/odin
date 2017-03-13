@@ -33,11 +33,11 @@ best_set = list(
   prev_init_rest = 0.0012,
   N_init = c(672, 757, 130895, 672, 27124, 100305, 14544, 11145, 0),
   fraction_F = 0.515666224,
-  epsilon_1985 = 0.059346131,
-  epsilon_1992 = 0.053594832,
-  epsilon_2002 = 0.026936907,
-  epsilon_2013 = 0.026936907,
-  epsilon_2016 = 0.026936907,
+  epsilon_1985 = 0.059346131 * 1.5,
+  epsilon_1992 = 0.053594832 * 1.5,
+  epsilon_2002 = 0.026936907 * 1.5,
+  epsilon_2013 = 0.026936907 * 1.5,
+  epsilon_2016 = 0.026936907 * 1.5,
   mu = c(0.02597403, 0.02597403, 0.02597403, 0.02597403, 0.02739726, 0.02739726, 0.02597403, 0.02739726, 0.02597403), # women 1/((27 + 50)/2) # men 1/((25 +  48)/2)
   c_comm = c(750, 52, 0, 0, 13.5, 0, 0, 0, 0),
   c_noncomm = c(0.38, 0.38, 0.88, 0.88, 4, 1.065, 0, 0, 0), # partner change rate lowlevel FSW same as pro, others are approximations from various surveys
@@ -316,7 +316,55 @@ best_set = list(
   
 )
 
-#check par with 1 run
+
+# equal betas
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9, betaMtoF = 0.00193, betaFtoM = 0.00193)[[1]]
+result = run_model(parameters, main_model, time)
+yy <- result["prev"][[1]]
+df = data.frame(time, yy)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+prev_points = data.frame(time = c(1986, 1987, 1988, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015,
+                                  1998, 2012, 2015,
+                                  1998, 2008, 
+                                  1998, 2008,
+                                  2012, 2015),
+                         variable = c(rep("Pro FSW", 11), rep("Clients", 3), rep("GPF", 2), rep("GPM", 2), rep("Low-level FSW", 2)),
+                         value = c(3.3, 8.2, 19.2, 53.3, 48.7, 40.6, 38.9, 34.8, 29.3, 27.4, 18.7,
+                                   100*0.084, 100*0.028, 100*0.016,
+                                   100*0.035, 100*0.04,
+                                   100*0.033, 100*0.02,
+                                   100*0.167, 100*0.065),
+                         upper = c(3.3, 8.2, 19.2, 58.48, 54.42, 44.67, 46.27, 39.38, 33.88, 32.23, 22.01,
+                                   100*0.11561791, 100*0.051602442, 100*0.035338436,
+                                   100*0.047726245, 100*0.052817187,
+                                   100*0.047183668, 100*0.029774338,
+                                   100*0.268127672, 100*0.130153465),
+                         lower = c(3.3, 8.2, 19.2, 48.02, 43.02, 36.58, 31.97, 30.42, 24.93, 23.01, 15.71,
+                                   100*0.05898524, 100*0.012660836, 100*0.006039259,
+                                   100*0.024181624, 100*0.030073668,
+                                   100*0.022857312, 100*0.012427931,
+                                   100*0.091838441, 100*0.026704897))
+
+ggplot()  + geom_line(data = df, aes(x = time, y = value)) + theme_bw() + labs(x="year",y="prevalance (%)") +
+  geom_point(data = prev_points, aes(x = time, y = value))+ geom_errorbar(data = prev_points, aes(x = time, ymin = lower, ymax = upper))+ 
+  facet_wrap(~variable, scales = "free") 
+
+
+
+
+# new people
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
+result = run_model(parameters, main_model, time)
+yy <- result["new_people_in_group"][[1]]
+df = data.frame(time, yy)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "Prevalence (%)") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+
+
+
+# fc
 parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
 result = run_model(parameters, main_model, time)
 yy <- result["fc_noncomm"][[1]][,1,5]
@@ -324,12 +372,43 @@ df = data.frame(time, yy)
 plot(df)
 
 
+# frac_F
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
+result = run_model(parameters, main_model, time)
+frac_F <- result["frac_F"][[1]][,1]
+df = data.frame(time, frac_F)
+plot(df) 
+
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9, betaMtoF = 0, betaFtoM = 0)[[1]]
+result = run_model(parameters, main_model, time)
+frac_F <- result["frac_F"][[1]][,1]
+df = data.frame(time, frac_F)
+lines(df) 
+
+
+# Ntot
+parameters = lhs_parameters(1, Ncat = 9, betaMtoF = 0, betaFtoM = 0)[[1]]
+result = run_model(parameters, main_model, time)
+# result$prev
+# result$Ntot
+# result$new_people
+# result$Ntot_inc_former_FSW_nonCot
+result$epsilon
+plot(result$Ntot_inc_former_FSW_nonCot)
+
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9, betaMtoF = 0, betaFtoM = 0)[[1]]
+result = run_model(parameters, main_model, time)
+# result$prev
+# result$Ntot
+# result$new_people
+# result$Ntot_inc_former_FSW_nonCot
+result$epsilon
+
+lines(result$Ntot_inc_former_FSW_nonCot)
 
 
 
-
-
-#single run
+# single run (prev)
 parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
 result = run_model(parameters, main_model, time)
 yy <- result["prev"][[1]]
@@ -337,6 +416,39 @@ df = data.frame(time, yy)
 names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
 df = melt(df, id.vars = "time")
 ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "Prevalence (%)") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+
+# no transmission
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9, betaMtoF = 0, betaFtoM = 0)[[1]]
+result = run_model(parameters, main_model, time)
+result$prev
+result$Ntot
+
+
+
+# frac N
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
+result = run_model(parameters, main_model, time)
+yy <- result["frac_N"][[1]]
+df = data.frame(time, yy)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "Prevalence (%)") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+
+
+
+# FOI
+FOI <- result["lambda_sum_0"][[1]]
+df = data.frame(time, FOI)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "lambda on S0") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+
+# # mortality
+# alphaItot <- result["alphaItot"][[1]]
+# df = data.frame(time, alphaItot)
+# names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+# df = melt(df, id.vars = "time")
+# ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "AIDS deaths") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
 
 
 
