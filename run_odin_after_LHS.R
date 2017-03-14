@@ -371,7 +371,7 @@ ggplot(data = df, aes(x = time, y = value)) + labs(y = "Annual AIDS deaths") + g
 
 #try to fit to prevalence data
 parameters = lhs_parameters(1, set_pars = best_set, 
-                            forced_pars = list(betaFtoM = 0.00193,
+                            forced_pars = list(betaFtoM_comm = 0.00193, betaFtoM_noncomm = 0.00193, # infect_AIDS = 1,
                                                c_comm_1993 = c(1229.5, 52, 0, 0, 20, 0, 0, 0, 0),
                                                c_comm_1995 = c(1280, 52, 0, 0, 10, 0, 0, 0, 0), 
                                                c_comm_1998 = c(881, 52, 0, 0, 8, 0, 0, 0, 0),
@@ -414,7 +414,7 @@ parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
 
 
 # fitting betas
-parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9, betaMtoF = 0.00193, betaFtoM = 0.00193)[[1]]
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9, betaMtoF = 0.00193, betaFtoM = 0.00193, infect_AIDS = 1)[[1]]
 result = run_model(parameters, main_model, time)
 yy <- result["prev"][[1]]
 df = data.frame(time, yy)
@@ -554,6 +554,7 @@ ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "Preval
 # no transmission
 parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9, betaMtoF = 0, betaFtoM = 0)[[1]]
 result = run_model(parameters, main_model, time)
+data.frame(time, result$frac_N)
 result$prev
 result$Ntot
 
@@ -599,7 +600,7 @@ yy = data.frame()
 for(i in 1:3)
 {
   run = betaseq[i]
-  parameters = lhs_parameters(1, set_pars = best_set, forced_pars = list(betaMtoF = betaMtoFseq[i], betaFtoM = betaFtoMseq[i]
+  parameters = lhs_parameters(1, set_pars = best_set, forced_pars = list(betaMtoF_comm = betaMtoFseq[i], betaFtoM_comm = betaFtoMseq[i], betaMtoF_noncomm = betaMtoFseq[i], betaFtoM_noncomm = betaFtoMseq[i]
                                                                          #                                                                          , n_comm = matrix(c(0, 0, 0, 0, 1.935, 0, 0, 0, 0, # from client sa per partner
                                                                          #                                                                                                                                                             0, 0, 0, 0, 1.935, 0, 0, 0, 0,
                                                                          #                                                                                                                                                             0, 0, 0, 0, 0, 0, 0, 0, 0,

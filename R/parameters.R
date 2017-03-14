@@ -174,8 +174,11 @@ fix_parameters <- function(y, Ncat, Nage) {
     y$rate_move_in[5,6] = y$rate_leave_client * y$prop_client_GPM # moving from GPM to client
     
     
+    y$beta_comm = c(y$betaMtoF_comm, y$betaMtoF_comm, y$betaMtoF_comm, y$betaMtoF_comm, y$betaFtoM_comm, y$betaFtoM_comm, y$betaMtoF_comm, 0, 0)
+    y$beta_noncomm = c(y$betaMtoF_noncomm, y$betaMtoF_noncomm, y$betaMtoF_noncomm, y$betaMtoF_noncomm, y$betaFtoM_noncomm, y$betaFtoM_noncomm, y$betaMtoF_noncomm, 0, 0)
     
-    y$beta = c(y$betaMtoF, y$betaMtoF, y$betaMtoF, y$betaMtoF, y$betaFtoM, y$betaFtoM, y$betaMtoF, 0, 0)
+    
+    
     # c_t_comm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016),
     # y$c_y_comm = 
     y$mu = rep(y$mu[1], 9)
@@ -245,7 +248,12 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     c_noncomm_2008 = rep_len(1, Ncat),
     c_noncomm_2012 = rep_len(1, Ncat),
     c_noncomm_2015 = rep_len(1, Ncat),
-    c_noncomm_2016 = rep_len(1, Ncat)
+    c_noncomm_2016 = rep_len(1, Ncat),
+    
+    betaMtoF_noncomm = 0.00193,
+    betaFtoM_noncomm = 0.00867,
+    betaMtoF_comm = 0.00193,
+    betaFtoM_comm = 0.00867
     
     
   )
@@ -552,6 +560,12 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    beta = rep_len(0.005,Ncat),
                    betaMtoF = 0.00193,
                    betaFtoM = 0.00867,
+                   
+                   betaMtoF_noncomm = 0.00193,
+                   betaFtoM_noncomm = 0.00867,
+                   betaMtoF_comm = 0.00193,
+                   betaFtoM_comm = 0.00867,
+                   
                    #beta = 0,
                    
                    p_comm = matrix(1, ncol = Ncat, nrow = Ncat),
@@ -630,7 +644,10 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    fraction_F = 0.51,
                    fraction_FSW_foreign = 0.5,
                    replaceDeaths = 0,
-                   movement = 1
+                   movement = 1,
+                   beta_comm = rep_len(0.002, Ncat),
+                   
+                   beta_noncomm = rep_len(0.001, Ncat)
                    
                    
                    
