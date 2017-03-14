@@ -174,8 +174,8 @@ fix_parameters <- function(y, Ncat, Nage) {
     y$rate_move_in[5,6] = y$rate_leave_client * y$prop_client_GPM # moving from GPM to client
     
     
-    y$beta_comm = c(y$betaMtoF_comm, y$betaMtoF_comm, y$betaMtoF_comm, y$betaMtoF_comm, y$betaFtoM_comm, y$betaFtoM_comm, y$betaMtoF_comm, 0, 0)
-    y$beta_noncomm = c(y$betaMtoF_noncomm, y$betaMtoF_noncomm, y$betaMtoF_noncomm, y$betaMtoF_noncomm, y$betaFtoM_noncomm, y$betaFtoM_noncomm, y$betaMtoF_noncomm, 0, 0)
+    y$beta_comm = c(y$betaMtoF_comm, y$betaMtoF_comm, y$betaMtoF_comm, y$betaMtoF_comm, y$betaFtoM_comm, y$betaFtoM_comm, 0, 0, 0)
+    y$beta_noncomm = c(y$betaMtoF_noncomm, y$betaMtoF_noncomm, y$betaMtoF_noncomm, y$betaMtoF_noncomm, y$betaFtoM_noncomm, y$betaFtoM_noncomm, 0, 0, 0)
     
     
     

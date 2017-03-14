@@ -90,8 +90,11 @@ best_set = list(
                        0, 0, 0, 0, 0, 0, 0, 0, 0),
                      nrow = 9, ncol = 9, byrow = T),
   #think about transforming to matrix  
-  betaMtoF = 0.00193,
-  betaFtoM = 0.00867,
+  betaMtoF_comm = 0.00051, # RR circumcision = 0.44
+  betaFtoM_comm = 0.02442*0.44,
+  betaMtoF_noncomm = 0.003,
+  betaFtoM_noncomm = 0.0038*0.44,
+  
   infect_acute = 9, # RR for acute phase
   infect_AIDS = 7.27, # RR for AIDS phase
   infect_ART = 0.9 * 0.523, # infectiousness RR when on ART (efficacy ART assuimed 90% * % undetectable which is 52.3%)
@@ -371,7 +374,7 @@ ggplot(data = df, aes(x = time, y = value)) + labs(y = "Annual AIDS deaths") + g
 
 #try to fit to prevalence data
 parameters = lhs_parameters(1, set_pars = best_set, 
-                            forced_pars = list(betaFtoM_comm = 0.00193, betaFtoM_noncomm = 0.00193, # infect_AIDS = 1,
+                            forced_pars = list(#betaFtoM_comm = 0.00193, betaFtoM_noncomm = 0.00193, # infect_AIDS = 1,
                                                c_comm_1993 = c(1229.5, 52, 0, 0, 20, 0, 0, 0, 0),
                                                c_comm_1995 = c(1280, 52, 0, 0, 10, 0, 0, 0, 0), 
                                                c_comm_1998 = c(881, 52, 0, 0, 8, 0, 0, 0, 0),
