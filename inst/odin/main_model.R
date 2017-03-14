@@ -170,8 +170,19 @@ alphaItot[] =
 
 # BALANCING OF PARTNERSHIPS
 ##############################################################################
-c_comm[] = user()
-c_noncomm[] = user()
+
+c_t_comm[] = user()
+dim(c_t_comm) = user()
+c_t_noncomm[] = user()
+dim(c_t_noncomm) = user()
+
+c_y_comm[,] = user()
+dim(c_y_comm) = user()
+c_y_noncomm[,] = user()
+dim(c_y_noncomm) = user()
+
+c_comm[] = interpolate(c_t_comm, c_y_comm, "linear")
+c_noncomm[] = interpolate(c_t_noncomm, c_y_noncomm, "linear")
 
 c_comm_balanced[] <- c_comm[i]
 c_noncomm_balanced[] <- c_noncomm[i]
@@ -369,6 +380,9 @@ output(cumuInftot) = cumuInftot
 frac_N[] = N[i] / Ntot_inc_former_FSW_nonCot
 frac_F[] = if(Ncat == 9) (N[1] + N[2] + N[3] + N[4] + N[7] + N[9])/ Ntot_inc_former_FSW_nonCot else 0
 frac_N_sexualpop[] = if(Ncat == 9) N[i] / (N[1] + N[2] + N[3] + N[4] + N[5] + N[6]) else 0
+
+frac_virgin = if(Ncat == 9) (N[7] + N[8])/(N[1] + N[2] + N[3] + N[4] + N[5] + N[6] + N[7] + N[8]) else 0
+output(frac_virgin) = frac_virgin
 
 dim(frac_F) = Ncat
 output(frac_F[]) = frac_F
@@ -781,8 +795,8 @@ dim(alpha45) = Ncat
 
 # FOI parameters
 dim(beta) = Ncat
-dim(c_comm) = Ncat
-dim(c_noncomm) = Ncat
+dim(c_comm) = user()
+dim(c_noncomm) = user()
 dim(p_comm) = c(Ncat, Ncat)
 dim(p_noncomm) = c(Ncat, Ncat)
 

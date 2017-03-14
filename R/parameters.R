@@ -58,6 +58,24 @@ fix_parameters <- function(y, Ncat, Nage) {
 #                       c(y$fc_y_comm_2008), c(y$fc_y_comm_2012),
 #                       c(y$fc_y_comm_2015)), c(Ncat, Ncat, 9))
   
+  # PCR
+  
+  
+  
+  y$c_t_comm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016)
+  y$c_t_noncomm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016)
+  
+  y$c_y_comm = rbind(y$c_comm_1985, y$c_comm_1993, y$c_comm_1995, y$c_comm_1998, y$c_comm_2002, 
+                     y$c_comm_2005, y$c_comm_2008, y$c_comm_2012, y$c_comm_2015, y$c_comm_2016)
+  
+  y$c_y_noncomm = rbind(y$c_noncomm_1985, y$c_noncomm_1993, y$c_noncomm_1995, y$c_noncomm_1998, y$c_noncomm_2002, 
+                        y$c_noncomm_2005, y$c_noncomm_2008, y$c_noncomm_2012, y$c_noncomm_2015, y$c_noncomm_2016)
+  
+  
+  
+  
+  
+  
   y$fc_y_comm = array(data = c(y$fc_y_comm_1985, y$fc_y_comm_1993, 
         y$fc_y_comm_1995, y$fc_y_comm_1998,
         y$fc_y_comm_2002, y$fc_y_comm_2005,
@@ -149,8 +167,6 @@ fix_parameters <- function(y, Ncat, Nage) {
     
     # MALE MOVEMENT
     
-    # virgin movement
-    
     y$rate_move_out[5] = - y$rate_leave_client 
     y$rate_move_out[6] = - y$rate_leave_client * y$prop_client_GPM 
     
@@ -208,8 +224,28 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     fc_y_noncomm_1998 = matrix(0.4, Ncat, Ncat),
     fc_y_noncomm_2008 = matrix(0.3, Ncat, Ncat),
     fc_y_noncomm_2015 = matrix(0.5, Ncat, Ncat),
-    fc_y_noncomm_2015 = matrix(0.5, Ncat, Ncat)
+    fc_y_noncomm_2015 = matrix(0.5, Ncat, Ncat),
+    c_comm_1985 = rep_len(2, Ncat),
+    c_comm_1993 = rep_len(2, Ncat),
+    c_comm_1995 = rep_len(2, Ncat),
+    c_comm_1998 = rep_len(2, Ncat),
+    c_comm_2002 = rep_len(2, Ncat),
+    c_comm_2005 = rep_len(2, Ncat),
+    c_comm_2008 = rep_len(2, Ncat),
+    c_comm_2012 = rep_len(2, Ncat),
+    c_comm_2015 = rep_len(2, Ncat),
+    c_comm_2016 = rep_len(2, Ncat),
     
+    c_noncomm_1985 = rep_len(1, Ncat),
+    c_noncomm_1993 = rep_len(1, Ncat),
+    c_noncomm_1995 = rep_len(1, Ncat),
+    c_noncomm_1998 = rep_len(1, Ncat),
+    c_noncomm_2002 = rep_len(1, Ncat),
+    c_noncomm_2005 = rep_len(1, Ncat),
+    c_noncomm_2008 = rep_len(1, Ncat),
+    c_noncomm_2012 = rep_len(1, Ncat),
+    c_noncomm_2015 = rep_len(1, Ncat),
+    c_noncomm_2016 = rep_len(1, Ncat)
     
     
   )
@@ -229,12 +265,12 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
   N_init = if(Ncat == 9) matrix(c(672, 672, 757, 757, 130895, 130895, 672, 672, 27091, 27091, 100335, 100335, 14544, 14544, 11148, 11148, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("N_init", Ncat), NULL)) else c(300000, 300000)
   #   c_comm = if(Ncat == 9) matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
   #     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL))
-  c_comm = if(Ncat == 9) matrix(c(272, 1439, 40, 64, 0, 0, 0, 0, 18.67, 37.5, 0, 0, 0, 0, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
-    matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL))
-  
-  c_noncomm = if(Ncat == 9) matrix(c(0.2729358, 0.4682779, 0.2729358, 0.4682779, 0.90, 1.02, 0.90, 1.02, 1.21, 2.5, 1.28, 1.40, 0, 0, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_noncomm", Ncat), NULL)) else 
-    matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_noncomm", Ncat), NULL))
-  
+#   c_comm = if(Ncat == 9) matrix(c(272, 1439, 40, 64, 0, 0, 0, 0, 18.67, 37.5, 0, 0, 0, 0, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
+#     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL))
+#   
+#   c_noncomm = if(Ncat == 9) matrix(c(0.2729358, 0.4682779, 0.2729358, 0.4682779, 0.90, 1.02, 0.90, 1.02, 1.21, 2.5, 1.28, 1.40, 0, 0, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_noncomm", Ncat), NULL)) else 
+#     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_noncomm", Ncat), NULL))
+#   
   
   ranges <- rbind(
     # c_y_comm,
@@ -257,8 +293,8 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     
     prev_init_FSW = c(0.01318836, 0.06592892),
     prev_init_rest = c(0.0003134459, 0.0029420363),
-    c_comm,
-    c_noncomm,
+#     c_comm,
+#     c_noncomm,
     mu,
     
     infect_ART = c(0.1, 0.7), # infectiousness RR when on ART
@@ -419,6 +455,36 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    eP1b = c(0.45, rep_len(0, (Ncat-1))),
                    eP1c = c(0, rep_len(0, (Ncat-1))),
                    eP1d = c(0, rep_len(0, (Ncat-1))),
+                   
+                   
+                   # partner change rate
+                   c_comm_1985 = rep_len(2, Ncat),
+                   c_comm_1993 = rep_len(2, Ncat),
+                   c_comm_1995 = rep_len(2, Ncat),
+                   c_comm_1998 = rep_len(2, Ncat),
+                   c_comm_2002 = rep_len(2, Ncat),
+                   c_comm_2005 = rep_len(2, Ncat),
+                   c_comm_2008 = rep_len(2, Ncat),
+                   c_comm_2012 = rep_len(2, Ncat),
+                   c_comm_2015 = rep_len(2, Ncat),
+                   c_comm_2016 = rep_len(2, Ncat),
+                   
+                   c_noncomm_1985 = rep_len(1, Ncat),
+                   c_noncomm_1993 = rep_len(1, Ncat),
+                   c_noncomm_1995 = rep_len(1, Ncat),
+                   c_noncomm_1998 = rep_len(1, Ncat),
+                   c_noncomm_2002 = rep_len(1, Ncat),
+                   c_noncomm_2005 = rep_len(1, Ncat),
+                   c_noncomm_2008 = rep_len(1, Ncat),
+                   c_noncomm_2012 = rep_len(1, Ncat),
+                   c_noncomm_2015 = rep_len(1, Ncat),
+                   c_noncomm_2016 = rep_len(1, Ncat),
+                   
+                   c_t_comm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016),
+                   c_t_noncomm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016),
+                   
+                   c_y_comm = matrix(2, nrow = 10, ncol = Ncat),
+                   c_y_noncomm = matrix(1, nrow = 10, ncol = Ncat),
                    
                    # condoms 
                    #                    fc_t_noncomm = c(1985, 1990, 1998, 2016),

@@ -10,6 +10,7 @@ require(reshape2)
 # some parameters to be dependent on others which have been sampled
 # ART to be defined by nubmers, not rates
 
+rm(list = ls())
 odin::odin_package(".") # looks for any models inside inst/odin
 devtools::load_all()
 
@@ -39,8 +40,34 @@ best_set = list(
   epsilon_2013 = 0.026936907 * 1.5,
   epsilon_2016 = 0.026936907 * 1.5,
   mu = c(0.02597403, 0.02597403, 0.02597403, 0.02597403, 0.02739726, 0.02739726, 0.02597403, 0.02739726, 0.02597403), # women 1/((27 + 50)/2) # men 1/((25 +  48)/2)
-  c_comm = c(750, 52, 0, 0, 13.5, 0, 0, 0, 0),
-  c_noncomm = c(0.38, 0.38, 0.88, 0.88, 4, 1.065, 0, 0, 0), # partner change rate lowlevel FSW same as pro, others are approximations from various surveys
+  #   c_comm = c(750, 52, 0, 0, 13.5, 0, 0, 0, 0),
+  #   c_noncomm = c(0.38, 0.38, 0.88, 0.88, 4, 1.065, 0, 0, 0), # partner change rate lowlevel FSW same as pro, others are approximations from various surveys
+  #   
+  
+  # PARTNER CHANGE RATE
+  c_comm_1985 = c(1229.5, 52, 0, 0, 10.15873, 0, 0, 0, 0), # (1020 + 1439)/2
+  c_comm_1993 = c(1229.5, 52, 0, 0, 10.15873, 0, 0, 0, 0), # (1020 + 1439)/2
+  c_comm_1995 = c(1280, 52, 0, 0, 10.15873, 0, 0, 0, 0), # (1135 + 1425)/2
+  c_comm_1998 = c(881, 52, 0, 0, 10.15873, 0, 0, 0, 0), # (757 + 1005)/2
+  c_comm_2002 = c(598.5, 52, 0, 0, 11.08109, 0, 0, 0, 0), # (498 + 699)/2, (13.387-10.15873)/14 * 4 + 10.15873
+  c_comm_2005 = c(424, 52, 0, 0, 11.77286, 0, 0, 0, 0), # (366 + 482)/2, (13.387-10.15873)/14 * 7 + 10.15873
+  c_comm_2008 = c(371.5, 52, 0, 0, 12.46464, 0, 0, 0, 0), # (272 + 471)/2, (13.387-10.15873)/14 * 10 + 10.15873
+  c_comm_2012 = c(541, 52, 0, 0, 13.387, 0, 0, 0, 0), # (459 + 623)/2
+  c_comm_2015 = c(400, 52, 0, 0, 17.15294, 0, 0, 0, 0), # (309 + 491)/2
+  c_comm_2016 = c(400, 52, 0, 0, 17.15294, 0, 0, 0, 0), # (309 + 491)/2
+  
+  c_noncomm_1985 = c(0.3766285, 0.3766285, 0.9610526, 0.9610526, 2.028986, 1.337444, 0, 0, 0), # (0.4682779 + 0.3886719 + 0.2729358)/3
+  c_noncomm_1993 = c(0.3766285, 0.3766285, 0.9610526, 0.9610526, 2.028986, 1.337444, 0, 0, 0), 
+  c_noncomm_1995 = c(0.3766285, 0.3766285, 0.9610526, 0.9610526, 2.028986, 1.337444, 0, 0, 0), 
+  c_noncomm_1998 = c(0.3766285, 0.3766285, 0.9610526, 0.9610526, 2.028986, 1.337444, 0, 0, 0), 
+  c_noncomm_2002 = c(0.3766285, 0.3766285, 0.9610526, 0.9610526, 2.028986, 1.337444, 0, 0, 0), 
+  c_noncomm_2005 = c(0.3766285, 0.3766285, 0.9610526, 0.9610526, 2.028986, 1.337444, 0, 0, 0), 
+  c_noncomm_2008 = c(0.3766285, 0.3766285, 0.7943578, 0.7943578, 2.028986, 0.7878543, 0, 0, 0), 
+  c_noncomm_2012 = c(0.3766285, 0.3766285, 0.7943578, 0.7943578, 8.086957, 0.7878543, 0, 0, 0), 
+  c_noncomm_2015 = c(0.3766285, 0.3766285, 0.7943578, 0.7943578, 6.258258, 0.7878543, 0, 0, 0), 
+  c_noncomm_2016 = c(0.3766285, 0.3766285, 0.7943578, 0.7943578, 6.258258, 0.7878543, 0, 0, 0), 
+  
+  
   
   n_comm = matrix(c(0, 0, 0, 0, 1.935, 0, 0, 0, 0, # from client sa per partner
                     0, 0, 0, 0, 1.935, 0, 0, 0, 0,
@@ -78,7 +105,7 @@ best_set = list(
   SC_to_200_349 = 3.4,
   gamma04 = 4.45, #years
   
-
+  
   alpha01 = rep_len(0,9),
   alpha02 = rep_len(0,9),
   alpha03 = rep_len(0,9),
@@ -139,11 +166,11 @@ best_set = list(
   #CONDOM
   
   fc_y_comm_1985 = matrix(
-    c(0, 0, 0, 0, 0, 0, 0, 0, 0,
+    c(0, 0, 0, 0, 0.145524, 0, 0, 0, 0, # 0.145524 is using John's FSW condom 1989 as prop of 1993, * our measure of 1993
+      0, 0, 0, 0, 0.145524, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0.145524, 0.145524, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -303,11 +330,11 @@ best_set = list(
       0, 0, 0, 0, 0, 0, 0, 0, 0), nrow = 9),
   
   
-
+  
   fc_t_comm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016),
-
+  
   fc_t_noncomm = c(1985, 1990, 1998, 2015, 2016),
-
+  
   
   rate_leave_pro_FSW = 0.2,
   FSW_leave_Cotonou_fraction = 0.1,
@@ -317,7 +344,76 @@ best_set = list(
 )
 
 
-# equal betas
+# single run (prev)
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
+result = run_model(parameters, main_model, time)
+yy <- result["prev"][[1]]
+df = data.frame(time, yy)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "Prevalence (%)") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+# FOI
+FOI <- result["lambda_sum_0"][[1]]
+df = data.frame(time, FOI)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+ggplot(data = df, aes(x = time, y = value)) + labs(y = "force of infection on susceptibles (no PrEP)") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+# mortality
+alphaItot <- result["alphaItot"][[1]]
+df = data.frame(time, alphaItot)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+ggplot(data = df, aes(x = time, y = value)) + labs(y = "Annual AIDS deaths") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+
+1/parameters$mu
+
+
+
+#try to fit to prevalence data
+parameters = lhs_parameters(1, set_pars = best_set, 
+                            forced_pars = list(betaFtoM = 0.00193,
+                                               c_comm_1993 = c(1229.5, 52, 0, 0, 20, 0, 0, 0, 0),
+                                               c_comm_1995 = c(1280, 52, 0, 0, 10, 0, 0, 0, 0), 
+                                               c_comm_1998 = c(881, 52, 0, 0, 8, 0, 0, 0, 0),
+                                               c_comm_2002 = c(598.5, 52, 0, 0, 8, 0, 0, 0, 0), 
+                                               c_comm_2005 = c(424, 52, 0, 0, 8, 0, 0, 0, 0), 
+                                               c_comm_2008 = c(371.5, 52, 0, 0, 8, 0, 0, 0, 0),
+                                               c_comm_2012 = c(541, 52, 0, 0, 8, 0, 0, 0, 0),
+                                               c_comm_2015 = c(400, 52, 0, 0, 8, 0, 0, 0, 0),
+                                               c_comm_2016 = c(400, 52, 0, 0, 8, 0, 0, 0, 0),
+                                               testing_prob_y = matrix(0, # 2016
+                                                                       nrow = 9, ncol = 9, byrow = T),
+                                               rate_enter_sexual_pop = 0.4
+#                                                ,
+#                                                epsilon_2002 = 0.05 * 1.5,
+#                                                epsilon_2013 = 0.05 * 1.5,
+#                                                epsilon_2016 = 0.05 * 1.5
+                                               ),
+                            Ncat = 9)[[1]]
+result = run_model(parameters, main_model, time)
+yy <- result["prev"][[1]]
+df = data.frame(time, yy)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+prev_points = data.frame(time = c(1986, 1987, 1988, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015,1998, 2012, 2015,1998, 2008, 1998, 2008,2012, 2015),variable = c(rep("Pro FSW", 11), rep("Clients", 3), rep("GPF", 2), rep("GPM", 2), rep("Low-level FSW", 2)),value = c(3.3, 8.2, 19.2, 53.3, 48.7, 40.6, 38.9, 34.8, 29.3, 27.4, 18.7,100*0.084, 100*0.028, 100*0.016,100*0.035, 100*0.04,100*0.033, 100*0.02,100*0.167, 100*0.065),upper = c(3.3, 8.2, 19.2, 58.48, 54.42, 44.67, 46.27, 39.38, 33.88, 32.23, 22.01,100*0.11561791, 100*0.051602442, 100*0.035338436,100*0.047726245, 100*0.052817187,100*0.047183668, 100*0.029774338,100*0.268127672, 100*0.130153465),lower = c(3.3, 8.2, 19.2, 48.02, 43.02, 36.58, 31.97, 30.42, 24.93, 23.01, 15.71,100*0.05898524, 100*0.012660836, 100*0.006039259,100*0.024181624, 100*0.030073668,100*0.022857312, 100*0.012427931,100*0.091838441, 100*0.026704897))
+ggplot()  + geom_line(data = df, aes(x = time, y = value)) + theme_bw() + labs(x="year",y="prevalance (%)") +
+  geom_point(data = prev_points, aes(x = time, y = value))+ geom_errorbar(data = prev_points, aes(x = time, ymin = lower, ymax = upper))+ 
+  facet_wrap(~variable, scales = "free") 
+data.frame(time,result$c_comm_balanced)
+plot(data.frame(year=time, fraction_virgin=result$frac_virgin))
+plot(data.frame(year=time, sum_of_weighted_FOI = rowSums(result$lambda_sum_0 * result$frac_N)))
+
+
+# average life duration
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
+1/(parameters$gamma01+parameters$mu) + 1/(parameters$gamma02+parameters$mu) + 1/(parameters$gamma03+parameters$mu) + 1/(parameters$gamma04+parameters$mu) + 1/(parameters$alpha05+parameters$mu)
+
+#on ART
+1/(parameters$gamma01+parameters$mu) + 1/(parameters$gamma32+parameters$mu) + 1/(parameters$gamma33+parameters$mu) + 1/(parameters$gamma34+parameters$mu) + 1/(parameters$alpha35+parameters$mu)
+
+
+
+# fitting betas
 parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9, betaMtoF = 0.00193, betaFtoM = 0.00193)[[1]]
 result = run_model(parameters, main_model, time)
 yy <- result["prev"][[1]]
@@ -345,12 +441,48 @@ prev_points = data.frame(time = c(1986, 1987, 1988, 1993, 1995, 1998, 2002, 2005
                                    100*0.024181624, 100*0.030073668,
                                    100*0.022857312, 100*0.012427931,
                                    100*0.091838441, 100*0.026704897))
-
 ggplot()  + geom_line(data = df, aes(x = time, y = value)) + theme_bw() + labs(x="year",y="prevalance (%)") +
   geom_point(data = prev_points, aes(x = time, y = value))+ geom_errorbar(data = prev_points, aes(x = time, ymin = lower, ymax = upper))+ 
   facet_wrap(~variable, scales = "free") 
 
+plot(time, result$c_comm_balanced[,1])
+plot(time, result$fc_comm[,1,5])
 
+
+
+# rho
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
+result = run_model(parameters, main_model, time)
+yy <- result["rho"][[1]]
+df = data.frame(time, yy)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "ART rate") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+
+
+# N
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
+result = run_model(parameters, main_model, time)
+yy <- result["N"][[1]]
+df = data.frame(time, yy)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "N") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+
+
+
+# tau
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
+result = run_model(parameters, main_model, time)
+yy <- result["tau"][[1]]
+df = data.frame(time, yy)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "Testing rate") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+
+
+# test c_comm
+parameters = lhs_parameters(1, c_comm_1985 = rep_len(1.1, 9), Ncat = 9)[[1]]
 
 
 # new people
@@ -367,10 +499,12 @@ ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "Preval
 # fc
 parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
 result = run_model(parameters, main_model, time)
-yy <- result["fc_noncomm"][[1]][,1,5]
+yy <- result["fc_comm"][[1]][,1,5]
 df = data.frame(time, yy)
 plot(df)
-
+yy <- result["fc_noncomm"][[1]][,1,5]
+df = data.frame(time, yy)
+lines(df)
 
 # frac_F
 parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
@@ -424,6 +558,12 @@ result$prev
 result$Ntot
 
 
+# frac virgin
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9, forced_pars = list(rate_enter_sexual_pop = .4))[[1]]
+result = run_model(parameters, main_model, time)
+fraction_virgin <- result["frac_virgin"][[1]]
+df = data.frame(time, fraction_virgin);plot(df)
+
 
 # frac N
 parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
@@ -432,23 +572,9 @@ yy <- result["frac_N"][[1]]
 df = data.frame(time, yy)
 names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
 df = melt(df, id.vars = "time")
-ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "Prevalence (%)") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "frac N") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
 
 
-
-# FOI
-FOI <- result["lambda_sum_0"][[1]]
-df = data.frame(time, FOI)
-names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
-df = melt(df, id.vars = "time")
-ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "lambda on S0") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
-
-# # mortality
-# alphaItot <- result["alphaItot"][[1]]
-# df = data.frame(time, alphaItot)
-# names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
-# df = melt(df, id.vars = "time")
-# ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "AIDS deaths") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
 
 
 
@@ -473,7 +599,18 @@ yy = data.frame()
 for(i in 1:3)
 {
   run = betaseq[i]
-  parameters = lhs_parameters(1, set_pars = best_set, forced_pars = list(betaMtoF = betaMtoFseq[i], betaFtoM = betaFtoMseq[i]), Ncat = 9)[[1]]
+  parameters = lhs_parameters(1, set_pars = best_set, forced_pars = list(betaMtoF = betaMtoFseq[i], betaFtoM = betaFtoMseq[i]
+                                                                         #                                                                          , n_comm = matrix(c(0, 0, 0, 0, 1.935, 0, 0, 0, 0, # from client sa per partner
+                                                                         #                                                                                                                                                             0, 0, 0, 0, 1.935, 0, 0, 0, 0,
+                                                                         #                                                                                                                                                             0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                                         #                                                                                                                                                             0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                                         #                                                                                                                                                             1.935, 1.935, 0, 0, 0, 0, 0, 0, 0,
+                                                                         #                                                                                                                                                             0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                                         #                                                                                                                                                             0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                                         #                                                                                                                                                             0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                                         #                                                                                                                                                             0, 0, 0, 0, 0, 0, 0, 0, 0),
+                                                                         #                                                                                                                                                           nrow = 9, ncol = 9, byrow = T)
+  ), Ncat = 9)[[1]]
   result = run_model(parameters, main_model, time)
   yy <- rbind(yy, data.frame(time = time, result["prev"][[1]], replication = betaseq[i]))
 }
@@ -484,27 +621,26 @@ ggplot(data = yy_melted, aes(x = time, y = value, color = replication)) + facet_
 
 
 prev_points = data.frame(time = c(1986, 1987, 1988, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015,
-                             1998, 2012, 2015,
-                             1998, 2008, 
-                             1998, 2008,
-                             2012, 2015),
-                    variable = c(rep("Pro FSW", 11), rep("Clients", 3), rep("GPF", 2), rep("GPM", 2), rep("Low-level FSW", 2)),
-                    value = c(3.3, 8.2, 19.2, 53.3, 48.7, 40.6, 38.9, 34.8, 29.3, 27.4, 18.7,
-                              100*0.084, 100*0.028, 100*0.016,
-                              100*0.035, 100*0.04,
-                              100*0.033, 100*0.02,
-                              100*0.167, 100*0.065),
-                    upper = c(3.3, 8.2, 19.2, 58.48, 54.42, 44.67, 46.27, 39.38, 33.88, 32.23, 22.01,
-                              100*0.11561791, 100*0.051602442, 100*0.035338436,
-                              100*0.047726245, 100*0.052817187,
-                              100*0.047183668, 100*0.029774338,
-                              100*0.268127672, 100*0.130153465),
-                    lower = c(3.3, 8.2, 19.2, 48.02, 43.02, 36.58, 31.97, 30.42, 24.93, 23.01, 15.71,
-                              100*0.05898524, 100*0.012660836, 100*0.006039259,
-                              100*0.024181624, 100*0.030073668,
-                              100*0.022857312, 100*0.012427931,
-                              100*0.091838441, 100*0.026704897))
-
+                                  1998, 2012, 2015,
+                                  1998, 2008, 
+                                  1998, 2008,
+                                  2012, 2015),
+                         variable = c(rep("Pro FSW", 11), rep("Clients", 3), rep("GPF", 2), rep("GPM", 2), rep("Low-level FSW", 2)),
+                         value = c(3.3, 8.2, 19.2, 53.3, 48.7, 40.6, 38.9, 34.8, 29.3, 27.4, 18.7,
+                                   100*0.084, 100*0.028, 100*0.016,
+                                   100*0.035, 100*0.04,
+                                   100*0.033, 100*0.02,
+                                   100*0.167, 100*0.065),
+                         upper = c(3.3, 8.2, 19.2, 58.48, 54.42, 44.67, 46.27, 39.38, 33.88, 32.23, 22.01,
+                                   100*0.11561791, 100*0.051602442, 100*0.035338436,
+                                   100*0.047726245, 100*0.052817187,
+                                   100*0.047183668, 100*0.029774338,
+                                   100*0.268127672, 100*0.130153465),
+                         lower = c(3.3, 8.2, 19.2, 48.02, 43.02, 36.58, 31.97, 30.42, 24.93, 23.01, 15.71,
+                                   100*0.05898524, 100*0.012660836, 100*0.006039259,
+                                   100*0.024181624, 100*0.030073668,
+                                   100*0.022857312, 100*0.012427931,
+                                   100*0.091838441, 100*0.026704897))
 ggplot()  + geom_line(data = yy_melted, aes(x = time, y = value, color = replication)) + theme_bw() + labs(x="year",y="prevalance (%)") +
   geom_point(data = prev_points, aes(x = time, y = value))+ geom_errorbar(data = prev_points, aes(x = time, ymin = lower, ymax = upper))+ 
   facet_wrap(~variable, scales = "free") 
