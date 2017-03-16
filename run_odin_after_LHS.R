@@ -109,25 +109,24 @@ best_set = list(
   gamma04 = 4.45, #years
   
   
-  alpha01 = rep_len(0,9),
-  alpha02 = rep_len(0,9),
-  alpha03 = rep_len(0,9),
-  alpha04 = rep_len(0,9),
-  alpha05 = rep_len(0.3448276, 9), #1/2.9
-  alpha11 = rep_len(0,9),
-  alpha21 = rep_len(0,9),
-  alpha22 = rep_len(0,9),
-  alpha23 = rep_len(0,9),
-  alpha24 = rep_len(0,9),
-  alpha25 = rep_len(0.3448276,9),
-  alpha32 = rep_len(0,9),
-  alpha33 = rep_len(0,9),
-  alpha34 = rep_len(0,9),
-  alpha35 = rep_len(0.3448276,9),
-  alpha42 = rep_len(0,9),
-  alpha43 = rep_len(0,9),
-  alpha44 = rep_len(0,9),
-  alpha45 = rep_len(0.3448276,9),
+  alpha01 = rep_len(0, 9),
+  alpha02 = rep_len(0, 9),
+  alpha03 = rep_len(0.05, 9),
+  alpha04 = rep_len(0.08, 9),
+  alpha05 = rep_len(0.27, 9), #1/2.9
+  alpha11 = rep_len(0, 9),
+  alpha22 = rep_len(0, 9),
+  alpha23 = rep_len(0.05, 9),
+  alpha24 = rep_len(0.08, 9),
+  alpha25 = rep_len(0.27, 9),
+  alpha32 = rep_len(0, 9),
+  alpha33 = rep_len(0.05, 9),
+  alpha34 = rep_len(0.08, 9),
+  alpha35 = rep_len(0.27, 9),
+  alpha42 = rep_len(0, 9),
+  alpha43 = rep_len(0.05, 9),
+  alpha44 = rep_len(0.08, 9),
+  alpha45 = rep_len(0.27, 9),
   
   
   #PREP
@@ -409,10 +408,18 @@ plot(data.frame(year=time, sum_of_weighted_FOI = rowSums(result$lambda_sum_0 * r
 
 # average life duration
 parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
-1/(parameters$gamma01+parameters$mu) + 1/(parameters$gamma02+parameters$mu) + 1/(parameters$gamma03+parameters$mu) + 1/(parameters$gamma04+parameters$mu) + 1/(parameters$alpha05+parameters$mu)
+1/(parameters$gamma01+parameters$alpha01+parameters$mu) + 
+  1/(parameters$gamma02+parameters$alpha02+parameters$mu) + 
+  1/(parameters$gamma03+parameters$alpha03+parameters$mu) + 
+  1/(parameters$gamma04+parameters$alpha04+parameters$mu) + 
+  1/(parameters$alpha05+parameters$mu)
 
 #on ART
-1/(parameters$gamma01+parameters$mu) + 1/(parameters$gamma32+parameters$mu) + 1/(parameters$gamma33+parameters$mu) + 1/(parameters$gamma34+parameters$mu) + 1/(parameters$alpha35+parameters$mu)
+1/(parameters$gamma01+parameters$alpha01+parameters$mu) + 
+  1/(parameters$gamma32+parameters$alpha32+parameters$mu) + 
+  1/(parameters$gamma33+parameters$alpha33+parameters$mu) + 
+  1/(parameters$gamma34+parameters$alpha34+parameters$mu) + 
+  1/(parameters$alpha35+parameters$mu)
 
 
 
