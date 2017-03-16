@@ -181,7 +181,7 @@ fix_parameters <- function(y, Ncat, Nage) {
     
     # c_t_comm = c(1985, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015, 2016),
     # y$c_y_comm = 
-    y$mu = rep(y$mu[1], 9)
+    y$mu = c(y$muF, y$muF, y$muF, y$muF, y$muM, y$muM, y$muF, y$muM, y$muF)
     
   } else {
     # y$omega = y$omega/sum(y$omega)
@@ -253,7 +253,11 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     betaMtoF_noncomm = 0.00193,
     betaFtoM_noncomm = 0.00867,
     betaMtoF_comm = 0.00193,
-    betaFtoM_comm = 0.00867
+    betaFtoM_comm = 0.00867,
+    
+    muF = 0.02597403,
+    muM = 0.02739726
+
     
     
   )
@@ -647,7 +651,9 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    movement = 1,
                    beta_comm = rep_len(0.002, Ncat),
                    
-                   beta_noncomm = rep_len(0.001, Ncat)
+                   beta_noncomm = rep_len(0.001, Ncat),
+                   muF = 0.02597403,
+                   muM = 0.02739726
                    
                    
                    
