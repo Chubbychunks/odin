@@ -509,6 +509,8 @@ yy <- result["fc_noncomm"][[1]][,1,5]
 df = data.frame(time, yy)
 lines(df)
 
+par_gridplot2(result = result, "fc_comm")
+
 # frac_F
 parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
 result = run_model(parameters, main_model, time)
