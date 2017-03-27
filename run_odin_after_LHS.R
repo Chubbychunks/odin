@@ -97,7 +97,7 @@ best_set = list(
   betaFtoM_noncomm = 0.0038*0.44,
   
   infect_acute = 9, # RR for acute phase
-  infect_AIDS = 7.27, # RR for AIDS phase
+  infect_AIDS = 2, #7.27, # RR for AIDS phase
   infect_ART = 0.9 * 0.523, # infectiousness RR when on ART (efficacy ART assuimed 90% * % undetectable which is 52.3%)
   ec = rep_len(0.8, 9), # from kate's paper on nigeria SD couples
   eP0 = c(0, rep_len(0, 8)), # assumptions!
@@ -346,9 +346,21 @@ best_set = list(
   
 )
 
+# to be altered
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
+result = run_model(parameters, main_model, time)
+yy <- result["prev"][[1]]
+df = data.frame(time, yy)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+ggplot(data = df, aes(x = time, y = value, color = variable)) + labs(y = "Prevalence (%)") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+
+
 
 # single run (prev)
-parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
+parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9, c_noncomm_2012 = c(0.3766285, 0.3766285, 0.7943578, 0.7943578, 1.258258, 0.7878543, 0, 0, 0), 
+                            c_noncomm_2015 = c(0.3766285, 0.3766285, 0.7943578, 0.7943578, 1.258258, 0.7878543, 0, 0, 0),
+                            c_noncomm_2016 = c(0.3766285, 0.3766285, 0.7943578, 0.7943578, 1.258258, 0.7878543, 0, 0, 0))[[1]]
 result = run_model(parameters, main_model, time)
 yy <- result["prev"][[1]]
 df = data.frame(time, yy)
@@ -372,6 +384,23 @@ ggplot(data = df, aes(x = time, y = value)) + labs(y = "Annual AIDS deaths") + g
 
 
 
+# understanding changes over time
+df = data.frame(time, result$c_comm_balanced)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+ggplot(data = df, aes(x = time, y = value)) + labs(y = "c_comm_balanced") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+df = data.frame(time, result$c_noncomm_balanced)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+ggplot(data = df, aes(x = time, y = value)) + labs(y = "c_noncomm_balanced") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+df = data.frame(time, result$frac_N)
+names(df) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+df = melt(df, id.vars = "time")
+ggplot(data = df, aes(x = time, y = value)) + labs(y = "frac_N") + geom_line() + theme_bw() + facet_wrap(~variable, scales = "free")+ theme(legend.position="none")
+
+
+
+
 #try to fit to prevalence data
 parameters = lhs_parameters(1, set_pars = best_set, 
                             forced_pars = list(#betaFtoM_comm = 0.00193, betaFtoM_noncomm = 0.00193, # infect_AIDS = 1,
@@ -384,10 +413,14 @@ parameters = lhs_parameters(1, set_pars = best_set,
                                                c_comm_2012 = c(541, 52, 0, 0, 8, 0, 0, 0, 0),
                                                c_comm_2015 = c(400, 52, 0, 0, 8, 0, 0, 0, 0),
                                                c_comm_2016 = c(400, 52, 0, 0, 8, 0, 0, 0, 0),
-                                               testing_prob_y = matrix(0, # 2016
-                                                                       nrow = 9, ncol = 9, byrow = T),
-                                               rate_enter_sexual_pop = 0.4
-#                                                ,
+                                               c_noncomm_2012 = c(0.3766285, 0.3766285, 0.7943578, 0.7943578, 1.258258, 0.7878543, 0, 0, 0), 
+                                               c_noncomm_2015 = c(0.3766285, 0.3766285, 0.7943578, 0.7943578, 1.258258, 0.7878543, 0, 0, 0),
+                                               c_noncomm_2016 = c(0.3766285, 0.3766285, 0.7943578, 0.7943578, 1.258258, 0.7878543, 0, 0, 0),
+                                               rate_enter_sexual_pop = 0.4,
+                                               betaMtoF_comm = 0.003,
+                                               betaFtoM_comm = 0.0038*0.44,    
+                                               betaMtoF_noncomm = 0.002,
+                                               betaFtoM_noncomm = 0.0028*0.44# ,
 #                                                epsilon_2002 = 0.05 * 1.5,
 #                                                epsilon_2013 = 0.05 * 1.5,
 #                                                epsilon_2016 = 0.05 * 1.5
