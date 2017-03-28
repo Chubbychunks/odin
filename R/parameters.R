@@ -50,13 +50,13 @@ fix_parameters <- function(y, Ncat, Nage) {
   y$gamma34 <- (y$gamma04)/y$ART_RR
   y$alpha35 <- (y$alpha05)/y$ART_RR
   
-
+  
   # print(y$fc_y_comm_1993)
-#   fc_y_comm = array(c(c(y$fc_y_comm_1985), c(y$fc_y_comm_1993), 
-#                       c(y$fc_y_comm_1995), c(y$fc_y_comm_1998),
-#                       c(y$fc_y_comm_2002), c(y$fc_y_comm_2005),
-#                       c(y$fc_y_comm_2008), c(y$fc_y_comm_2012),
-#                       c(y$fc_y_comm_2015)), c(Ncat, Ncat, 9))
+  #   fc_y_comm = array(c(c(y$fc_y_comm_1985), c(y$fc_y_comm_1993), 
+  #                       c(y$fc_y_comm_1995), c(y$fc_y_comm_1998),
+  #                       c(y$fc_y_comm_2002), c(y$fc_y_comm_2005),
+  #                       c(y$fc_y_comm_2008), c(y$fc_y_comm_2012),
+  #                       c(y$fc_y_comm_2015)), c(Ncat, Ncat, 9))
   
   # PCR
   
@@ -77,21 +77,28 @@ fix_parameters <- function(y, Ncat, Nage) {
   
   
   y$fc_y_comm = array(data = c(y$fc_y_comm_1985, y$fc_y_comm_1993, 
-        y$fc_y_comm_1995, y$fc_y_comm_1998,
-        y$fc_y_comm_2002, y$fc_y_comm_2005,
-        y$fc_y_comm_2008, y$fc_y_comm_2012,
-        y$fc_y_comm_2015, y$fc_y_comm_2015), dim=c(Ncat, Ncat, 10))
+                               y$fc_y_comm_1995, y$fc_y_comm_1998,
+                               y$fc_y_comm_2002, y$fc_y_comm_2005,
+                               y$fc_y_comm_2008, y$fc_y_comm_2012,
+                               y$fc_y_comm_2015, y$fc_y_comm_2015), dim=c(Ncat, Ncat, 10))
   
   y$fc_y_comm = aperm(y$fc_y_comm, c(3, 1, 2))
   
   y$fc_y_noncomm = array(data = c(y$fc_y_noncomm_1985, y$fc_y_noncomm_1998, 
-                               y$fc_y_noncomm_2008, y$fc_y_noncomm_2015,
-                               y$fc_y_noncomm_2015), dim=c(Ncat, Ncat, 5))
+                                  y$fc_y_noncomm_2008, y$fc_y_noncomm_2015,
+                                  y$fc_y_noncomm_2015), dim=c(Ncat, Ncat, 5))
   
   y$fc_y_noncomm = aperm(y$fc_y_noncomm, c(3, 1, 2))
-
-
+  
+  
   y$omega = N/sum(N)
+  
+  
+  # when sampling pars, sometimes instead of length Ncat, I only sampled length one
+  if(length(y$ec) == 1)
+    y$ec = rep_len(y$ec, 9)
+  if(length(y$eP0) == 1)
+    y$eP0 = rep_len(y$eP0, 9)
   
   
   
@@ -199,10 +206,15 @@ fix_parameters <- function(y, Ncat, Nage) {
 #
 # the parameters below will be sampled from an LHS and will replace their respective defaults
 # unless I put something in the args of the function, eg sample = mu
-lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars = list(...), forced_pars = list(...), set_null= list(...)) {
+lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars = list(...), forced_pars = list(...), set_null= list(...), ranges = NULL) {
   
   
   set_pars <- modifyList(set_pars, forced_pars)
+  
+  # parameters that I have defined in ranges will be removed from set_pars and fixed pars (fixed pars below)
+  if(length(which(names(set_pars) %in% rownames(ranges))) > 0)
+    set_pars <- set_pars[-which(names(set_pars) %in% rownames(ranges))]
+  
   
   #fixed pars list
   fixed_pars = list(
@@ -257,10 +269,15 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     
     muF = 0.02597403,
     muM = 0.02739726
-
+    
     
     
   )
+  
+  if(length(which(names(fixed_pars) %in% rownames(ranges))) > 0)
+    fixed_pars <- fixed_pars[-which(names(fixed_pars) %in% rownames(ranges))]
+  
+  
   
   mu <- matrix(rep(c(1/50, 1/42), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("mu", Ncat), NULL))
   omega <- if(Ncat == 9) matrix(c(0.0017, 0.0067, 0, 0, 0, 0, 0, 0, 0.1, 0.2, 0, 0, 0, 0, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("omega", Ncat), NULL)) else 
@@ -277,14 +294,14 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
   N_init = if(Ncat == 9) matrix(c(672, 672, 757, 757, 130895, 130895, 672, 672, 27091, 27091, 100335, 100335, 14544, 14544, 11148, 11148, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("N_init", Ncat), NULL)) else c(300000, 300000)
   #   c_comm = if(Ncat == 9) matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
   #     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL))
-#   c_comm = if(Ncat == 9) matrix(c(272, 1439, 40, 64, 0, 0, 0, 0, 18.67, 37.5, 0, 0, 0, 0, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
-#     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL))
-#   
-#   c_noncomm = if(Ncat == 9) matrix(c(0.2729358, 0.4682779, 0.2729358, 0.4682779, 0.90, 1.02, 0.90, 1.02, 1.21, 2.5, 1.28, 1.40, 0, 0, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_noncomm", Ncat), NULL)) else 
-#     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_noncomm", Ncat), NULL))
-#   
+  #   c_comm = if(Ncat == 9) matrix(c(272, 1439, 40, 64, 0, 0, 0, 0, 18.67, 37.5, 0, 0, 0, 0, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL)) else 
+  #     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_comm", Ncat), NULL))
+  #   
+  #   c_noncomm = if(Ncat == 9) matrix(c(0.2729358, 0.4682779, 0.2729358, 0.4682779, 0.90, 1.02, 0.90, 1.02, 1.21, 2.5, 1.28, 1.40, 0, 0, 0, 0, 0, 0), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_noncomm", Ncat), NULL)) else 
+  #     matrix(rep(c(1,3), Ncat), nrow = Ncat, byrow = TRUE, dimnames = list(rep("c_noncomm", Ncat), NULL))
+  #   
   
-  ranges <- rbind(
+  old_ranges <- rbind(
     # c_y_comm,
     
     epsilon_1985 = c(0.059346131*1.5, 0.059346131*1.5),
@@ -305,8 +322,8 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     
     prev_init_FSW = c(0.01318836, 0.06592892),
     prev_init_rest = c(0.0003134459, 0.0029420363),
-#     c_comm,
-#     c_noncomm,
+    #     c_comm,
+    #     c_noncomm,
     mu,
     
     infect_ART = c(0.1, 0.7), # infectiousness RR when on ART
@@ -324,14 +341,20 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     
     ART_RR = c(2, 3), # from Mathieu's parameters  IN YEARS
     
-    omega,
+    # omega,
     
     #below are fixed...
     S0_init,
     I01_init,
     N_init
     
+    
   )
+
+  if (is.null(ranges)) {
+    ranges <- old_ranges
+  }
+  
   if (!is.null(sample)) {
     ranges <- ranges[rownames(ranges) %in% sample,  drop=FALSE]
   }

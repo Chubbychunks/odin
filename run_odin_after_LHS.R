@@ -21,6 +21,7 @@ parameters <- lhs_parameters(1,Ncat = 9)[[1]]
 result = run_model(parameters, main_model, time)
 
 
+
 ##### FIXED BEST PARAMETER SET LIST!
 ########################################################################################################################
 ########################################################################################################################
@@ -345,6 +346,53 @@ best_set = list(
   rate_leave_client = 0.05
   
 )
+
+# varying and fitting
+number_simulations = 2
+parameters <- lhs_parameters(number_simulations, set_pars = best_set, Ncat = 9, 
+                             ranges = rbind(betaMtoF_comm = c(0.00086, 0.00433),
+                                            betaFtoM_comm = c(0.00279 * 0.44, 0.02701 * 0.44),
+                                            betaMtoF_noncomm = c(0.00086, 0.00433),
+                                            betaFtoM_noncomm = c(0.00279 * 0.44, 0.02701 * 0.44)
+                                            ))
+# lapply(parameters, function(x) x$betaMtoF_noncomm)time <- seq(1986, 2016, length.out = 31)
+f <- function(p, gen, time) {
+  mod <- gen(user = p)
+  all_results <- mod$transform_variables(mod$run(time))
+  all_results[c("prev")]
+}
+res = lapply(parameters, f, main_model, time)
+
+prev_points = data.frame(time = c(1986, 1987, 1988, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015,1998, 2012, 2015,1998, 2008, 1998, 2008,2012, 2015),variable = c(rep("Pro FSW", 11), rep("Clients", 3), rep("GPF", 2), rep("GPM", 2), rep("Low-level FSW", 2)),value = c(3.3, 8.2, 19.2, 53.3, 48.7, 40.6, 38.9, 34.8, 29.3, 27.4, 18.7,100*0.084, 100*0.028, 100*0.016,100*0.035, 100*0.04,100*0.033, 100*0.02,100*0.167, 100*0.065),upper = c(3.3, 8.2, 19.2, 58.48, 54.42, 44.67, 46.27, 39.38, 33.88, 32.23, 22.01,100*0.11561791, 100*0.051602442, 100*0.035338436,100*0.047726245, 100*0.052817187,100*0.047183668, 100*0.029774338,100*0.268127672, 100*0.130153465),lower = c(3.3, 8.2, 19.2, 48.02, 43.02, 36.58, 31.97, 30.42, 24.93, 23.01, 15.71,100*0.05898524, 100*0.012660836, 100*0.006039259,100*0.024181624, 100*0.030073668,100*0.022857312, 100*0.012427931,100*0.091838441, 100*0.026704897))
+
+
+likelihood_rough <- function(x) {
+  the_prev = data.frame(time, x$prev)
+  names(the_prev) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou")
+  
+  
+  
+  
+  return (the_prev)
+  
+}
+likelihood_rough(res[[1]])
+
+
+
+
+# maybe don't use
+all_binded = do.call(rbind, lapply(res, function(x) x$prev))
+all_binded[is.na(all_binded)] = 0
+out = data.frame(time, all_binded, as.character(sort(rep(seq(1,number_simulations), length(time)))))
+names(out) = c("time", "Pro FSW", "Low-level FSW", "GPF", "Former FSW in Cotonou", "Clients", "GPM", "Virgin female", "Virgin male", "Former FSW outside Cotonou", "replication")
+out_melted = melt(out, id.vars = c("time", "replication"))
+prev_points = data.frame(time = c(1986, 1987, 1988, 1993, 1995, 1998, 2002, 2005, 2008, 2012, 2015,1998, 2012, 2015,1998, 2008, 1998, 2008,2012, 2015),variable = c(rep("Pro FSW", 11), rep("Clients", 3), rep("GPF", 2), rep("GPM", 2), rep("Low-level FSW", 2)),value = c(3.3, 8.2, 19.2, 53.3, 48.7, 40.6, 38.9, 34.8, 29.3, 27.4, 18.7,100*0.084, 100*0.028, 100*0.016,100*0.035, 100*0.04,100*0.033, 100*0.02,100*0.167, 100*0.065),upper = c(3.3, 8.2, 19.2, 58.48, 54.42, 44.67, 46.27, 39.38, 33.88, 32.23, 22.01,100*0.11561791, 100*0.051602442, 100*0.035338436,100*0.047726245, 100*0.052817187,100*0.047183668, 100*0.029774338,100*0.268127672, 100*0.130153465),lower = c(3.3, 8.2, 19.2, 48.02, 43.02, 36.58, 31.97, 30.42, 24.93, 23.01, 15.71,100*0.05898524, 100*0.012660836, 100*0.006039259,100*0.024181624, 100*0.030073668,100*0.022857312, 100*0.012427931,100*0.091838441, 100*0.026704897))
+ggplot()  + geom_line(data = out_melted, aes(x = time, y = value, factor = replication)) + theme_bw() + labs(x="year",y="prevalance (%)") +
+  geom_point(data = prev_points, aes(x = time, y = value))+ geom_errorbar(data = prev_points, aes(x = time, ymin = lower, ymax = upper))+ 
+  facet_wrap(~variable, scales = "free") 
+#####
+
 
 # to be altered
 parameters = lhs_parameters(1, set_pars = best_set, Ncat = 9)[[1]]
