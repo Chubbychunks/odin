@@ -353,7 +353,7 @@ best_set = list(
 ########################################################################################################
 start.time <- Sys.time()
 # varying and fitting
-number_simulations = 200
+number_simulations = 500
 parameters <- lhs_parameters(number_simulations, set_pars = best_set, Ncat = 9, 
                              ranges = rbind(
                                # betaMtoF_comm = c(0.00086, 0.0118844), # c(0.00086, 0.00433),
@@ -382,7 +382,7 @@ parameters <- lhs_parameters(number_simulations, set_pars = best_set, Ncat = 9,
 f <- function(p, gen, time) {
   mod <- gen(user = p)
   all_results <- mod$transform_variables(mod$run(time))
-  all_results[c("prev", "c_noncomm_balanced")]
+  all_results[c("prev", "c_comm_balanced", "c_noncomm_balanced")]
 }
 res = lapply(parameters, f, main_model, time)
 
@@ -444,6 +444,7 @@ prev_points = data.frame(time = c(1986, 1987, 1988, 1993, 1995, 1998, 2002, 2005
 ggplot()  + geom_line(data = out_melted, aes(x = time, y = value, factor = replication)) + theme_bw() + labs(x="year",y="prevalance (%)") +
   geom_point(data = prev_points, aes(x = time, y = value))+ geom_errorbar(data = prev_points, aes(x = time, ymin = lower, ymax = upper))+ 
   facet_wrap(~variable, scales = "free") 
+max(sorted_likelihood_list)
 ########################################################################################################
 ########################################################################################################
 ########################################################################################################
