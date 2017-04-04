@@ -4,6 +4,13 @@
 # parameters which depend on others, etc
 fix_parameters <- function(y, Ncat, Nage) {
   
+  # may want to switch off!
+  y$betaFtoM_noncomm = y$betaMtoF_noncomm * y$RR_beta_FtM * 0.44
+  y$betaMtoF_comm = y$betaMtoF_noncomm * y$RR_beta_GUD
+  y$betaFtoM_comm = y$betaMtoF_noncomm * y$RR_beta_FtM * 0.44 # no GUD effect?
+  
+  
+  
   y$epsilon_y = c(y$epsilon_1985, y$epsilon_1992, y$epsilon_2002, y$epsilon_2013, y$epsilon_2016)
   
   
@@ -216,7 +223,7 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     set_pars <- set_pars[-which(names(set_pars) %in% rownames(ranges))]
   
   
-  #fixed pars list
+  #fixed pars list i think for the fix parameters function
   fixed_pars = list(
     rate_move_in = matrix(0, nrow = Ncat, ncol = Ncat),
     rate_move_out = rep_len(0, Ncat),
@@ -268,7 +275,9 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     betaFtoM_comm = 0.00867,
     
     muF = 0.02597403,
-    muM = 0.02739726
+    muM = 0.02739726,
+    RR_beta_FtM = 1,
+    RR_beta_GUD = 1
     
     
     
@@ -676,7 +685,9 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    
                    beta_noncomm = rep_len(0.001, Ncat),
                    muF = 0.02597403,
-                   muM = 0.02739726
+                   muM = 0.02739726,
+                   RR_beta_GUD = 1,
+                   RR_beta_FtM = 1
                    
                    
                    
