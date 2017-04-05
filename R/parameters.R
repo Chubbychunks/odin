@@ -1,8 +1,19 @@
 
-
+before_LHS <- function(y) {
+  c_comm_grep = rownames(y)[grep("c_comm", rownames(y))]
+}
 
 # parameters which depend on others, etc
 fix_parameters <- function(y, Ncat, Nage) {
+  
+#   # interpolating for c_comm
+#   rownames(ranges)
+#   
+#   if(Ncat == 9)
+#   {
+#     
+#   }
+  
   
   # may want to switch off!
   y$betaFtoM_noncomm = y$betaMtoF_noncomm * y$RR_beta_FtM * 0.44
@@ -702,10 +713,10 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
   if (is.null(names(parameters)) || !all(nzchar(names(parameters)))) {
     stop("All arguments must be named")
   }
-  extra <- setdiff(names(parameters), names(defaults))
-  if (length(extra) > 0L) {
-    stop("Unknown arguments: ", extra)
-  }
+#   extra <- setdiff(names(parameters), names(defaults))
+#   if (length(extra) > 0L) {
+#     stop("Unknown arguments: ", extra)
+#   }
   
   # list of parameters that depend on others
   ret <- modifyList(defaults, parameters)
