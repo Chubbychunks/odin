@@ -401,7 +401,7 @@ best_set = list(
 ########################################################################################################
 start.time <- Sys.time()
 # varying and fitting
-number_simulations = 11000
+number_simulations = 10
 parameters <- lhs_parameters(number_simulations, set_pars = best_set, Ncat = 9, 
                              ranges = rbind(
                                # betaMtoF_comm = c(0.00086, 0.0118844), # c(0.00086, 0.00433),
@@ -410,27 +410,37 @@ parameters <- lhs_parameters(number_simulations, set_pars = best_set, Ncat = 9,
                                # betaFtoM_noncomm = c(0.00279 * 0.44, 0.02701 * 0.44),
                                RR_beta_GUD = c(1.43, 19.58),
                                RR_beta_FtM = c(0.5, 2),
-                               c_comm_1993 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 6, 11, 0, 0, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_comm_1993", 9), NULL)),
-                               c_comm_1995 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 6, 11, 0, 0, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_comm_1995", 9), NULL)),
-                               c_comm_1998 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 5, 11, 0, 0, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_comm_1998", 9), NULL)),
-                               c_comm_2002 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 5, 11, 0, 0, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_comm_2002", 9), NULL)),
-                               c_comm_2005 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 5, 11, 0, 0, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_comm_2005", 9), NULL)),
-                               c_comm_2008 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 5, 11, 0, 0, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_comm_2008", 9), NULL)),
-                               c_comm_2012 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 5, 11, 0, 0, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_comm_2012", 9), NULL)),
-                               c_comm_2015 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 5, 11, 0, 0, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_comm_2015", 9), NULL)),
-                               c_comm_2016 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 5, 11, 0, 0, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_comm_2016", 9), NULL)),
+                               c_comm_1993_ProFSW = c(1000, 1800),
+                               c_comm_2005_ProFSW = c(250, 600),
+                               c_comm_1998_Client = c(7, 12),
+                               c_comm_2015_Client = c(6, 12),
                                
-                               c_noncomm_2012 = matrix(c(0.2, 0.4, 0.2, 0.4, 0, 0, 0, 0, 1, 6, 0.6, 0.96, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_noncomm_2012", 9), NULL)),
-                               c_noncomm_2015 = matrix(c(0.2, 0.4, 0.2, 0.4, 0, 0, 0, 0, 1, 6, 0.6, 0.96, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_noncomm_2015", 9), NULL)),
-                               c_noncomm_2016 = matrix(c(0.2, 0.4, 0.2, 0.4, 0, 0, 0, 0, 1, 6, 0.6, 0.96, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_noncomm_2016", 9), NULL))
+                               c_noncomm_1998_Client = c(1, 3),
+                               c_noncomm_2015_Client = c(2, 6),
+                               who_believe_comm = c(0, 1)
                                
+                               
+                               #                                c_comm_1993 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 6, 11, 0, 0, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_comm_1993", 9), NULL)),
+                               #                                c_comm_1995 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 6, 11, 0, 0, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_comm_1995", 9), NULL)),
+                               #                                c_comm_1998 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 5, 11, 0, 0, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_comm_1998", 9), NULL)),
+                               #                                c_comm_2002 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 5, 11, 0, 0, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_comm_2002", 9), NULL)),
+                               #                                c_comm_2005 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 5, 11, 0, 0, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_comm_2005", 9), NULL)),
+                               #                                c_comm_2008 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 5, 11, 0, 0, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_comm_2008", 9), NULL)),
+                               #                                c_comm_2012 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 5, 11, 0, 0, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_comm_2012", 9), NULL)),
+                               #                                c_comm_2015 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 5, 11, 0, 0, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_comm_2015", 9), NULL)),
+                               #                                c_comm_2016 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 5, 11, 0, 0, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_comm_2016", 9), NULL)),
+                               #                                
+                               #                                c_noncomm_2012 = matrix(c(0.2, 0.4, 0.2, 0.4, 0, 0, 0, 0, 1, 6, 0.6, 0.96, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_noncomm_2012", 9), NULL)),
+                               #                                c_noncomm_2015 = matrix(c(0.2, 0.4, 0.2, 0.4, 0, 0, 0, 0, 1, 6, 0.6, 0.96, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_noncomm_2015", 9), NULL)),
+                               #                                c_noncomm_2016 = matrix(c(0.2, 0.4, 0.2, 0.4, 0, 0, 0, 0, 1, 6, 0.6, 0.96, 0, 0, 0, 0, 0, 0),  nrow = 9, byrow = TRUE, dimnames = list(rep("c_noncomm_2016", 9), NULL))
+                               #                                
                                
                              ))
 # lapply(parameters, function(x) x$betaMtoF_noncomm)time <- seq(1986, 2016, length.out = 31)
 f <- function(p, gen, time) {
   mod <- gen(user = p)
   all_results <- mod$transform_variables(mod$run(time))
-  all_results[c("prev", "c_comm_balanced", "c_noncomm_balanced")]
+  all_results[c("prev", "c_comm_balanced", "c_noncomm_balanced", "c_comm", "c_noncomm")]
 }
 res = lapply(parameters, f, main_model, time)
 

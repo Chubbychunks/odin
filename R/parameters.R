@@ -246,6 +246,8 @@ fix_parameters <- function(y, Ncat, Nage) {
   
   if (Ncat == 9) {
     
+    y$who_believe_comm = round(y$who_believe_comm)
+    
     # BIRTHS
     y$omega = c(
       y$fraction_F * (y$N_init[1]/y$N_init[3]) * y$fraction_FSW_foreign, # some FSW come from outside Cotonou
@@ -412,8 +414,8 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     muF = 0.02597403,
     muM = 0.02739726,
     RR_beta_FtM = 1,
-    RR_beta_GUD = 1
-    
+    RR_beta_GUD = 1,
+    who_believe_comm = 0  
     
     
   )
@@ -830,8 +832,8 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    muF = 0.02597403,
                    muM = 0.02739726,
                    RR_beta_GUD = 1,
-                   RR_beta_FtM = 1
-                   
+                   RR_beta_FtM = 1,
+                   who_believe_comm = 0
                    
                    
   )

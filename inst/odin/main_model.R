@@ -200,6 +200,14 @@ c_noncomm_balanced[] <- c_noncomm[i]
 # I0_init[5] = if(Ncat == 9 && t == 1986) (I0[5]/N[5])*(c_comm[1] * N[1] + c_comm[2] * N[2]) / c_comm[5] else I0_init[5]
 ##############
 
+who_believe_comm = user()
+
+# 1 = believe clients, 0 = believe FSW
+c_comm_balanced[5] = if(Ncat == 9 && who_believe_comm == 0) (c_comm[1] * N[1] + c_comm[2] * N[2])/N[5] else c_comm_balanced[5]
+c_comm_balanced[1] = if(Ncat == 9 && who_believe_comm == 1) (c_comm[5] * N[5] - c_comm[2] * N[2])/N[1] else c_comm_balanced[1]
+
+
+
 ##############
 # BALANCING BY CHANGING THE PARTNER CHANGE RATE OF CLIENTS
 # c_comm_balanced[5] = if(Ncat == 9) (c_comm[1] * N[1] + c_comm[2] * N[2])/N[5] else c_comm_balanced[5]
@@ -207,7 +215,7 @@ c_noncomm_balanced[] <- c_noncomm[i]
 
 ##############
 # BALANCING BY CHANGING THE PARTNER CHANGE RATE OF PRO FSW
-c_comm_balanced[1] = if(Ncat == 9) (c_comm[5] * N[5] - c_comm[2] * N[2])/N[1] else c_comm_balanced[1]
+# c_comm_balanced[1] = if(Ncat == 9) (c_comm[5] * N[5] - c_comm[2] * N[2])/N[1] else c_comm_balanced[1]
 ##############
 
 
