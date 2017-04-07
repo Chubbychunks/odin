@@ -1,18 +1,142 @@
 
-before_LHS <- function(y) {
-  c_comm_grep = rownames(y)[grep("c_comm", rownames(y))]
-}
+# before_LHS <- function(y) {
+#   # need to pass in the ranges i set, and also the parameters they affect
+#   c_comm_grep = rownames(y)[grep("c_comm", rownames(y))]
+#   c_comm_grep[grep("FSW", c_comm_grep)]
+# }
+
+par_seq = c("c_comm", "c_noncomm")
+groups_seq = c("ProFSW", "LowFSW", "GPF", "FormerFSW", "Client", "GPM", "VirginF", "VirginM", "FormerFSWoutside")
+years_seq = seq(1985, 2016)
+
+# sapply(years_seq, function(x){
+#   if(length(grep(x, names(samples_list)))) {
+#     
+#   }
+# })
+
+
+# after_LHS <- function(x, set_pars) {
+#   # pass in the sampled values and glue them together
+#   # c_comm_grep = names(x)[grep("c_comm", names(x))]
+#   # if(length(c_comm_grep) > 0) {
+#     # c_comm_grep[grep("ProFSW", c_comm_grep)]
+#     #find along all the c_comm_grep names the ones which match up and replace 
+#     for(year in 1:length(years_seq))
+#       for(group in 1:length(groups_seq))
+#         for(par in 1:length(par_seq))
+#           {if(grepl(years_seq[year], names(x)) && grepl(groups_seq[group], names(x)) && grepl(par_seq[par], names(x))){
+#             set_pars[paste0(par_seq[par], "_", years_seq[year])][[paste0(par_seq[par], "_", years_seq[year])]][group] = x[paste0(par_seq[par], "_", years_seq[year], "_", groups_seq[group])][[1]]
+#             }}
+#     # print(c(years_seq[year], groups_seq[group], par_seq[par]))
+#     
+#     # not quite!
+#   # }
+#   return(set_pars)
+# }
+
+# samples_list <- lapply(samples_list_test, after_LHS, set_pars = best_set)
+
+
 
 # parameters which depend on others, etc
 fix_parameters <- function(y, Ncat, Nage) {
   
-#   # interpolating for c_comm
-#   rownames(ranges)
-#   
-#   if(Ncat == 9)
-#   {
-#     
-#   }
+  #   # interpolating for c_comm
+  #   rownames(ranges)
+  #   
+  #   if(Ncat == 9)
+  #   {
+  #     
+  #   }
+  
+  #   print("before")
+  #   print(y)
+  if(Ncat == 9) {
+    # what_we_got = data.frame(par = c(), year = c(), group = c())
+    what_we_got = c()
+    for(year in 1:length(years_seq))
+    {for(group in 1:length(groups_seq))
+    {for(par in 1:length(par_seq))
+      # {if(grepl(years_seq[year], names(y)) && grepl(groups_seq[group], names(y)) && grepl(par_seq[par], names(y))){
+    {if(paste0(paste0(par_seq[par], "_", years_seq[year], "_", groups_seq[group])) %in% names(y)){
+      
+      y[paste0(par_seq[par], "_", years_seq[year])][[paste0(par_seq[par], "_", years_seq[year])]][group] = y[paste0(par_seq[par], "_", years_seq[year], "_", groups_seq[group])][[1]]
+      # what_we_got = c(what_we_got, paste0(par_seq[par], "_", years_seq[year], "_", groups_seq[group]))
+      what_we_got = rbind(what_we_got, c(par, year, group))
+      # print(c(par_seq[par], groups_seq[group], years_seq[year]))
+    }}}}
+    colnames(what_we_got) = c("par", "year", "group")
+    
+    # now we have to fill in the rest of the years... IF 2 OR MORE YEARS FOR SAME GROUP AND PARM
+    # all years before earliest one is same as earliest estimate, 
+    # and all years after last one is same as last...
+    # and everything in between is interpolated!
+    d <- data.frame(what_we_got) 
+    par_counts = count(d, c('par', 'group')) 
+    
+    for(i in 1:length(par_counts[,1]))
+    {
+      if(par_counts[i,"freq"] > 1)
+      {
+        the_years = subset(d, c(par == par_counts[i, "par"] & group == par_counts[i, "group"]), year)
+        
+        #before
+        if(min(the_years) > 1)
+        {
+          for(year in 1:(min(the_years)-1))
+          {
+            if(paste0(par_seq[par_counts[i, "par"]], "_", years_seq[year]) %in% names(y))
+            {y[paste0(par_seq[par_counts[i, "par"]], "_", years_seq[year])][[paste0(par_seq[par_counts[i, "par"]], "_", years_seq[year])]][par_counts[i, "group"]] = 
+              y[paste0(par_seq[par_counts[i,"par"]], "_", years_seq[min(the_years)], "_", groups_seq[par_counts[i, "group"]])][[1]]}
+          }
+        }
+        
+        #after
+        if(max(the_years) < length(years_seq))
+        {
+          for(year in (max(the_years)+1):length(years_seq))
+          {
+            if(paste0(par_seq[par_counts[i, "par"]], "_", years_seq[year]) %in% names(y))
+            {y[paste0(par_seq[par_counts[i, "par"]], "_", years_seq[year])][[paste0(par_seq[par_counts[i, "par"]], "_", years_seq[year])]][par_counts[i, "group"]] = 
+              y[paste0(par_seq[par_counts[i,"par"]], "_", years_seq[max(the_years)], "_", groups_seq[par_counts[i, "group"]])][[1]]}
+          }
+        }
+        
+        # interoplate between
+        # take the years that have values
+        # calculate the slopes between them
+        # apply the slope and time difference to the pars in between
+        
+        years_seq[unlist(the_years)]
+        
+        for(j in 1:(length(unlist(the_years))-1)) {
+          slope = (y[paste0(par_seq[par_counts[i, "par"]], "_", years_seq[unlist(the_years)][j+1])][[paste0(par_seq[par_counts[i, "par"]], "_", years_seq[unlist(the_years)][j+1])]][par_counts[i, "group"]] -
+            y[paste0(par_seq[par_counts[i, "par"]], "_", years_seq[unlist(the_years)][j])][[paste0(par_seq[par_counts[i, "par"]], "_", years_seq[unlist(the_years)][j])]][par_counts[i, "group"]]) /
+            (years_seq[unlist(the_years)][j+1] - years_seq[unlist(the_years)][j])
+          
+          for(k in (years_seq[unlist(the_years)][j]+1):(years_seq[unlist(the_years)][j+1]-1))
+          {
+            if(paste0(par_seq[par_counts[i, "par"]], "_", k) %in% names(y))
+              y[paste0(par_seq[par_counts[i, "par"]], "_", k)][[paste0(par_seq[par_counts[i, "par"]], "_", k)]][par_counts[i, "group"]] = slope * 
+                (k - years_seq[unlist(the_years)][j]) + 
+                y[paste0(par_seq[par_counts[i, "par"]], "_", years_seq[unlist(the_years)][j])][[paste0(par_seq[par_counts[i, "par"]], "_", years_seq[unlist(the_years)][j])]][par_counts[i, "group"]]
+          }
+        }
+        
+
+     
+        
+        
+        
+      }
+    }
+    
+    
+  }
+  #   print("after")
+  #   print(y)
+  
   
   
   # may want to switch off!
@@ -370,7 +494,7 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
     
     
   )
-
+  
   if (is.null(ranges)) {
     ranges <- old_ranges
   }
@@ -386,9 +510,20 @@ lhs_parameters <- function(n, sample = NULL, Ncat = 2, Nage = 1, ..., set_pars =
   }
   samples_list <- apply(samples, 1, f)
   
-  samples_list <- lapply(samples_list, function(x) modifyList(x, fixed_pars))
+  #   print("ehre:")
+  #   print(samples_list)
+  
+  samples_list <- lapply(samples_list, function(x) modifyList(x, fixed_pars)) # btw earlier, fixed pars is replaced by ranges where they overlap
+  
+  # HERE!
+  # samples_list <- lapply(samples_list, after_LHS, set_pars = set_pars)
+  
   
   samples_list <- lapply(samples_list, function(x) modifyList(x, set_pars)) # set pars before fixed pars in order to get right fixed
+  
+  #   print("ehre2:")
+  #   print(samples_list)
+  samples_list_test <<- samples_list
   
   samples_list <- lapply(samples_list, fix_parameters, Ncat = Ncat)
   
@@ -463,10 +598,7 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
                    gamma43 = rep_len(0.2, Ncat),
                    gamma44 = rep_len(0.2, Ncat),
                    
-                   rho2 = rep_len(0.5,Ncat),
-                   rho3 = rep_len(0.5,Ncat),
-                   rho4 = rep_len(0.5,Ncat),
-                   rho5 = rep_len(0.5,Ncat),
+                   
                    
                    ART_prob_t = c(1985, 2002, 2005, 2016),
                    ART_prob_y = matrix(
@@ -713,10 +845,10 @@ generate_parameters <- function(..., parameters = list(...), set_null = list(...
   if (is.null(names(parameters)) || !all(nzchar(names(parameters)))) {
     stop("All arguments must be named")
   }
-#   extra <- setdiff(names(parameters), names(defaults))
-#   if (length(extra) > 0L) {
-#     stop("Unknown arguments: ", extra)
-#   }
+  #   extra <- setdiff(names(parameters), names(defaults))
+  #   if (length(extra) > 0L) {
+  #     stop("Unknown arguments: ", extra)
+  #   }
   
   # list of parameters that depend on others
   ret <- modifyList(defaults, parameters)

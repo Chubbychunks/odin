@@ -7,7 +7,13 @@ rm(list = ls())
 odin::odin_package(".") # looks for any models inside inst/odin
 devtools::load_all()
 time <- seq(1986, 2016, length.out = 31)
-number_simulations = 2
+number_simulations = 1
+parameters <- lhs_parameters(number_simulations, set_pars = best_set, Ncat = 9, 
+                             ranges = rbind(c_comm_1993_ProFSW = c(1001, 1001), c_comm_2012_ProFSW = c(1002, 1002), 
+                                            lol = c(2,22), 
+                                            c_noncomm_1998_Client = c(8, 8.01), c_noncomm_2008_Client = c(1, 1.01), c_noncomm_2015_Client = c(10, 10.01),
+                                            c_comm_1993_GPM = c(1, 2), c_comm_1998_GPF = c(1, 1.0001),
+                                            c_comm_1985_Client = c(20,20), c_comm_2012_Client = c(1,1)))
 parameters <- lhs_parameters(number_simulations, set_pars = best_set, Ncat = 9, 
                              ranges = rbind(
                                c_comm_1993_ProFSW = c(0, 2),
@@ -37,7 +43,7 @@ parameters <- lhs_parameters(number_simulations, set_pars = best_set, Ncat = 9,
 f <- function(p, gen, time) {
   mod <- gen(user = p)
   all_results <- mod$transform_variables(mod$run(time))
-  all_results[c("prev", "c_comm_balanced", "c_noncomm_balanced")]
+  all_results[c("prev", "c_comm_balanced", "c_noncomm_balanced", "c_comm", "c_noncomm")]
 }
 res = lapply(parameters, f, main_model, time)
 
@@ -383,7 +389,9 @@ best_set = list(
   rate_leave_pro_FSW = 0.2,
   FSW_leave_Cotonou_fraction = 0.1,
   rate_leave_low_FSW = 0.1,
-  rate_leave_client = 0.05
+  rate_leave_client = 0.05,
+  replaceDeaths = 0,
+  movement = 1
   
 )
 

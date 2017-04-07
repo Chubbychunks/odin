@@ -614,10 +614,6 @@ gamma42[] = user()
 gamma43[] = user()
 gamma44[] = user()
 
-rho2[] = user()
-rho3[] = user()
-rho4[] = user()
-rho5[] = user()
 
 phi2[] = user()
 phi3[] = user()
@@ -752,10 +748,6 @@ dim(gamma42) = Ncat
 dim(gamma43) = Ncat
 dim(gamma44) = Ncat
 
-dim(rho2) = Ncat
-dim(rho3) = Ncat
-dim(rho4) = Ncat
-dim(rho5) = Ncat
 
 dim(phi2) = Ncat
 dim(phi3) = Ncat

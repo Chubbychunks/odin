@@ -2,14 +2,16 @@
 
 time <- seq(1986, 2016, length.out = 31)
 
-
+# dont know what this is
 # takes the new varying parameter and it meshes it with the original base parameter set
-f <- function(x, base, v, gen, time) {
-  n <- lengths(base[v])
-  base[v] <- setNames(split(unlist(x, use.names=FALSE), rep(seq_along(v), n)), v) # base is the original set of pars
-  mod <- gen(user=base)
-  mod$transform_variables(mod$run(time))
-}
+# f <- function(x, base, v, gen, time) {
+#   n <- lengths(base[v])
+#   base[v] <- setNames(split(unlist(x, use.names=FALSE), rep(seq_along(v), n)), v) # base is the original set of pars
+#   mod <- gen(user=base)
+#   mod$transform_variables(mod$run(time))
+# }
+
+
 
 run_model <- function(p, gen, time, output_vars) {
   mod <- gen(user = p)
@@ -77,7 +79,6 @@ par_gridplot2 = function(result, parm) {
 
 
 parameter_names = names(lhs_parameters(1)[[1]])
-
 
 
 best_set = list(
@@ -393,6 +394,8 @@ best_set = list(
   rate_leave_pro_FSW = 0.2,
   FSW_leave_Cotonou_fraction = 0.1,
   rate_leave_low_FSW = 0.1,
-  rate_leave_client = 0.05
+  rate_leave_client = 0.05,
+  replaceDeaths = 0,
+  movement = 1
   
 )
