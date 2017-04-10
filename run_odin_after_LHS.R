@@ -401,7 +401,7 @@ best_set = list(
 ########################################################################################################
 start.time <- Sys.time()
 # varying and fitting
-number_simulations = 10
+number_simulations = 100000
 parameters <- lhs_parameters(number_simulations, set_pars = best_set, Ncat = 9, 
                              ranges = rbind(
                                # betaMtoF_comm = c(0.00086, 0.0118844), # c(0.00086, 0.00433),
@@ -440,7 +440,8 @@ parameters <- lhs_parameters(number_simulations, set_pars = best_set, Ncat = 9,
 f <- function(p, gen, time) {
   mod <- gen(user = p)
   all_results <- mod$transform_variables(mod$run(time))
-  all_results[c("prev", "c_comm_balanced", "c_noncomm_balanced", "c_comm", "c_noncomm")]
+  #   all_results[c("prev", "c_comm_balanced", "c_noncomm_balanced", "c_comm", "c_noncomm")]
+  all_results[c("prev")]
 }
 res = lapply(parameters, f, main_model, time)
 
@@ -479,7 +480,8 @@ likelihood_rough <- function(x) {
 # which(unlist(lapply(res, likelihood_rough)) > 4)
 #####
 
-sorted_likelihood_list = sort(unlist(lapply(res, likelihood_rough)))
+likelihood_list = unlist(lapply(res, likelihood_rough))
+sorted_likelihood_list = sort(likelihood_list)
 
 # table(sorted_likelihood_list)
 
@@ -492,6 +494,9 @@ end.time <- Sys.time()
 time.taken <- end.time - start.time
 time.taken
 
+print("number of seconds per simulation:")
+as.numeric(time.taken) * 60 / number_simulations
+
 
 all_binded = do.call(rbind, lapply(res[best_runs], function(x) x$prev))
 all_binded[is.na(all_binded)] = 0
@@ -503,6 +508,10 @@ ggplot()  + geom_line(data = out_melted, aes(x = time, y = value, factor = repli
   geom_point(data = prev_points, aes(x = time, y = value))+ geom_errorbar(data = prev_points, aes(x = time, ymin = lower, ymax = upper))+ 
   facet_wrap(~variable, scales = "free") 
 max(sorted_likelihood_list)
+
+# WHO BELIEVE?
+lapply(parameters[which(likelihood_list == max(likelihood_list))], function(x) x$who_believe_comm)
+
 ########################################################################################################
 ########################################################################################################
 ########################################################################################################

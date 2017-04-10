@@ -4,7 +4,7 @@
 #   c_comm_grep = rownames(y)[grep("c_comm", rownames(y))]
 #   c_comm_grep[grep("FSW", c_comm_grep)]
 # }
-
+require(plyr)
 par_seq = c("c_comm", "c_noncomm")
 groups_seq = c("ProFSW", "LowFSW", "GPF", "FormerFSW", "Client", "GPM", "VirginF", "VirginM", "FormerFSWoutside")
 years_seq = seq(1985, 2016)
