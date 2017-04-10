@@ -4,7 +4,7 @@
 #   c_comm_grep = rownames(y)[grep("c_comm", rownames(y))]
 #   c_comm_grep[grep("FSW", c_comm_grep)]
 # }
-require(plyr)
+# require(plyr)
 par_seq = c("c_comm", "c_noncomm")
 groups_seq = c("ProFSW", "LowFSW", "GPF", "FormerFSW", "Client", "GPM", "VirginF", "VirginM", "FormerFSWoutside")
 years_seq = seq(1985, 2016)
@@ -73,7 +73,7 @@ fix_parameters <- function(y, Ncat, Nage) {
     # and all years after last one is same as last...
     # and everything in between is interpolated!
     d <- data.frame(what_we_got) 
-    par_counts = count(d, c('par', 'group')) 
+    par_counts = plyr::count(d, c('par', 'group')) 
     
     for(i in 1:length(par_counts[,1]))
     {

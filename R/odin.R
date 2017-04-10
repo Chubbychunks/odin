@@ -48,7 +48,7 @@
       self$init
     },
 
-    run = function(t, y = NULL, ..., tcrit = NULL, use_names = TRUE) {
+    run = function(t, y = NULL, ..., use_names = TRUE, tcrit = NULL) {
       if (is.null(y)) {
         y <- self$init
       }
@@ -66,11 +66,9 @@
       }
       if (self$use_dde) {
         ret <- dde::dopri(y, t, "main_model_deriv_dde", self$ptr,
-                          dllname="taspprepodin",
-                          n_out=self$output_length, output="main_model_output_dde",
-                          parms_are_real=FALSE,
-                          by_column=TRUE, return_initial=TRUE,
-                          return_time=TRUE, return_output_with_y=TRUE, ...)
+                          dllname = "taspprepodin",
+                          n_out = self$output_length, output = "main_model_output_dde",
+                          parms_are_real = FALSE, ynames = FALSE, ...)
       } else {
         ret <- deSolve::ode(y, t, "main_model_deriv_ds", self$ptr,
                             initfunc = "main_model_initmod_ds", dllname = "taspprepodin",
