@@ -17,9 +17,9 @@
     interpolate_t = NULL,
     ## Methods:
     initialize = function(user = NULL, use_dde = FALSE) {
-      self$ptr <- .Call("main_model_create", user, use_dde, PACKAGE = "taspprepodin")
+      self$ptr <- .Call("main_model_create", user, use_dde, PACKAGE = "cotonou")
       self$use_dde <- use_dde
-      self$init <- .Call("main_model_initialise", self$ptr, NA_real_, PACKAGE = "taspprepodin")
+      self$init <- .Call("main_model_initialise", self$ptr, NA_real_, PACKAGE = "cotonou")
       if (use_dde) {
         loadNamespace("dde")
       }
@@ -27,21 +27,21 @@
     },
 
     set_user = function(..., user = list(...)) {
-      .Call("r_main_model_set_user", self$ptr, user, PACKAGE = "taspprepodin")
-      self$init <- .Call("main_model_initialise", self$ptr, NA_real_, PACKAGE = "taspprepodin")
+      .Call("r_main_model_set_user", self$ptr, user, PACKAGE = "cotonou")
+      self$init <- .Call("main_model_initialise", self$ptr, NA_real_, PACKAGE = "cotonou")
       self$update_cache()
       invisible(self$init)
     },
 
     update_cache = function() {
-      self$variable_order <- .Call("main_model_variable_order", self$ptr, PACKAGE = "taspprepodin")
-      self$output_order <- .Call("main_model_output_order", self$ptr, PACKAGE = "taspprepodin")
-          self$interpolate_t <- .Call("main_model_interpolate_t", self$ptr, PACKAGE = "taspprepodin")
+      self$variable_order <- .Call("main_model_variable_order", self$ptr, PACKAGE = "cotonou")
+      self$output_order <- .Call("main_model_output_order", self$ptr, PACKAGE = "cotonou")
+          self$interpolate_t <- .Call("main_model_interpolate_t", self$ptr, PACKAGE = "cotonou")
       odin_prepare(self, FALSE)
     },
 
     deriv = function(t, y) {
-      .Call("main_model_deriv_r", self$ptr, t, y, PACKAGE = "taspprepodin")
+      .Call("main_model_deriv_r", self$ptr, t, y, PACKAGE = "cotonou")
     },
 
     initial = function(t) {
@@ -66,12 +66,12 @@
       }
       if (self$use_dde) {
         ret <- dde::dopri(y, t, "main_model_deriv_dde", self$ptr,
-                          dllname = "taspprepodin",
+                          dllname = "cotonou",
                           n_out = self$output_length, output = "main_model_output_dde",
                           parms_are_real = FALSE, ynames = FALSE, ...)
       } else {
         ret <- deSolve::ode(y, t, "main_model_deriv_ds", self$ptr,
-                            initfunc = "main_model_initmod_ds", dllname = "taspprepodin",
+                            initfunc = "main_model_initmod_ds", dllname = "cotonou",
                             nout = self$output_length,
                             tcrit = tcrit,
                             ...)
@@ -85,7 +85,7 @@
     },
 
     contents = function() {
-      .Call("main_model_contents", self$ptr, PACKAGE = "taspprepodin")
+      .Call("main_model_contents", self$ptr, PACKAGE = "cotonou")
     }
   ))
 main_model <- function(replaceDeaths, who_believe_comm, RR_test_onPrEP, RR_test_CD4200, RR_ART_CD4200, Ncat, Nage, infect_ART, infect_acute, infect_AIDS, R, dur_FSW, c_t_comm, c_t_noncomm, c_y_comm, c_y_noncomm, testing_prob_t, testing_prob_y, ART_prob_t, ART_prob_y, zetaa_t, zetab_t, zetac_t, zetaa_y, zetab_y, zetac_y, epsilon_t, epsilon_y, fc_t_comm, fc_y_comm, fP_t_comm, fP_y_comm, fc_t_noncomm, fc_y_noncomm, fP_t_noncomm, fP_y_noncomm, omega, mu, gamma01, gamma02, gamma03, gamma04, gamma11, gamma22, gamma23, gamma24, gamma32, gamma33, gamma34, gamma42, gamma43, gamma44, phi2, phi3, phi4, phi5, psia, psib, kappaa, kappab, kappac, alpha01, alpha02, alpha03, alpha04, alpha05, alpha11, alpha22, alpha23, alpha24, alpha25, alpha32, alpha33, alpha34, alpha35, alpha42, alpha43, alpha44, alpha45, beta_comm, beta_noncomm, ec, eP, eP0, eP1a, eP1b, eP1c, eP1d, n_comm, n_noncomm, S0_init, S1a_init, S1b_init, S1c_init, S1d_init, I01_init, I11_init, I02_init, I03_init, I04_init, I05_init, I22_init, I23_init, I24_init, I25_init, I32_init, I33_init, I34_init, I35_init, I42_init, I43_init, I44_init, I45_init, cumuInf_init, theta, OnPrEP_init, M_comm, M_noncomm, rate_move_in, rate_move_out, user = list(replaceDeaths = replaceDeaths, who_believe_comm = who_believe_comm, RR_test_onPrEP = RR_test_onPrEP, RR_test_CD4200 = RR_test_CD4200, RR_ART_CD4200 = RR_ART_CD4200, Ncat = Ncat, Nage = Nage, infect_ART = infect_ART, infect_acute = infect_acute, infect_AIDS = infect_AIDS, R = R, dur_FSW = dur_FSW, c_t_comm = c_t_comm, c_t_noncomm = c_t_noncomm, c_y_comm = c_y_comm, c_y_noncomm = c_y_noncomm, testing_prob_t = testing_prob_t, testing_prob_y = testing_prob_y, ART_prob_t = ART_prob_t, ART_prob_y = ART_prob_y, zetaa_t = zetaa_t, zetab_t = zetab_t, zetac_t = zetac_t, zetaa_y = zetaa_y, zetab_y = zetab_y, zetac_y = zetac_y, epsilon_t = epsilon_t, epsilon_y = epsilon_y, fc_t_comm = fc_t_comm, fc_y_comm = fc_y_comm, fP_t_comm = fP_t_comm, fP_y_comm = fP_y_comm, fc_t_noncomm = fc_t_noncomm, fc_y_noncomm = fc_y_noncomm, fP_t_noncomm = fP_t_noncomm, fP_y_noncomm = fP_y_noncomm, omega = omega, mu = mu, gamma01 = gamma01, gamma02 = gamma02, gamma03 = gamma03, gamma04 = gamma04, gamma11 = gamma11, gamma22 = gamma22, gamma23 = gamma23, gamma24 = gamma24, gamma32 = gamma32, gamma33 = gamma33, gamma34 = gamma34, gamma42 = gamma42, gamma43 = gamma43, gamma44 = gamma44, phi2 = phi2, phi3 = phi3, phi4 = phi4, phi5 = phi5, psia = psia, psib = psib, kappaa = kappaa, kappab = kappab, kappac = kappac, alpha01 = alpha01, alpha02 = alpha02, alpha03 = alpha03, alpha04 = alpha04, alpha05 = alpha05, alpha11 = alpha11, alpha22 = alpha22, alpha23 = alpha23, alpha24 = alpha24, alpha25 = alpha25, alpha32 = alpha32, alpha33 = alpha33, alpha34 = alpha34, alpha35 = alpha35, alpha42 = alpha42, alpha43 = alpha43, alpha44 = alpha44, alpha45 = alpha45, beta_comm = beta_comm, beta_noncomm = beta_noncomm, ec = ec, eP = eP, eP0 = eP0, eP1a = eP1a, eP1b = eP1b, eP1c = eP1c, eP1d = eP1d, n_comm = n_comm, n_noncomm = n_noncomm, S0_init = S0_init, S1a_init = S1a_init, S1b_init = S1b_init, S1c_init = S1c_init, S1d_init = S1d_init, I01_init = I01_init, I11_init = I11_init, I02_init = I02_init, I03_init = I03_init, I04_init = I04_init, I05_init = I05_init, I22_init = I22_init, I23_init = I23_init, I24_init = I24_init, I25_init = I25_init, I32_init = I32_init, I33_init = I33_init, I34_init = I34_init, I35_init = I35_init, I42_init = I42_init, I43_init = I43_init, I44_init = I44_init, I45_init = I45_init, cumuInf_init = cumuInf_init, theta = theta, OnPrEP_init = OnPrEP_init, M_comm = M_comm, M_noncomm = M_noncomm, rate_move_in = rate_move_in, rate_move_out = rate_move_out), use_dde = FALSE) {
