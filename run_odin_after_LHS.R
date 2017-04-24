@@ -401,7 +401,7 @@ best_set = list(
 ########################################################################################################
 start.time <- Sys.time()
 # varying and fitting
-number_simulations = 100000
+number_simulations = 10
 parameters <- lhs_parameters(number_simulations, set_pars = best_set, Ncat = 9, 
                              ranges = rbind(
                                # betaMtoF_comm = c(0.00086, 0.0118844), # c(0.00086, 0.00433),
